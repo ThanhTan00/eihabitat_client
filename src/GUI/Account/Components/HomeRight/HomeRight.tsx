@@ -8,7 +8,7 @@ export const HomeRight = () => {
   const navigate = useNavigate();
   const handleLogout = async () => {
     await dispatch(logout());
-    navigate("/");
+    navigate("/login");
   };
 
   return (

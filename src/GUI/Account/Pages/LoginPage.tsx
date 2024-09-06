@@ -40,6 +40,7 @@ export const LoginPage = () => {
       );
       //console.log(auth);
       const result = auth.payload;
+      console.log(result);
 
       result.roles.forEach((role: any) => {
         if (role.name === "ADMIN") {
@@ -50,7 +51,7 @@ export const LoginPage = () => {
         } else {
           showToastMessage(`Hello ${result.user.profileName}`, "success");
           setTimeout(() => {
-            navigate("/home");
+            navigate("/");
           }, 2000);
         }
       });
@@ -168,6 +169,6 @@ export const LoginPage = () => {
       </section>
     </div>
   ) : (
-    <Navigate to={"/home"} />
+    <Navigate to={"/"} />
   );
 };

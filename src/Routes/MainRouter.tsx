@@ -6,10 +6,14 @@ import {
   UserLayout,
 } from "../GUI/Account/Pages";
 import { ProtectedRoute } from "./ProtectedRoute";
+import { Profiler } from "react";
+import { Profile } from "../GUI/Account/Pages/Profile";
+import { useSelector } from "react-redux";
+import { RootState } from "../Store/store";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: "/login",
     element: <LoginPage />,
   },
   {
@@ -17,7 +21,7 @@ const router = createBrowserRouter([
     element: <RegisterPage />,
   },
   {
-    path: "/home",
+    path: "/",
     element: <ProtectedRoute />,
     children: [
       {
@@ -26,6 +30,10 @@ const router = createBrowserRouter([
           {
             element: <HomePage />,
             index: true,
+          },
+          {
+            path: "/profile",
+            element: <Profile />,
           },
         ],
       },

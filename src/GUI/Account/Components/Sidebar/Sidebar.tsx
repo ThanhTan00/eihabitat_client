@@ -10,9 +10,9 @@ export const Sidebar = () => {
   const handleTabClick = (title: string) => {
     setActiveTab(title);
     if (title === "Profile") {
-      navigate("username");
+      navigate("/profile");
     } else if (title === "Home") {
-      navigate("/home");
+      navigate("/");
     }
   };
 

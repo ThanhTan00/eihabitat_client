@@ -43,6 +43,7 @@ export const loginUser = createAsyncThunk(
 
     const userInfo = await getUserInfo(accessToken);
     const user = userInfo.data;
+    console.log(user);
     const roles = user.roles;
 
     //console.log(user);
