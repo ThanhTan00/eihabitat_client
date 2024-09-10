@@ -1,15 +1,13 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
+  EditProfilePage,
   HomePage,
   LoginPage,
   RegisterPage,
   UserLayout,
 } from "../GUI/Account/Pages";
 import { ProtectedRoute } from "./ProtectedRoute";
-import { Profiler } from "react";
 import { Profile } from "../GUI/Account/Pages/Profile";
-import { useSelector } from "react-redux";
-import { RootState } from "../Store/store";
 
 const router = createBrowserRouter([
   {
@@ -34,6 +32,10 @@ const router = createBrowserRouter([
           {
             path: "/profile",
             element: <Profile />,
+          },
+          {
+            path: "/edit-profile",
+            element: <EditProfilePage />,
           },
         ],
       },

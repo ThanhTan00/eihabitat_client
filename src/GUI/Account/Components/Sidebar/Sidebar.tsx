@@ -21,11 +21,7 @@ export const Sidebar = () => {
       <div className="flex flex-col justify-between h-full px-10">
         <div>
           <div className="pt-10">
-            <img
-              className="w-40"
-              src="https://i.imgur.com/zqpwkLQ.png"
-              alt=""
-            />
+            <img className="w-40" src="\eiuhabitat-logo.png" alt="" />
             <div className="mt-10">
               {mainu.map((item) => (
                 <div

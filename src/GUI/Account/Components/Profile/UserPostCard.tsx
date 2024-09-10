@@ -1,14 +1,20 @@
 import { AiFillHeart } from "react-icons/ai";
 import { FaComment } from "react-icons/fa";
 import "./UserPostCard.css";
+import { Post } from "../../../../Model/Post";
 
-export const UserPostCard = () => {
+type Props = {
+  post: Post;
+};
+
+export const UserPostCard = ({ post }: Props) => {
+  console.log(post);
   return (
-    <div className="p-2">
+    <div className="p-1">
       <div className="post w-60 h-60">
         <img
           className="cursor-pointer"
-          src="https://cdn.pixabay.com/photo/2020/10/22/10/28/cow-5675684_960_720.jpg"
+          src={post.postContentSet[0].imageId}
           alt=""
         />
         <div className="overlay">

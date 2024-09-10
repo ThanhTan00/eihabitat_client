@@ -1,14 +1,25 @@
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "../../../../Store/store";
+import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../../../../Store/store";
 import { useNavigate } from "react-router-dom";
-import { logout } from "../../../../Store/Slices/AuthSlice";
+import { logoutUser } from "../../../../Store/Slices/AuthSlice";
+import { showToastMessage } from "../../../../Toast/CustomToast";
 
 export const HomeRight = () => {
+  const { token } = useSelector((state: RootState) => state.auth);
+
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
+
   const handleLogout = async () => {
-    await dispatch(logout());
-    navigate("/login");
+    try {
+      console.log(token);
+      const auth = await dispatch(logoutUser({ token: token }) as any);
+      //const result = auth.payload;
+      console.log(auth);
+    } catch (error) {
+      console.log(error);
+      showToastMessage("email or password in correct", "error");
+    }
   };
 
   return (

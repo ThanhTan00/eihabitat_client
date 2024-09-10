@@ -48,3 +48,38 @@ export type User = {
     dateOfBirth: Date
     signupDate: Date
 }
+
+export type UserUpdate = {
+    firstName?: string | undefined
+    lastName?: string | undefined
+    profileName?: string | undefined
+    bio?: string | undefined
+    phone?: string | undefined
+    gender?: Gender | undefined
+    dateOfBirth?: Date | undefined
+    address?: string | undefined
+    nationality?: Nationality | undefined
+};
+
+export const UserUpdateRequestSchema = z.object({
+
+
+    firstName: z.string()
+        .min(1, { message: "First name must not be empty" }).optional(),
+    lastName: z.string()
+        .min(1, { message: "Last name must not be empty" }).optional(),
+    profilename: z.string()
+        .min(1, { message: "Last name must not be empty" }).optional(),
+    bio: z.string()
+       .optional(),
+    phoneNumber: z.string()
+        .min(10, { message: "Phone number must be at least 10 digits long" })
+        .regex(/^[0-9]+$/, "Phone number must contain only digits").optional(),
+    dateOfBirth: z.date()
+        .refine((date) => date <= new Date(), {
+            message: "Date of birth must be in the pass."
+        }).optional(),
+    gender: GenderEnum.optional(),
+    address: z.string().optional(),
+    nationality: NationalityEnum.optional()
+});

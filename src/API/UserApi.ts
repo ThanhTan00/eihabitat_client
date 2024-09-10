@@ -1,9 +1,9 @@
 import { AxiosError } from "axios"
 import { ApiResponse } from "../Model/APIResponse"
-import { User, UserCreationRequest } from "../Model/User"
+import { User, UserCreationRequest, UserUpdate } from "../Model/User"
 import api from "./api"
 
-interface BackendError {
+export interface BackendError {
     code: number
     message: string
 }
@@ -52,7 +52,7 @@ export const getUserInfo = async (accessToken: string) => {
         const response = await api.get('users/myInfo', {
             headers: {
                 Authorization: `Bearer ${accessToken}`
-            }
+            },
         })
 
         return response.data
@@ -61,6 +61,48 @@ export const getUserInfo = async (accessToken: string) => {
         if (axiosError.response && axiosError.response.data) {
             const backendError = axiosError.response.data;
             //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const updateUserProfile = async (user: UserUpdate, accessToken: string | null): Promise<ApiResponse<User> | BackendError> => {
+    try {
+        const response = await api.put('users',user,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const logout = async ({token} : {token : string | null}) => {
+    try {
+        console.log(token)
+        const response = await api.post('auth/logout', {token})
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
 
             return backendError;
         } else {

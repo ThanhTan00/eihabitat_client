@@ -2,7 +2,12 @@ import { noUnrecognized } from "zod";
 import { User, UserCreationRequest, UserLoginRequest } from "../../Model/User";
 import { Role } from "../../Model/Enums/Role";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { authenticate, createNewUser, getUserInfo } from "../../API/UserApi";
+import {
+  authenticate,
+  createNewUser,
+  getUserInfo,
+  logout,
+} from "../../API/UserApi";
 import { userInfo } from "os";
 
 interface AuthState {
@@ -56,19 +61,18 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const logoutUser = createAsyncThunk(
+  "auth/logout",
+  async ({ token }: { token: string | null }) => {
+    const result = await logout({ token });
+    return result;
+  }
+);
+
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    logout(state) {
-      state.user = null;
-      state.isAuthenticated = false;
-      state.token = null;
-      state.role = null;
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("user");
-      localStorage.removeItem("role");
-    },
     authenticatedAction: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload;
       state.loading = false;
@@ -100,9 +104,29 @@ const authSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
+      })
+      .addCase(logoutUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.loading = false;
+        state.error = null;
+
+        state.user = null;
+        state.isAuthenticated = false;
+        state.token = null;
+        state.role = null;
+        localStorage.removeItem("accessToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("role");
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
       });
   },
 });
 
-export const { logout, authenticatedAction } = authSlice.actions;
+export const { authenticatedAction } = authSlice.actions;
 export default authSlice.reducer;

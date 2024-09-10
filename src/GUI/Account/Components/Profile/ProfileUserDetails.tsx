@@ -1,5 +1,6 @@
 import { TbCircleDashed } from "react-icons/tb";
 import { User } from "../../../../Model/User";
+import { Link } from "react-router-dom";
 
 type Props = {
   user: User | null;
@@ -8,7 +9,7 @@ type Props = {
 export const ProfileUserDetails = ({ user }: Props) => {
   return (
     <div className="py-10 w-full">
-      <div className="flex items-center">
+      <div className="flex items-center justify-center">
         <div className="w-[15%]">
           <img
             className="w-32 h-32 rounded-full"
@@ -19,7 +20,12 @@ export const ProfileUserDetails = ({ user }: Props) => {
         <div className="space-y-5">
           <div className="flex space-x-10 items-center">
             <p>{user?.profileName}</p>
-            <button>Edit Profile</button>
+            <Link
+              to={"/edit-profile"}
+              className="hover:bg-[#083555] hover:text-white p-2 active:text-opacity-75 duration-300 rounded-md"
+            >
+              Edit Profile
+            </Link>
             <TbCircleDashed />
           </div>
           <div className="flex space-x-10">
