@@ -59,7 +59,7 @@ export const UserPostPart = () => {
   ];
 
   return (
-    <div className="relative w-[60%] ">
+    <div className="relative w-[80%] ">
       <div className="flex border-t relative items-center justify-between pr-32 pl-32">
         {tabs.map((item) => (
           <div
