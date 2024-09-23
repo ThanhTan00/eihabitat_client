@@ -5,25 +5,26 @@ import { Post } from "../../../../Model/Post";
 
 type Props = {
   post: Post;
+  onClick: () => void;
 };
 
-export const UserPostCard = ({ post }: Props) => {
-  console.log(post);
+export const UserPostCard = ({ post, onClick }: Props) => {
   return (
-    <div className="p-1">
-      <div className="post w-60 h-60">
+    <div className="p-1" key={post.id}>
+      <div className="post">
         <img
-          className="cursor-pointer"
+          className="object-none w-full h-80"
           src={post.postContentSet[0].imageId}
           alt=""
         />
-        <div className="overlay">
-          <div className="overlay-text flex justify-between">
+        <div onClick={() => onClick()} className="overlay cursor-pointer">
+          <div className="overlay-text flex justify-between ">
             <div>
-              <AiFillHeart /> <span>10</span>
+              <AiFillHeart className="text-2xl" />{" "}
+              <span>{post.numberOfLikes}</span>
             </div>
             <div>
-              <FaComment /> <span>30</span>
+              <FaComment className="text-xl" /> <span>30</span>
             </div>
           </div>
         </div>

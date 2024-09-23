@@ -5,7 +5,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   authenticate,
   createNewUser,
-  getUserInfo,
+  getMyInfo,
   logout,
 } from "../../API/UserApi";
 import { userInfo } from "os";
@@ -46,7 +46,7 @@ export const loginUser = createAsyncThunk(
 
     localStorage.setItem("accessToken", accessToken);
 
-    const userInfo = await getUserInfo(accessToken);
+    const userInfo = await getMyInfo(accessToken);
     const user = userInfo.data;
     console.log(user);
     const roles = user.roles;

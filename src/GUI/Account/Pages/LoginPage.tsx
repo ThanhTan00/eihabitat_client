@@ -21,7 +21,6 @@ export const LoginPage = () => {
     (state: RootState) => state.auth
   );
 
-  console.log(user);
   const {
     register,
     handleSubmit,
@@ -40,7 +39,6 @@ export const LoginPage = () => {
       );
       //console.log(auth);
       const result = auth.payload;
-      console.log(result);
 
       result.roles.forEach((role: any) => {
         if (role.name === "ADMIN") {

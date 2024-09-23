@@ -1,39 +1,81 @@
-import { useSelector } from "react-redux";
-import { ProfileUserDetails, UserPostPart } from "../Components";
-import { RootState } from "../../../Store/store";
+import {
+  CommentModal,
+  Loading,
+  ProfileUserDetails,
+  UserPostPart,
+} from "../Components";
 import { useEffect, useState } from "react";
 import { User } from "../../../Model/User";
 import { getUserInfo } from "../../../API/UserApi";
+import { useNavigate, useParams } from "react-router-dom";
+import { getAllPost } from "../../../API/PostApi";
+import { Post } from "../../../Model/Post";
 
 export const Profile = () => {
+  const { username } = useParams<{ username: string | undefined }>();
   const [user, setUser] = useState<User | null>(null);
+  const [postList, setPostList] = useState<Post[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+
+  const openModal = (post: Post) => {
+    setSelectedPost(post);
+    setIsCommentModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsCommentModalOpen(false);
+    setSelectedPost(null);
+  };
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const findUser = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    const getUser = async () => {
       try {
-        const accessToken = localStorage.getItem("accessToken");
+        if (accessToken && username) {
+          const userInfo = await getUserInfo(accessToken, username);
+          const userPostList = await getAllPost(accessToken, username);
 
-        if (accessToken) {
-          const response = await getUserInfo(accessToken);
+          console.log(userInfo);
+          console.log(userPostList);
 
-          if (response.data) {
-            setUser(response.data);
+          if (userInfo.code === 1000) {
+            setUser(userInfo.data);
+          } else {
+            navigate("/error");
+          }
+          if (userPostList.data) {
+            setPostList(userPostList.data);
           }
         }
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 2000);
       } catch (error) {
-        console.error("Error fetching user info:", error);
+        console.log(error);
       }
     };
-    findUser();
-  }, []);
+    getUser();
+  }, [username]);
+
   return (
     <div className="px-20">
-      <div className="">
-        <ProfileUserDetails user={user} />
+      <div className="relative flex items-center justify-center">
+        {isLoading && <Loading />}
+        <ProfileUserDetails user={user} numberOfPosts={postList?.length} />
       </div>
-      <div className="flex items-centet justify-center">
-        <UserPostPart />
+      <div className="relative flex items-center justify-center">
+        {isLoading && <Loading />}
+        <UserPostPart postList={postList} openCommnetModal={openModal} />
       </div>
+      <CommentModal
+        isOpen={isCommentModalOpen}
+        onClose={closeModal}
+        post={selectedPost}
+      />
     </div>
   );
 };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { UserUpdate } from "../../../../Model/User";
-import { getUserInfo, updateUserProfile } from "../../../../API/UserApi";
+import { getMyInfo, updateUserProfile } from "../../../../API/UserApi";
 import { Gender } from "../../../../Model/Enums/Gender";
 import { toast } from "react-toastify";
 
@@ -13,7 +13,7 @@ export const EditInfoForm = () => {
         const accessToken = localStorage.getItem("accessToken");
 
         if (accessToken) {
-          const response = await getUserInfo(accessToken);
+          const response = await getMyInfo(accessToken);
 
           if (response.data) {
             setUserData(response.data);

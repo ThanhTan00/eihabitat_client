@@ -1,6 +1,7 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
   EditProfilePage,
+  ErrorPage,
   HomePage,
   LoginPage,
   RegisterPage,
@@ -30,16 +31,24 @@ const router = createBrowserRouter([
             index: true,
           },
           {
-            path: "/profile",
+            path: "/:username",
             element: <Profile />,
           },
           {
             path: "/edit-profile",
             element: <EditProfilePage />,
           },
+          {
+            path: "/error",
+            element: <ErrorPage />,
+          },
         ],
       },
     ],
+  },
+  {
+    path: "*",
+    element: <ErrorPage />,
   },
 ]);
 

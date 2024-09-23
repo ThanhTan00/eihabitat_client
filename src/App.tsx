@@ -5,12 +5,15 @@ import { Provider } from "react-redux";
 import { store, persistor } from "./Store/store";
 import { PersistGate } from "redux-persist/integration/react";
 import { ToastContainer } from "react-toastify";
+import { ChakraProvider } from "@chakra-ui/react";
 
 function App() {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
-        <MainRouter />
+        <ChakraProvider>
+          <MainRouter />
+        </ChakraProvider>
       </PersistGate>
       <ToastContainer />
     </Provider>

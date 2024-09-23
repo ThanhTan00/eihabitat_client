@@ -4,20 +4,21 @@ import { Link } from "react-router-dom";
 
 type Props = {
   user: User | null;
+  numberOfPosts: number | undefined;
 };
 
-export const ProfileUserDetails = ({ user }: Props) => {
+export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
   return (
-    <div className="py-10 w-full">
-      <div className="flex items-center justify-center">
-        <div className="w-[15%]">
+    <div className="py-10 px-10 w-[80%]">
+      <div className="flex items-center justify-center space-x-5">
+        <div className="min-w-48 px-4">
           <img
-            className="w-32 h-32 rounded-full"
+            className="w-40 h-40 rounded-full"
             src={user?.profileAvatar}
             alt=""
           />
         </div>
-        <div className="space-y-5">
+        <div className="space-y-4">
           <div className="flex space-x-10 items-center">
             <p>{user?.profileName}</p>
             <Link
@@ -30,7 +31,7 @@ export const ProfileUserDetails = ({ user }: Props) => {
           </div>
           <div className="flex space-x-10">
             <div>
-              <span className="font-semibold mr-2">10</span>
+              <span className="font-semibold mr-2">{numberOfPosts}</span>
               <span>posts</span>
             </div>
             <div>
@@ -46,7 +47,9 @@ export const ProfileUserDetails = ({ user }: Props) => {
             <p className="font-semibold">
               {user?.firstName + " " + user?.lastName}
             </p>
-            <p className="font-thin text-sm">{user?.bio}</p>
+            <p style={{ whiteSpace: "pre-line" }} className="font-thin text-sm">
+              {user?.bio}
+            </p>
           </div>
         </div>
       </div>
