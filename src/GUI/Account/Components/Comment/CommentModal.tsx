@@ -3,32 +3,93 @@ import { AiFillHeart } from "react-icons/ai";
 import { BsBookmarkFill, BsEmojiSmile, BsThreeDots } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
-import { Post } from "../../../../Model/Post";
+import { Comment, Post } from "../../../../Model/Post";
 import "./CommentModal.css";
 import { CommentCard } from "./CommentCard";
 import { useEffect, useState } from "react";
-import { getSelectedPost } from "../../../../API/PostApi";
+import { getAllCommentOfPost, getSelectedPost } from "../../../../API/PostApi";
 import { useNavigate } from "react-router-dom";
 import { formatDistanceToNow } from "date-fns";
+import Picker from "@emoji-mart/react";
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  post: Post | null;
+  postId: string | null;
 }
 
 export const CommentModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
-  post,
+  postId,
 }) => {
+  const [selectedPost, setSelectedPost] = useState<Post>();
+  const [comments, setComments] = useState<Comment[]>();
+  const [inputText, setInputText] = useState<string>("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+
+  const handleEmojiSelect = (emoji: any) => {
+    setInputText(inputText + emoji.native);
+    setShowEmojiPicker(false);
+  };
+
+  useEffect(() => {
+    const accessToken = localStorage.getItem("accessToken");
+    const getPost = async () => {
+      try {
+        if (accessToken && postId) {
+          const postModal = await getSelectedPost(accessToken, postId);
+          if (postModal.data) {
+            setSelectedPost(postModal.data);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    const getComments = async () => {
+      try {
+        if (accessToken && postId) {
+          const commentsData = await getAllCommentOfPost(accessToken, postId);
+          console.log(commentsData);
+          if (commentsData.data) {
+            setComments(commentsData.data);
+          }
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getPost();
+    getComments();
+    setInputText("");
+    setShowEmojiPicker(false);
+  }, [postId]);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const nextSlide = () => {
+    if (selectedPost?.postContentSet)
+      setCurrentIndex(
+        (prevIndex) => (prevIndex + 1) % selectedPost?.postContentSet.length
+      );
+  };
+
+  const prevSlide = () => {
+    if (selectedPost?.postContentSet)
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0
+          ? selectedPost?.postContentSet.length - 1
+          : prevIndex - 1
+      );
+  };
+
   if (!isOpen) return null;
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
   };
-  console.log(post);
   return (
     <div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -36,38 +97,63 @@ export const CommentModal: React.FC<ModalProps> = ({
         <ModalContent className="min-w-[55vw] h-auto">
           <div className="p-0">
             <div className="flex">
-              <div className="max-w-[60%] h-[90vh] flex flex-col justify-center bg-black">
+              <div className="relative w-full max-w-[60%] h-[90vh] flex flex-col justify-center bg-black">
                 <img
-                  className="object-contain h-full w-auto max-h-screen"
-                  src={post?.postContentSet[0].imageId}
+                  src={selectedPost?.postContentSet[currentIndex].imageId}
+                  alt={`Slide ${currentIndex + 1}`}
+                  className="object-contain h-full w-auto max-h-screen transition-transform duration-500 ease-in-out"
                 />
+                <div className="absolute top-1/2 left-0 flex justify-between w-full transform -translate-y-1/2">
+                  <button
+                    onClick={prevSlide}
+                    className="ml-2 flex text-white items-center h-8 w-8 rounded-full justify-around shadow-md hover:bg-gray-200 hover:text-black"
+                  >
+                    &#10094; {/* Left arrow */}
+                  </button>
+                  <button
+                    onClick={nextSlide}
+                    className="mr-2 flex text-white items-center h-8 w-8 rounded-full justify-around p-2 shadow-md hover:bg-gray-200 hover:text-black"
+                  >
+                    &#10095; {/* Right arrow */}
+                  </button>
+                </div>
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                  {selectedPost?.postContentSet.map((_, index) => (
+                    <button
+                      key={index}
+                      onClick={() => setCurrentIndex(index)}
+                      className={`w-2 h-2 rounded-full ${
+                        currentIndex === index ? "bg-blue-600" : "bg-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
               </div>
+
               <div className="w-[50%] relative">
                 <div className="reqUser flex justify-between items-center py-3 px-5">
                   <div className="flex items-center">
                     <div className="">
                       <img
                         className="w-9 h-9 rounded-full"
-                        src={post?.authorProfileAvatar}
+                        src={selectedPost?.authorProfileAvatar}
                         alt=""
                       />
                     </div>
                     <div className="ml-3">
-                      <p>{post?.authorProfileName}</p>
+                      <p>{selectedPost?.authorProfileName}</p>
                     </div>
                   </div>
                   <BsThreeDots />
                 </div>
                 <hr />
-
                 <div className="comments px-5">
-                  {post?.commentSet.map((comment) => (
+                  {comments?.map((comment) => (
                     <CommentCard comment={comment} />
                   ))}
                 </div>
                 <hr />
-
-                <div className=" absolute bottom-5 h-auto w-[95%] mx-5">
+                <div className="h-auto mx-3">
                   <div className="flex justify-between items-center w-full mt-5 py-1">
                     <div className="flex items-center space-x-4 ">
                       <AiFillHeart className="text-3xl hover:opacity-50 cursor-pointer text-red-600" />
@@ -88,21 +174,37 @@ export const CommentModal: React.FC<ModalProps> = ({
                     </div>
                   </div>
                   <p className="text-sm font-semibold">
-                    liked by {post?.latestUserLike} and{" "}
-                    {post?.numberOfLikes ? post.numberOfLikes - 1 : ""} others
+                    liked by {selectedPost?.latestUserLike} and{" "}
+                    {selectedPost?.numberOfLikes
+                      ? selectedPost.numberOfLikes - 1
+                      : ""}{" "}
+                    others
                   </p>
                   <p className="opacity-70 pb-5 text-xs">
-                    {post ? formatDate(post.createdAt) : ""}
+                    {selectedPost ? formatDate(selectedPost.createdAt) : ""}
                   </p>
-                  <hr className="p-0" />
-                  <div className=" flex items-center ">
-                    <BsEmojiSmile className="mr-2 text-2xl" />
-                    <input
-                      className="commentInput w-[70%] py-3"
-                      placeholder="Add Comment..."
-                      type="text"
-                    />
-                  </div>
+                </div>
+                <hr className="mt-2" />
+                <div className="relative flex items-center mx-3 mt-1">
+                  <BsEmojiSmile
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="mr-3 text-2xl cursor-pointer"
+                  />
+                  {showEmojiPicker && (
+                    <div className=" absolute bottom-[100%]">
+                      <Picker onEmojiSelect={handleEmojiSelect} />
+                    </div>
+                  )}
+                  <input
+                    className="commentInput w-[65%] py-3"
+                    placeholder="Add Comment..."
+                    type="text"
+                    value={inputText}
+                    onChange={(e) => setInputText(e.target.value)}
+                  />
+                  <button className="cursor-pointer opacity-80 text-blue-500 hover:font-bold">
+                    Post
+                  </button>
                 </div>
               </div>
             </div>

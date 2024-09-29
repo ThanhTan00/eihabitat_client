@@ -8,19 +8,19 @@ import { useEffect, useState } from "react";
 import { User } from "../../../Model/User";
 import { getUserInfo } from "../../../API/UserApi";
 import { useNavigate, useParams } from "react-router-dom";
-import { getAllPost } from "../../../API/PostApi";
-import { Post } from "../../../Model/Post";
+import { getAllUserPost } from "../../../API/PostApi";
+import { Post, PostOnPersonalWall } from "../../../Model/Post";
 
 export const Profile = () => {
   const { username } = useParams<{ username: string | undefined }>();
   const [user, setUser] = useState<User | null>(null);
-  const [postList, setPostList] = useState<Post[] | null>(null);
+  const [postList, setPostList] = useState<PostOnPersonalWall[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
 
-  const openModal = (post: Post) => {
-    setSelectedPost(post);
+  const openModal = (postId: string) => {
+    setSelectedPost(postId);
     setIsCommentModalOpen(true);
   };
 
@@ -37,9 +37,8 @@ export const Profile = () => {
       try {
         if (accessToken && username) {
           const userInfo = await getUserInfo(accessToken, username);
-          const userPostList = await getAllPost(accessToken, username);
+          const userPostList = await getAllUserPost(accessToken, username);
 
-          console.log(userInfo);
           console.log(userPostList);
 
           if (userInfo.code === 1000) {
@@ -74,7 +73,7 @@ export const Profile = () => {
       <CommentModal
         isOpen={isCommentModalOpen}
         onClose={closeModal}
-        post={selectedPost}
+        postId={selectedPost}
       />
     </div>
   );

@@ -1,6 +1,6 @@
 .comments{
   overflow-y: scroll;
-  max-height: 65vh;
+  min-height: 65vh;
 
 }
 

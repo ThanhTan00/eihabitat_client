@@ -23,18 +23,20 @@ export const CommentCard = ({ comment }: CommentCardProps) => {
           <div>
             <img
               className="w-9 h-9 rounded-full"
-              src={comment.ownerAvatar}
+              src={comment?.ownerAvatar}
               alt=""
             />
           </div>
 
           <div className="ml-3">
             <p>
-              <span className="font-semibold">{comment.ownerProfileName}</span>
-              <span className="ml-2">{comment.content}</span>
+              <span className="font-semibold">{comment?.ownerProfileName}</span>
+              <span className="ml-2">{comment?.content}</span>
             </p>
             <div className="flex items-center space-x-3 text-xs opacity-60 pt-2">
-              <span>{formatDate(comment.creationDate)}</span>
+              <span>
+                {comment?.creationDate ? formatDate(comment?.creationDate) : ""}
+              </span>
               <span>53 likes</span>
               <span>reply</span>
             </div>

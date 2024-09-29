@@ -8,13 +8,12 @@ import { RiVideoAddLine } from "react-icons/ri";
 import { BiBookmark } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import { UserPostCard } from "./UserPostCard";
-import { getAllPost } from "../../../../API/PostApi";
-import { Post } from "../../../../Model/Post";
+import { Post, PostOnPersonalWall } from "../../../../Model/Post";
 import { open } from "fs";
 
 type Props = {
-  postList: Post[] | null;
-  openCommnetModal: (post: Post) => void;
+  postList: PostOnPersonalWall[] | null;
+  openCommnetModal: (postId: string) => void;
 };
 
 export const UserPostPart = ({ postList, openCommnetModal }: Props) => {
@@ -75,7 +74,7 @@ export const UserPostPart = ({ postList, openCommnetModal }: Props) => {
               <UserPostCard
                 key={post.id}
                 post={post}
-                onClick={() => openCommnetModal(post)}
+                onClick={() => openCommnetModal(post.id)}
               />
             ))}
           </div>

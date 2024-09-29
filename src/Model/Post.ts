@@ -28,3 +28,10 @@ export type Post = {
     latestUserLikeAvatar: string
 }
 
+export type PostOnPersonalWall = {
+  id: string
+  representImage: string
+  numberOfLikes: number
+  numberOfComments: number
+}
+
