@@ -34,12 +34,12 @@ export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
               <span className="font-semibold mr-2">{numberOfPosts}</span>
               <span>posts</span>
             </div>
-            <div>
-              <span className="font-semibold mr-2">5</span>
+            <div className="cursor-pointer">
+              <span className="font-semibold mr-2">{user?.followers}</span>
               <span>followers</span>
             </div>
-            <div>
-              <span className="font-semibold mr-2">7</span>
+            <div className="cursor-pointer">
+              <span className="font-semibold mr-2">{user?.following}</span>
               <span>following</span>
             </div>
           </div>

@@ -1,4 +1,4 @@
-import { Modal, ModalBody, ModalContent, ModalOverlay } from "@chakra-ui/react";
+import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import { AiFillHeart } from "react-icons/ai";
 import { BsBookmarkFill, BsEmojiSmile, BsThreeDots } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
@@ -7,40 +7,38 @@ import { Comment, Post } from "../../../../Model/Post";
 import "./CommentModal.css";
 import { CommentCard } from "./CommentCard";
 import { useEffect, useState } from "react";
-import { getAllCommentOfPost, getSelectedPost } from "../../../../API/PostApi";
-import { useNavigate } from "react-router-dom";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, set } from "date-fns";
 import Picker from "@emoji-mart/react";
+import { Loading } from "../Loading/Loading";
+import { addComment, getAllCommentOfPost, getSelectedPost } from "../../../../API/PostApi";
+import "./CommentModal.css"
 
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  postId: string | null;
+  selectedPost: string | null;
 }
 
 export const CommentModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
-  postId,
+  selectedPost,
 }) => {
-  const [selectedPost, setSelectedPost] = useState<Post>();
-  const [comments, setComments] = useState<Comment[]>();
   const [inputText, setInputText] = useState<string>("");
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
-
-  const handleEmojiSelect = (emoji: any) => {
-    setInputText(inputText + emoji.native);
-    setShowEmojiPicker(false);
-  };
-
+  const [post, setPost] = useState<Post | null>(null);
+  const [comment, setComment] = useState<Comment[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentIndex, setCurrentIndex] = useState(0);
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const getPost = async () => {
       try {
-        if (accessToken && postId) {
-          const postModal = await getSelectedPost(accessToken, postId);
+        if (accessToken && selectedPost) {
+          const postModal = await getSelectedPost(accessToken, selectedPost);
           if (postModal.data) {
-            setSelectedPost(postModal.data);
+            setPost(postModal.data)
+            //setIsLoading(false);
           }
         }
       } catch (error) {
@@ -49,11 +47,15 @@ export const CommentModal: React.FC<ModalProps> = ({
     };
     const getComments = async () => {
       try {
-        if (accessToken && postId) {
-          const commentsData = await getAllCommentOfPost(accessToken, postId);
-          console.log(commentsData);
+        
+        if (accessToken && selectedPost) {
+          const commentsData = await getAllCommentOfPost(accessToken, selectedPost);
+          //console.log(commentsData);
+          const sortedComments = commentsData.data.sort(
+            (a: Comment, b: Comment) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+          );
           if (commentsData.data) {
-            setComments(commentsData.data);
+            setComment(sortedComments);
           }
         }
       } catch (error) {
@@ -62,24 +64,27 @@ export const CommentModal: React.FC<ModalProps> = ({
     };
     getPost();
     getComments();
-    setInputText("");
-    setShowEmojiPicker(false);
-  }, [postId]);
+    setCurrentIndex(0);
+    setIsLoading(false);
+  }, [selectedPost]);
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const handleEmojiSelect = (emoji: any) => {
+    setInputText(inputText + emoji.native);
+    setShowEmojiPicker(false);
+  };
 
   const nextSlide = () => {
-    if (selectedPost?.postContentSet)
+    if (post?.postContentSet)
       setCurrentIndex(
-        (prevIndex) => (prevIndex + 1) % selectedPost?.postContentSet.length
+        (prevIndex) => (prevIndex + 1) % post?.postContentSet.length
       );
   };
 
   const prevSlide = () => {
-    if (selectedPost?.postContentSet)
+    if (post?.postContentSet)
       setCurrentIndex((prevIndex) =>
         prevIndex === 0
-          ? selectedPost?.postContentSet.length - 1
+          ? post?.postContentSet.length - 1
           : prevIndex - 1
       );
   };
@@ -90,6 +95,20 @@ export const CommentModal: React.FC<ModalProps> = ({
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
   };
+
+  const addCommentHandler = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    if (inputText && post && accessToken) {
+      const newComment = await addComment(accessToken, {
+        content: inputText,
+        postId: post?.id,
+      });
+      setComment((prevComment) => [...prevComment, newComment.data].sort(
+        (a: Comment, b: Comment) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+      ));
+      setInputText("");
+    }
+  };
   return (
     <div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -97,36 +116,46 @@ export const CommentModal: React.FC<ModalProps> = ({
         <ModalContent className="min-w-[55vw] h-auto">
           <div className="p-0">
             <div className="flex">
-              <div className="relative w-full max-w-[60%] h-[90vh] flex flex-col justify-center bg-black">
-                <img
-                  src={selectedPost?.postContentSet[currentIndex].imageId}
-                  alt={`Slide ${currentIndex + 1}`}
-                  className="object-contain h-full w-auto max-h-screen transition-transform duration-500 ease-in-out"
-                />
-                <div className="absolute top-1/2 left-0 flex justify-between w-full transform -translate-y-1/2">
-                  <button
-                    onClick={prevSlide}
-                    className="ml-2 flex text-white items-center h-8 w-8 rounded-full justify-around shadow-md hover:bg-gray-200 hover:text-black"
-                  >
-                    &#10094; {/* Left arrow */}
-                  </button>
-                  <button
-                    onClick={nextSlide}
-                    className="mr-2 flex text-white items-center h-8 w-8 rounded-full justify-around p-2 shadow-md hover:bg-gray-200 hover:text-black"
-                  >
-                    &#10095; {/* Right arrow */}
-                  </button>
-                </div>
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                  {selectedPost?.postContentSet.map((_, index) => (
-                    <button
-                      key={index}
-                      onClick={() => setCurrentIndex(index)}
-                      className={`w-2 h-2 rounded-full ${
-                        currentIndex === index ? "bg-blue-600" : "bg-gray-300"
-                      }`}
-                    />
-                  ))}
+              <div className="relative max-w-[60%] flex flex-col justify-center bg-black">
+                <div>
+                  {isLoading ? (
+                    <Loading />
+                  ) : (
+                    <div>
+                      <img
+                        src={post?.postContentSet[currentIndex].imageId}
+                        alt={`Slide ${currentIndex + 1}`}
+                        className="object-contain h-full w-auto max-h-screen transition-transform duration-500 ease-in-out"
+                      />
+                      <div className="absolute top-1/2 left-0 flex justify-between w-full transform -translate-y-1/2">
+                        <button
+                          onClick={prevSlide}
+                          className="ml-2 flex text-white items-center h-8 w-8 rounded-full justify-around hover:bg-gray-200 hover:text-black"
+                        >
+                          &#10094; {/* Left arrow */}
+                        </button>
+                        <button
+                          onClick={nextSlide}
+                          className="mr-2 flex text-white items-center h-8 w-8 rounded-full justify-around p-2 hover:bg-gray-200 hover:text-black"
+                        >
+                          &#10095; {/* Right arrow */}
+                        </button>
+                      </div>
+                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                        {post?.postContentSet.map((_, index) => (
+                          <button
+                            key={index}
+                            onClick={() => setCurrentIndex(index)}
+                            className={`w-2 h-2 rounded-full ${
+                              currentIndex === index
+                                ? "bg-blue-600"
+                                : "bg-gray-300"
+                            }`}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
 
@@ -136,19 +165,19 @@ export const CommentModal: React.FC<ModalProps> = ({
                     <div className="">
                       <img
                         className="w-9 h-9 rounded-full"
-                        src={selectedPost?.authorProfileAvatar}
+                        src={post?.authorProfileAvatar}
                         alt=""
                       />
                     </div>
                     <div className="ml-3">
-                      <p>{selectedPost?.authorProfileName}</p>
+                      <p>{post?.authorProfileName}</p>
                     </div>
                   </div>
                   <BsThreeDots />
                 </div>
                 <hr />
                 <div className="comments px-5">
-                  {comments?.map((comment) => (
+                  {comment?.map((comment) => (
                     <CommentCard comment={comment} />
                   ))}
                 </div>
@@ -174,14 +203,11 @@ export const CommentModal: React.FC<ModalProps> = ({
                     </div>
                   </div>
                   <p className="text-sm font-semibold">
-                    liked by {selectedPost?.latestUserLike} and{" "}
-                    {selectedPost?.numberOfLikes
-                      ? selectedPost.numberOfLikes - 1
-                      : ""}{" "}
-                    others
+                    liked by {post?.latestUserLike} and{" "}
+                    {post?.numberOfLikes ? post.numberOfLikes - 1 : ""} others
                   </p>
                   <p className="opacity-70 pb-5 text-xs">
-                    {selectedPost ? formatDate(selectedPost.createdAt) : ""}
+                    {post ? formatDate(post.createdAt) : ""}
                   </p>
                 </div>
                 <hr className="mt-2" />
@@ -202,7 +228,10 @@ export const CommentModal: React.FC<ModalProps> = ({
                     value={inputText}
                     onChange={(e) => setInputText(e.target.value)}
                   />
-                  <button className="cursor-pointer opacity-80 text-blue-500 hover:font-bold">
+                  <button
+                    onClick={addCommentHandler}
+                    className="cursor-pointer opacity-80 text-blue-500 hover:font-bold"
+                  >
                     Post
                   </button>
                 </div>

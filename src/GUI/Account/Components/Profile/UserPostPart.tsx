@@ -6,17 +6,17 @@ import {
 } from "react-icons/ai";
 import { RiVideoAddLine } from "react-icons/ri";
 import { BiBookmark } from "react-icons/bi";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { UserPostCard } from "./UserPostCard";
-import { Post, PostOnPersonalWall } from "../../../../Model/Post";
-import { open } from "fs";
+import { Comment, Post, PostOnPersonalWall } from "../../../../Model/Post";
+import { CommentModal } from "../Comment/CommentModal";
+import { getAllCommentOfPost, getSelectedPost } from "../../../../API/PostApi";
 
 type Props = {
   postList: PostOnPersonalWall[] | null;
-  openCommnetModal: (postId: string) => void;
 };
 
-export const UserPostPart = ({ postList, openCommnetModal }: Props) => {
+export const UserPostPart = ({ postList }: Props) => {
   const [activeTab, setActiveTab] = useState<string>("post");
   const tabs = [
     {
@@ -40,6 +40,19 @@ export const UserPostPart = ({ postList, openCommnetModal }: Props) => {
       activeTab: "",
     },
   ];
+
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+
+  const openModal = (postId: string) => {
+    setSelectedPost(postId);
+    setIsCommentModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsCommentModalOpen(false);
+    setSelectedPost(null);
+  };
 
   return (
     <div className="w-[80%]">
@@ -74,12 +87,17 @@ export const UserPostPart = ({ postList, openCommnetModal }: Props) => {
               <UserPostCard
                 key={post.id}
                 post={post}
-                onClick={() => openCommnetModal(post.id)}
+                onClick={() => openModal(post.id)}
               />
             ))}
           </div>
         )}
       </div>
+      <CommentModal
+        isOpen={isCommentModalOpen}
+        onClose={closeModal}
+        selectedPost={selectedPost}
+      />
     </div>
   );
 };

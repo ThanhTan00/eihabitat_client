@@ -16,18 +16,6 @@ export const Profile = () => {
   const [user, setUser] = useState<User | null>(null);
   const [postList, setPostList] = useState<PostOnPersonalWall[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-
-  const openModal = (postId: string) => {
-    setSelectedPost(postId);
-    setIsCommentModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsCommentModalOpen(false);
-    setSelectedPost(null);
-  };
 
   const navigate = useNavigate();
 
@@ -39,7 +27,7 @@ export const Profile = () => {
           const userInfo = await getUserInfo(accessToken, username);
           const userPostList = await getAllUserPost(accessToken, username);
 
-          console.log(userPostList);
+          console.log(userInfo);
 
           if (userInfo.code === 1000) {
             setUser(userInfo.data);
@@ -68,13 +56,8 @@ export const Profile = () => {
       </div>
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}
-        <UserPostPart postList={postList} openCommnetModal={openModal} />
+        <UserPostPart postList={postList} />
       </div>
-      <CommentModal
-        isOpen={isCommentModalOpen}
-        onClose={closeModal}
-        postId={selectedPost}
-      />
     </div>
   );
 };

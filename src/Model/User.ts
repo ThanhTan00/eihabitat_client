@@ -47,6 +47,9 @@ export type User = {
     nationality: Nationality
     dateOfBirth: Date
     signupDate: Date
+    followers: string
+    following: string
+
 }
 
 export type UserUpdate = {

@@ -14,6 +14,11 @@ export interface Comment {
   creationDate: string
  }
 
+ export interface AddCommentRequest {
+  content: string,
+  postId: string
+ }
+
 export type Post = {
     id : string
     caption: string
