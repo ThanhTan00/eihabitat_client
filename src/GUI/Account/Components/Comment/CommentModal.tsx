@@ -10,8 +10,12 @@ import { useEffect, useState } from "react";
 import { formatDistanceToNow, set } from "date-fns";
 import Picker from "@emoji-mart/react";
 import { Loading } from "../Loading/Loading";
-import { addComment, getAllCommentOfPost, getSelectedPost } from "../../../../API/PostApi";
-import "./CommentModal.css"
+import {
+  addComment,
+  getAllCommentOfPost,
+  getSelectedPost,
+} from "../../../../API/PostApi";
+import "./CommentModal.css";
 
 interface ModalProps {
   isOpen: boolean;
@@ -37,7 +41,7 @@ export const CommentModal: React.FC<ModalProps> = ({
         if (accessToken && selectedPost) {
           const postModal = await getSelectedPost(accessToken, selectedPost);
           if (postModal.data) {
-            setPost(postModal.data)
+            setPost(postModal.data);
             //setIsLoading(false);
           }
         }
@@ -47,12 +51,16 @@ export const CommentModal: React.FC<ModalProps> = ({
     };
     const getComments = async () => {
       try {
-        
         if (accessToken && selectedPost) {
-          const commentsData = await getAllCommentOfPost(accessToken, selectedPost);
+          const commentsData = await getAllCommentOfPost(
+            accessToken,
+            selectedPost
+          );
           //console.log(commentsData);
           const sortedComments = commentsData.data.sort(
-            (a: Comment, b: Comment) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
+            (a: Comment, b: Comment) =>
+              new Date(b.creationDate).getTime() -
+              new Date(a.creationDate).getTime()
           );
           if (commentsData.data) {
             setComment(sortedComments);
@@ -83,9 +91,7 @@ export const CommentModal: React.FC<ModalProps> = ({
   const prevSlide = () => {
     if (post?.postContentSet)
       setCurrentIndex((prevIndex) =>
-        prevIndex === 0
-          ? post?.postContentSet.length - 1
-          : prevIndex - 1
+        prevIndex === 0 ? post?.postContentSet.length - 1 : prevIndex - 1
       );
   };
 
@@ -103,9 +109,13 @@ export const CommentModal: React.FC<ModalProps> = ({
         content: inputText,
         postId: post?.id,
       });
-      setComment((prevComment) => [...prevComment, newComment.data].sort(
-        (a: Comment, b: Comment) => new Date(b.creationDate).getTime() - new Date(a.creationDate).getTime()
-      ));
+      setComment((prevComment) =>
+        [...prevComment, newComment.data].sort(
+          (a: Comment, b: Comment) =>
+            new Date(b.creationDate).getTime() -
+            new Date(a.creationDate).getTime()
+        )
+      );
       setInputText("");
     }
   };
@@ -117,46 +127,44 @@ export const CommentModal: React.FC<ModalProps> = ({
           <div className="p-0">
             <div className="flex">
               <div className="relative max-w-[60%] flex flex-col justify-center bg-black">
-                <div>
-                  {isLoading ? (
-                    <Loading />
-                  ) : (
-                    <div>
-                      <img
-                        src={post?.postContentSet[currentIndex].imageId}
-                        alt={`Slide ${currentIndex + 1}`}
-                        className="object-contain h-full w-auto max-h-screen transition-transform duration-500 ease-in-out"
-                      />
-                      <div className="absolute top-1/2 left-0 flex justify-between w-full transform -translate-y-1/2">
-                        <button
-                          onClick={prevSlide}
-                          className="ml-2 flex text-white items-center h-8 w-8 rounded-full justify-around hover:bg-gray-200 hover:text-black"
-                        >
-                          &#10094; {/* Left arrow */}
-                        </button>
-                        <button
-                          onClick={nextSlide}
-                          className="mr-2 flex text-white items-center h-8 w-8 rounded-full justify-around p-2 hover:bg-gray-200 hover:text-black"
-                        >
-                          &#10095; {/* Right arrow */}
-                        </button>
-                      </div>
-                      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
-                        {post?.postContentSet.map((_, index) => (
-                          <button
-                            key={index}
-                            onClick={() => setCurrentIndex(index)}
-                            className={`w-2 h-2 rounded-full ${
-                              currentIndex === index
-                                ? "bg-blue-600"
-                                : "bg-gray-300"
-                            }`}
-                          />
-                        ))}
-                      </div>
+                {isLoading ? (
+                  <Loading />
+                ) : (
+                  <div>
+                    <img
+                      src={post?.postContentSet[currentIndex].imageId}
+                      alt={`Slide ${currentIndex + 1}`}
+                      className="object-contain h-full w-auto max-h-screen transition-transform duration-500 ease-in-out"
+                    />
+                    <div className="absolute top-1/2 left-0 flex justify-between w-full transform -translate-y-1/2">
+                      <button
+                        onClick={prevSlide}
+                        className="ml-2 flex text-white items-center h-8 w-8 rounded-full justify-around hover:bg-gray-200 hover:text-black"
+                      >
+                        &#10094; {/* Left arrow */}
+                      </button>
+                      <button
+                        onClick={nextSlide}
+                        className="mr-2 flex text-white items-center h-8 w-8 rounded-full justify-around p-2 hover:bg-gray-200 hover:text-black"
+                      >
+                        &#10095; {/* Right arrow */}
+                      </button>
                     </div>
-                  )}
-                </div>
+                    <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                      {post?.postContentSet.map((_, index) => (
+                        <button
+                          key={index}
+                          onClick={() => setCurrentIndex(index)}
+                          className={`w-2 h-2 rounded-full ${
+                            currentIndex === index
+                              ? "bg-blue-600"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="w-[50%] relative">
