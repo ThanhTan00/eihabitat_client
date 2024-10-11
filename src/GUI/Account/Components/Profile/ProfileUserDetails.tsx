@@ -1,6 +1,8 @@
 import { TbCircleDashed } from "react-icons/tb";
 import { User } from "../../../../Model/User";
 import { Link } from "react-router-dom";
+import { useState } from "react";
+import { FollowModal } from "./FollowModal";
 
 type Props = {
   user: User | null;
@@ -8,6 +10,21 @@ type Props = {
 };
 
 export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
+  const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
+
+  const openModal = () => {
+    if (user) {
+      setSelectedUser(user?.profileName);
+      setIsFollowerModalOpen(true);
+    }
+  };
+
+  const closeModal = () => {
+    setSelectedUser(null);
+    setIsFollowerModalOpen(false);
+  };
+
   return (
     <div className="py-10 px-10 w-[80%]">
       <div className="flex items-center justify-center space-x-5">
@@ -34,7 +51,7 @@ export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
               <span className="font-semibold mr-2">{numberOfPosts}</span>
               <span>posts</span>
             </div>
-            <div className="cursor-pointer">
+            <div onClick={openModal} className="cursor-pointer">
               <span className="font-semibold mr-2">{user?.followers}</span>
               <span>followers</span>
             </div>
@@ -53,6 +70,11 @@ export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
           </div>
         </div>
       </div>
+      <FollowModal
+        isOpen={isFollowerModalOpen}
+        onClose={closeModal}
+        userProfileName={selectedUser}
+      />
     </div>
   );
 };

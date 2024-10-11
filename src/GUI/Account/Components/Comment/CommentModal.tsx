@@ -184,7 +184,7 @@ export const CommentModal: React.FC<ModalProps> = ({
                   <BsThreeDots />
                 </div>
                 <hr />
-                <div className="comments px-5">
+                <div className="comments w-64 px-5">
                   {comment?.map((comment) => (
                     <CommentCard comment={comment} />
                   ))}

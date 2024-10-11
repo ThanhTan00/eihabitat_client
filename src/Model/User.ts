@@ -64,6 +64,13 @@ export type UserUpdate = {
     nationality?: Nationality | undefined
 };
 
+export type Follower = {
+    profileName: string
+    firstName: string
+    lastName: string
+    profileAvatar: string
+}
+
 export const UserUpdateRequestSchema = z.object({
 
 

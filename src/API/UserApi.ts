@@ -132,3 +132,24 @@ export const logout = async ({token} : {token : string | null}) => {
         }
     }
 }
+
+export const getAllFollowers = async (accessToken: string, userProfileName: string | null) => {
+    try {
+        const response = await api.get('api/follow/'+userProfileName+'/followers', {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        })
+        return response.data
+
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
