@@ -27,8 +27,6 @@ export const Profile = () => {
           const userInfo = await getUserInfo(accessToken, username);
           const userPostList = await getAllUserPost(accessToken, username);
 
-          console.log(userInfo);
-
           if (userInfo.code === 1000) {
             setUser(userInfo.data);
           } else {

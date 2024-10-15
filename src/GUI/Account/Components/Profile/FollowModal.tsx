@@ -1,4 +1,5 @@
 import {
+  filter,
   Modal,
   ModalContent,
   ModalOverlay,
@@ -7,6 +8,8 @@ import {
 import { useEffect, useState } from "react";
 import { Follower } from "../../../../Model/User";
 import { getAllFollowers } from "../../../../API/UserApi";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../Store/store";
 
 interface ModalProps {
   isOpen: boolean;
@@ -19,7 +22,16 @@ export const FollowModal: React.FC<ModalProps> = ({
   onClose,
   userProfileName,
 }) => {
-  const [listFollower, setLisFollower] = useState<Follower[] | null>(null);
+  const [listFollower, setLisFollower] = useState<Follower[] | undefined>(
+    undefined
+  );
+  const [listFilterFollower, setListFilterFollower] = useState<
+    Follower[] | undefined
+  >(undefined);
+  const [isGuess, setIsGuess] = useState<boolean>(false);
+  const [filter, setFilter] = useState<string>("");
+  const { user } = useSelector((state: RootState) => state.auth);
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
 
@@ -27,22 +39,42 @@ export const FollowModal: React.FC<ModalProps> = ({
       if (accessToken) {
         const followers = await getAllFollowers(accessToken, userProfileName);
         setLisFollower(followers.data);
-        console.log(followers.data);
+        setListFilterFollower(followers.data);
+        if (user && userProfileName !== user.profileName) {
+          setLisFollower((prevListFollower) =>
+            prevListFollower?.filter(
+              (item) => item.profileName !== user.profileName
+            )
+          );
+          setIsGuess(true);
+        } else {
+          setIsGuess(false);
+        }
       }
     };
 
     getFollowers();
   }, [userProfileName]);
+
+  const handleFilter = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setFilter(value);
+    setListFilterFollower(
+      listFollower?.filter((follower) =>
+        follower.profileName.toLowerCase().includes(value.toLowerCase())
+      )
+    );
+  };
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
       <ModalContent className="h-4/6 w-64">
-      <div className="">
-        <div className="flex justify-around items-center p-4 text-lg font-semibold">
+        <div className="">
+          <div className="flex justify-around items-center p-4 text-lg font-semibold">
             Followers
+          </div>
+          <hr className="p-1" />
         </div>
-        <hr className="p-1"/>
-      </div>
         <form className="w-full pl-3 pr-3 pb-3">
           <label
             htmlFor="searchFollower"
@@ -69,20 +101,54 @@ export const FollowModal: React.FC<ModalProps> = ({
               </svg>
             </div>
             <input
-              type="search"
-              id="searchFollower"
+              value={filter}
+              onChange={handleFilter}
               className="block w-full p-4 ps-10 text-sm text-gray-900 rounded-lg bg-gray-50 focus:outline-none bg-[#EBE4D8]"
-              placeholder="Search Mockups, Logos..."
-              required
+              placeholder="Profile name"
             />
-            <button
-              type="submit"
-              className="text-white absolute end-2.5 bottom-2.5 font-medium rounded-lg text-sm px-4 py-2 bg-[#A58751] hover:scale-105 duration-300"
-            >
-              Search
-            </button>
           </div>
         </form>
+        <div className="px-4 h-full overflow-y-auto">
+          {listFilterFollower?.map((follower) => (
+            <div className="flex items-center py-2">
+              <div className="flex flex-shrink-0 self-start cursor-pointer">
+                <img
+                  src={follower.profileAvatar}
+                  alt=""
+                  className="h-12 w-12 object-cover rounded-full"
+                />
+              </div>
+
+              <div className="block">
+                <div className="w-auto pl-3">
+                  <a href="#" className="hover:opacity-[50%] font-bold">
+                    {follower.profileName}
+                  </a>
+                  <p className="text-sm text-gray-500">
+                    {follower.firstName} {follower.lastName}
+                  </p>
+                </div>
+              </div>
+              <div className="ml-auto">
+                {isGuess ? (
+                  <button
+                    type="submit"
+                    className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
+                  >
+                    Follow
+                  </button>
+                ) : (
+                  <button
+                    type="submit"
+                    className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
       </ModalContent>
     </Modal>
   );
