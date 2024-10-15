@@ -1,9 +1,7 @@
 import {
-  filter,
   Modal,
   ModalContent,
   ModalOverlay,
-  useStatStyles,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Follower } from "../../../../Model/User";
@@ -17,7 +15,7 @@ interface ModalProps {
   userProfileName: string | null;
 }
 
-export const FollowModal: React.FC<ModalProps> = ({
+export const FollowerModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   userProfileName,
@@ -46,13 +44,18 @@ export const FollowModal: React.FC<ModalProps> = ({
               (item) => item.profileName !== user.profileName
             )
           );
+          setListFilterFollower((prevListFollower) =>
+            prevListFollower?.filter(
+              (item) => item.profileName !== user.profileName
+            )
+          );
           setIsGuess(true);
         } else {
           setIsGuess(false);
         }
       }
     };
-
+    setFilter('');
     getFollowers();
   }, [userProfileName]);
 
@@ -75,13 +78,7 @@ export const FollowModal: React.FC<ModalProps> = ({
           </div>
           <hr className="p-1" />
         </div>
-        <form className="w-full pl-3 pr-3 pb-3">
-          <label
-            htmlFor="searchFollower"
-            className="mb-2 text-sm font-medium text-gray-900 sr-only"
-          >
-            Search
-          </label>
+        <div className="w-full pl-3 pr-3 pb-3">
           <div className="relative">
             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
               <svg
@@ -107,7 +104,7 @@ export const FollowModal: React.FC<ModalProps> = ({
               placeholder="Profile name"
             />
           </div>
-        </form>
+        </div>
         <div className="px-4 h-full overflow-y-auto">
           {listFilterFollower?.map((follower) => (
             <div className="flex items-center py-2">

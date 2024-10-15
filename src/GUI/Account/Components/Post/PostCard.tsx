@@ -28,15 +28,19 @@ export const PostCard = () => {
   return (
     <div>
       <div className="border rounded-md w-full">
-        <div className="flex justify-between items-center w-full py-4 px-5">
+        <div className="flex justify-between items-center w-full py-2">
           <div className="flex items-center">
             <img
               className="h-12 w-12 rounded-full"
               src="https://cdn.pixabay.com/photo/2022/01/07/01/21/girl-6920625_640.jpg"
               alt=""
             />
-            <div className="pl-2">
-              <p className="font-semibold text-sm">username</p>
+            <div className="pl-4">
+              <div className="flex justify-between items-end">
+                <p className="font-semibold text-base">username</p>
+                <svg width="20px" height="20px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" stroke="#ece4e4"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <circle cx="12" cy="12" r="2" fill="#c7c2c2"></circle> </g></svg>
+                <p className="text-sm text-gray-500 font-light">9h</p>
+              </div>
               <p className="font-thin text-sm">location</p>
             </div>
           </div>
@@ -56,28 +60,28 @@ export const PostCard = () => {
         <div className="w-full">
           <img
             className="w-full"
-            src="https://cdn.pixabay.com/photo/2020/09/21/13/38/woman-5590119_640.jpg"
+            src="https://cdn.pixabay.com/photo/2023/06/14/23/12/sunset-8064078_1280.jpg"
             alt=""
           />
         </div>
 
-        <div className="flex justify-between items-center w-full px-5 py-4">
-          <div className="flex items-center space-x-2">
+        <div className="flex justify-between items-center w-full py-2">
+          <div className="flex items-center space-x-4">
             {isPostLiked ? (
               <AiFillHeart
-                className="text-2xl hover:opacity-50 cursor-pointer text-red-500"
+                className="text-3xl hover:opacity-50 cursor-pointer text-red-500"
                 onClick={handlePostLike}
               />
             ) : (
               <AiOutlineHeart
-                className="text-2xl hover:opacity-50 cursor-pointer"
+                className="text-3xl hover:opacity-50 cursor-pointer"
                 onClick={handlePostLike}
               />
             )}
 
-            <FaRegComment className="text-xl hover:opacity-50 cursor-pointer" />
+            <FaRegComment className="text-2xl hover:opacity-50 cursor-pointer" />
 
-            <RiSendPlaneLine className="text-xl hover:opacity-50 cursor-pointer" />
+            <RiSendPlaneLine className="text-2xl hover:opacity-50 cursor-pointer" />
           </div>
 
           <div className="cursor-pointer">
@@ -95,9 +99,10 @@ export const PostCard = () => {
           </div>
         </div>
 
-        <div className="w-full py-2 px-5">
+        <div className="w-full">
           <p>100 likes</p>
-          <p className="opacity-50 py-2 cursor-pointer">view all 10 comments</p>
+          <p className="font-semibold text-base">Username</p>
+          <p className="opacity-50 cursor-pointer">view all 10 comments</p>
         </div>
 
         <div className=" border-t w-full">

@@ -1,5 +1,4 @@
 import {
-  CommentModal,
   Loading,
   ProfileUserDetails,
   UserPostPart,

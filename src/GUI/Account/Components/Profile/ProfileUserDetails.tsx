@@ -2,7 +2,8 @@ import { TbCircleDashed } from "react-icons/tb";
 import { User } from "../../../../Model/User";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { FollowModal } from "./FollowModal";
+import { FollowerModal } from "./FollowerModal";
+import { FollowingModal } from "./FollowingModal";
 
 type Props = {
   user: User | null;
@@ -11,18 +12,31 @@ type Props = {
 
 export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
   const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
+  const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
 
-  const openModal = () => {
+  const openFollowerModal = () => {
     if (user) {
       setSelectedUser(user?.profileName);
       setIsFollowerModalOpen(true);
     }
   };
 
-  const closeModal = () => {
+  const closeFollowerModal = () => {
     setSelectedUser(null);
     setIsFollowerModalOpen(false);
+  };
+
+  const openFollowingModal = () => {
+    if (user) {
+      setSelectedUser(user?.profileName);
+      setIsFollowingModalOpen(true);
+    }
+  };
+
+  const closeFollowingModal = () => {
+    setSelectedUser(null);
+    setIsFollowingModalOpen(false);
   };
 
   return (
@@ -51,11 +65,11 @@ export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
               <span className="font-semibold mr-2">{numberOfPosts}</span>
               <span>posts</span>
             </div>
-            <div onClick={openModal} className="cursor-pointer">
+            <div onClick={openFollowerModal} className="cursor-pointer">
               <span className="font-semibold mr-2">{user?.followers}</span>
               <span>followers</span>
             </div>
-            <div className="cursor-pointer">
+            <div onClick={openFollowingModal} className="cursor-pointer">
               <span className="font-semibold mr-2">{user?.following}</span>
               <span>following</span>
             </div>
@@ -70,9 +84,14 @@ export const ProfileUserDetails = ({ user, numberOfPosts }: Props) => {
           </div>
         </div>
       </div>
-      <FollowModal
+      <FollowerModal
         isOpen={isFollowerModalOpen}
-        onClose={closeModal}
+        onClose={closeFollowerModal}
+        userProfileName={selectedUser}
+      />
+      <FollowingModal
+        isOpen={isFollowingModalOpen}
+        onClose={closeFollowingModal}
         userProfileName={selectedUser}
       />
     </div>
