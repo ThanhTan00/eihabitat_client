@@ -42,7 +42,8 @@ export const CommentModal: React.FC<ModalProps> = ({
           const postModal = await getSelectedPost(accessToken, selectedPost);
           if (postModal.data) {
             setPost(postModal.data);
-            //setIsLoading(false);s
+            //setIsLoading(false);
+            //console.log(postModal.data)
           }
         }
       } catch (error) {

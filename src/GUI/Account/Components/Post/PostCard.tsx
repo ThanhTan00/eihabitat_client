@@ -10,8 +10,15 @@ import {
 } from "react-icons/bs";
 import "./PostCard.css";
 import Picker from "@emoji-mart/react";
+import { Post } from "../../../../Model/Post";
+import { formatDistanceToNow } from "date-fns";
 
-export const PostCard = () => {
+interface PostCardProps {
+  post: Post
+  openCommentModal: (id: string) => void;
+}
+
+export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPostLiked, setIsPostLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -37,6 +44,10 @@ export const PostCard = () => {
     setInputText(inputText + emoji.native);
     //setShowEmojiPicker(false);
   };
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return formatDistanceToNow(date, { addSuffix: true });
+  };
 
   return (
     <div>
@@ -53,7 +64,7 @@ export const PostCard = () => {
                 <div className="w-full h-full rounded-full bg-white p-0.5">
                   <img
                     className="w-full h-full rounded-full object-cover"
-                    src="https://cdn.pixabay.com/photo/2022/01/07/01/21/girl-6920625_640.jpg"
+                    src={post.authorProfileAvatar}
                     alt="Story"
                   />
                 </div>
@@ -61,7 +72,7 @@ export const PostCard = () => {
             </div>
             <div className="pl-4">
               <div className="flex justify-between items-end">
-                <p className="font-semibold text-base">username</p>
+                <p className="font-semibold text-base">{post.authorProfileName}</p>
                 <svg
                   width="20px"
                   height="20px"
@@ -81,7 +92,7 @@ export const PostCard = () => {
                     <circle cx="12" cy="12" r="2" fill="#c7c2c2"></circle>{" "}
                   </g>
                 </svg>
-                <p className="text-sm text-gray-500 font-light">9h</p>
+                <p className="text-sm text-gray-500 font-light">{formatDate(post.createdAt)}</p>
               </div>
               <p className="font-thin text-sm">location</p>
             </div>
@@ -102,7 +113,7 @@ export const PostCard = () => {
         <div className="w-full">
           <img
             className="w-full rounded-md"
-            src="https://cdn.pixabay.com/photo/2023/06/14/23/12/sunset-8064078_1280.jpg"
+            src={post.postContentSet[0].imageId}
             alt=""
           />
         </div>
@@ -121,7 +132,7 @@ export const PostCard = () => {
               />
             )}
 
-            <FaRegComment className="text-2xl hover:opacity-50 cursor-pointer" />
+            <FaRegComment onClick={() => openCommentModal(post.id)} className="text-2xl hover:opacity-50 cursor-pointer" />
 
             <RiSendPlaneLine className="text-2xl hover:opacity-50 cursor-pointer" />
           </div>
@@ -142,19 +153,17 @@ export const PostCard = () => {
         </div>
 
         <div className="w-full space-y-2 mb-2">
-          <p className="font-bold text-sm">100 likes</p>
+          <p className="font-bold text-sm">{post.numberOfLikes} likes</p>
           <p
             className={`text-sm ${
               isExpanded ? "" : "line-clamp-1"
-            } leading-none max-w-xl`}
+            } max-w-xl`}
           >
             <span className="font-semibold text-base mr-2 leading-none">
-              Username
+              {post.authorProfileName}
             </span>
             <span>
-              This is the caption: There was a boy who has a dog and bingo was
-              his name, there was a boy who has a dog and bingo was his name, B
-              I N G O, B I N G O, B I N G O and Bingo was his name
+              {post.caption}
             </span>
           </p>
           <button
@@ -163,7 +172,7 @@ export const PostCard = () => {
           >
             {isExpanded ? "view less" : "view more"}
           </button>
-          <p className="opacity-50 cursor-pointer">view all 10 comments</p>
+          <p onClick={() => openCommentModal(post.id)} className="opacity-50 cursor-pointer">view all {post.numberOfComments} comments</p>
         </div>
 
         <div className="w-full mb-3">

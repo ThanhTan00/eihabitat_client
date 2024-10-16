@@ -29,6 +29,7 @@ export type Post = {
     postContentSet: Image[]
     commentSet: Comment[]
     numberOfLikes: number,
+    numberOfComments: number,
     latestUserLike: string,
     latestUserLikeAvatar: string
 }
