@@ -21,8 +21,8 @@ export const HomePage = () => {
   return (
     <div>
       <div className="mt-5 flex w-[100%]">
-        <div className="w-[60%] px-10">
-          <div className="container mx-auto">
+        <div className="flex justify-center w-full px-10">
+          <div className="max-w-3xl container mx-auto">
             <div
               onClick={() => openModal(user ? user.id : null)}
               className="flex space-x-2 border rounded-md justify-start w-full"
@@ -32,14 +32,14 @@ export const HomePage = () => {
                 userProfileName={user?.profileName}
               />
             </div>
-            <div className="container space-y-3 mx-auto w-[80%] mt-5">
+            <div className="container space-y-4 mx-auto w-[80%] mt-5">
               {[1, 1, 1].map((item) => (
                 <PostCard />
               ))}
             </div>
           </div>
         </div>
-        <div>
+        <div className="ml-auto">
           <HomeRight />
         </div>
       </div>
