@@ -5,9 +5,11 @@ import { Navigate, useNavigate } from "react-router-dom";
 import {
   authenticatedAction,
   loginUser,
+  loginWithGoogle,
 } from "../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../Toast/CustomToast";
 import { useForm } from "react-hook-form";
+import { loginWithGG } from "../../../API/UserApi";
 
 interface formFields {
   email: string;
@@ -28,6 +30,31 @@ export const LoginPage = () => {
   } = useForm<formFields>({
     mode: "all",
   });
+
+  const onLoginWithGGHandler = async () => {
+    try {
+      const auth = await dispatch(loginWithGoogle() as any);
+      console.log(auth);
+      const result = auth.payload;
+
+      result.roles.forEach((role: any) => {
+        if (role.name === "ADMIN") {
+          showToastMessage("Hello Admin", "success");
+          setTimeout(() => {
+            navigate("/admin");
+          }, 2000);
+        } else {
+          showToastMessage(`Hello ${result.user.profileName}`, "success");
+          setTimeout(() => {
+            navigate("/");
+          }, 2000);
+        }
+      });
+    } catch (error) {
+      //console.log(error);
+      showToastMessage("email or password in correct", "error");
+    }
+  };
 
   const onSubmit = async (data: formFields) => {
     try {
@@ -120,10 +147,13 @@ export const LoginPage = () => {
               <p className="text-center text-sm">OR</p>
               <hr className="border-gray-400" />
             </div>
-            <button className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300">
+            <a
+              onClick={onLoginWithGGHandler}
+              className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300"
+            >
               <img className="mr-3" src="\asset\icons\google-logo.svg" alt="" />
               Login with Google
-            </button>
+            </a>
 
             <p className="mt-5 text-xs border-b py-4 border-gray-400">
               Forgot your password?

@@ -1,4 +1,4 @@
-import { AxiosError } from "axios"
+import axios, { AxiosError } from "axios"
 import { ApiResponse } from "../Model/APIResponse"
 import { User, UserCreationRequest, UserUpdate } from "../Model/User"
 import api from "./api"
@@ -32,6 +32,25 @@ export const authenticate = async (email:string, password: string) => {
     try {
         const response = await api.post('auth/token', {email, password});
         //console.log(response)
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const loginWithGG = async () => {
+    try {
+        const response = await axios.get(window.location.href = "http://localhost:8080/oauth2/authorization/google");
+        console.log(response)
         return response.data
     } catch (error) {
         const axiosError = error as AxiosError<BackendError>

@@ -6,6 +6,7 @@ import {
   authenticate,
   createNewUser,
   getMyInfo,
+  loginWithGG,
   logout,
 } from "../../API/UserApi";
 import { userInfo } from "os";
@@ -60,6 +61,28 @@ export const loginUser = createAsyncThunk(
     return { response, accessToken, user, roles };
   }
 );
+
+export const loginWithGoogle = createAsyncThunk("auth/login", async () => {
+  const response = await loginWithGG();
+  const auth = response.data;
+
+  const accessToken = auth.token.toString();
+
+  localStorage.setItem("accessToken", accessToken);
+
+  const userInfo = await getMyInfo(accessToken);
+  const user = userInfo.data;
+  console.log(user);
+  const roles = user.roles;
+
+  //console.log(user);
+  //console.log(roles);
+
+  localStorage.setItem("user", JSON.stringify(user));
+  localStorage.setItem("role", JSON.stringify(roles));
+
+  return { response, accessToken, user, roles };
+});
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
