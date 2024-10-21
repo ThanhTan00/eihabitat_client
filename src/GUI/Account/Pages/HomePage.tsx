@@ -1,6 +1,12 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Store/store";
-import { CommentModal, HomeRight, PostCard, StoryCircle, StoryModal } from "../Components";
+import {
+  CommentModal,
+  HomeRight,
+  PostCard,
+  StoryCircle,
+  StoryModal,
+} from "../Components";
 import { useEffect, useState } from "react";
 import { Post } from "../../../Model/Post";
 import { getNewsFeedPosts } from "../../../API/PostApi";
@@ -33,7 +39,6 @@ export const HomePage = () => {
     setSelectedPost(null);
   };
 
-
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const getNewsFeed = async () => {
@@ -43,14 +48,13 @@ export const HomePage = () => {
           if (listPosts.data) {
             setPosts(listPosts.data);
             //setIsLoading(false);
-            console.log(listPosts.data)
           }
         }
       } catch (error) {
         console.log(error);
       }
     };
-    getNewsFeed()
+    getNewsFeed();
   }, [user?.id]);
   return (
     <div>
@@ -68,7 +72,11 @@ export const HomePage = () => {
             </div>
             <div className="container space-y-4 mx-auto w-[80%] mt-5">
               {posts?.map((post) => (
-                <PostCard post={post} openCommentModal={openCommentModal} rootUserId={user?.id}/>
+                <PostCard
+                  post={post}
+                  openCommentModal={openCommentModal}
+                  rootUserId={user?.id}
+                />
               ))}
             </div>
           </div>

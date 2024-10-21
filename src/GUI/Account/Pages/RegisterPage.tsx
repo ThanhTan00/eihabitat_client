@@ -61,7 +61,6 @@ export const RegisterPage: React.FC = () => {
       }
     } catch (error) {
       showToastMessage("Account created failed", "error");
-      console.log("Fail to sign up: ", error);
     }
   };
 

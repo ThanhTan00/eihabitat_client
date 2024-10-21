@@ -4,6 +4,7 @@ import {
   ErrorPage,
   HomePage,
   LoginPage,
+  LoginWithGGSuccessful,
   RegisterPage,
   UserLayout,
 } from "../GUI/Account/Pages";
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
   {
     path: "/register",
     element: <RegisterPage />,
+  },
+  {
+    path: "/loginWithGoogle",
+    element: <LoginWithGGSuccessful />,
   },
   {
     path: "/",

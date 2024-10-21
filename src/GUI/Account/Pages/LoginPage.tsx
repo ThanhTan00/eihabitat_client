@@ -2,14 +2,13 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../Store/store";
 import { Navigate, useNavigate } from "react-router-dom";
-import {
-  authenticatedAction,
-  loginUser,
-  loginWithGoogle,
-} from "../../../Store/Slices/AuthSlice";
+import { loginUser } from "../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../Toast/CustomToast";
 import { useForm } from "react-hook-form";
 import { loginWithGG } from "../../../API/UserApi";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { LoginRequestSchema } from "../../../Model/User";
+import { Link } from "react-router-dom";
 
 interface formFields {
   email: string;
@@ -33,23 +32,7 @@ export const LoginPage = () => {
 
   const onLoginWithGGHandler = async () => {
     try {
-      const auth = await dispatch(loginWithGoogle() as any);
-      console.log(auth);
-      const result = auth.payload;
-
-      result.roles.forEach((role: any) => {
-        if (role.name === "ADMIN") {
-          showToastMessage("Hello Admin", "success");
-          setTimeout(() => {
-            navigate("/admin");
-          }, 2000);
-        } else {
-          showToastMessage(`Hello ${result.user.profileName}`, "success");
-          setTimeout(() => {
-            navigate("/");
-          }, 2000);
-        }
-      });
+      const auth = await loginWithGG();
     } catch (error) {
       //console.log(error);
       showToastMessage("email or password in correct", "error");
@@ -64,7 +47,6 @@ export const LoginPage = () => {
           password: data.password,
         }) as any
       );
-      //console.log(auth);
       const result = auth.payload;
 
       result.roles.forEach((role: any) => {
@@ -81,8 +63,7 @@ export const LoginPage = () => {
         }
       });
     } catch (error) {
-      //console.log(error);
-      showToastMessage("email or password in correct", "error");
+      showToastMessage("Wrong username or password!", "error");
     }
   };
   return !user ? (
@@ -117,10 +98,11 @@ export const LoginPage = () => {
             >
               <input
                 className="p-2 mt-8 rounded-xl border"
-                type="email"
-                placeholder="Enter your email"
+                type="text"
+                placeholder="Enter your username or email"
                 {...register("email", { required: true })}
               />
+
               <div className="relative">
                 <input
                   className="p-2 rounded-xl border w-full"
@@ -149,7 +131,7 @@ export const LoginPage = () => {
             </div>
             <a
               onClick={onLoginWithGGHandler}
-              className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300"
+              className="bg-white border py-2 w-full rounded-xl mt-5 flex justify-center items-center text-sm hover:scale-105 duration-300 cursor-pointer"
             >
               <img className="mr-3" src="\asset\icons\google-logo.svg" alt="" />
               Login with Google
@@ -161,9 +143,12 @@ export const LoginPage = () => {
 
             <div className="text-xs flex justify-between items-center mt-3">
               <p>Don't have an account?</p>
-              <button className="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300">
+              <Link
+                to={"/register"}
+                className="py-2 px-5 bg-white border rounded-xl hover:scale-110 duration-300"
+              >
                 Register
-              </button>
+              </Link>
             </div>
           </div>
 

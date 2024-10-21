@@ -12,10 +12,8 @@ export const HomeRight = () => {
 
   const handleLogout = async () => {
     try {
-      console.log(token);
       const auth = await dispatch(logoutUser({ token: token }) as any);
       //const result = auth.payload;
-      console.log(auth);
     } catch (error) {
       console.log(error);
       showToastMessage("email or password in correct", "error");

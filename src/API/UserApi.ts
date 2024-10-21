@@ -31,7 +31,22 @@ export const createNewUser = async (user: UserCreationRequest) => {
 export const authenticate = async (email:string, password: string) => {
     try {
         const response = await api.post('auth/token', {email, password});
-        //console.log(response)
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const loginWithGG = async () => {
+    try {
+        const response = await axios.get(window.location.href = "http://localhost:8080/oauth2/authorization/google");
         return response.data
     } catch (error) {
         const axiosError = error as AxiosError<BackendError>
@@ -47,10 +62,10 @@ export const authenticate = async (email:string, password: string) => {
     }
 }
 
-export const loginWithGG = async () => {
+export const createNewAccountWithGG = async () => {
     try {
-        const response = await axios.get(window.location.href = "http://localhost:8080/oauth2/authorization/google");
-        console.log(response)
+        const response = await api.get('auth/loginWithGoogle');
+        console.log(response.data)
         return response.data
     } catch (error) {
         const axiosError = error as AxiosError<BackendError>
@@ -110,6 +125,23 @@ export const getUserInfo = async (accessToken: string, userProfileName: string) 
     }
 }
 
+export const getUserDemo = async (email: string) => {
+    try {
+        const response = await api.get('users/demo/' + email)
+        return response.data
+
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
 export const updateUserProfile = async (user: UserUpdate, accessToken: string | null): Promise<ApiResponse<User> | BackendError> => {
     try {
         const response = await api.put('users',user,{
@@ -135,7 +167,6 @@ export const updateUserProfile = async (user: UserUpdate, accessToken: string | 
 
 export const logout = async ({token} : {token : string | null}) => {
     try {
-        console.log(token)
         const response = await api.post('auth/logout', {token})
         return response.data
     } catch (error) {

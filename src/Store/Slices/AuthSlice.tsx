@@ -49,7 +49,6 @@ export const loginUser = createAsyncThunk(
 
     const userInfo = await getMyInfo(accessToken);
     const user = userInfo.data;
-    console.log(user);
     const roles = user.roles;
 
     //console.log(user);
@@ -62,27 +61,27 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-export const loginWithGoogle = createAsyncThunk("auth/login", async () => {
-  const response = await loginWithGG();
-  const auth = response.data;
+// export const loginWithGoogle = createAsyncThunk("auth/login", async () => {
+//   const response = await loginWithGG();
+//   const auth = response.data;
 
-  const accessToken = auth.token.toString();
+//   const accessToken = auth.token.toString();
 
-  localStorage.setItem("accessToken", accessToken);
+//   localStorage.setItem("accessToken", accessToken);
 
-  const userInfo = await getMyInfo(accessToken);
-  const user = userInfo.data;
-  console.log(user);
-  const roles = user.roles;
+//   const userInfo = await getMyInfo(accessToken);
+//   const user = userInfo.data;
+//   console.log(user);
+//   const roles = user.roles;
 
-  //console.log(user);
-  //console.log(roles);
+//   //console.log(user);
+//   //console.log(roles);
 
-  localStorage.setItem("user", JSON.stringify(user));
-  localStorage.setItem("role", JSON.stringify(roles));
+//   localStorage.setItem("user", JSON.stringify(user));
+//   localStorage.setItem("role", JSON.stringify(roles));
 
-  return { response, accessToken, user, roles };
-});
+//   return { response, accessToken, user, roles };
+// });
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
