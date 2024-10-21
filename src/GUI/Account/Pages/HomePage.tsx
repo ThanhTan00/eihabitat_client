@@ -66,7 +66,7 @@ export const HomePage = () => {
               className="flex space-x-2 border rounded-md justify-start w-full"
             >
               <StoryCircle
-                userAvatar="https://user-post.s3.amazonaws.com/test-img.jpeg"
+                userAvatar={user?.profileAvatar}
                 userProfileName={user?.profileName}
               />
             </div>
