@@ -32,6 +32,7 @@ export type Post = {
     numberOfComments: number,
     latestUserLike: string,
     latestUserLikeAvatar: string
+    likeByUser: boolean
 }
 
 export type PostOnPersonalWall = {
@@ -39,5 +40,10 @@ export type PostOnPersonalWall = {
   representImage: string
   numberOfLikes: number
   numberOfComments: number
+}
+
+export type LikePostRequest = {
+  userId : string | undefined
+  postId : string
 }
 

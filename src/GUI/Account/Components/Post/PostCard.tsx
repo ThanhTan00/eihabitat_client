@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { FaRegComment } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
@@ -12,13 +12,15 @@ import "./PostCard.css";
 import Picker from "@emoji-mart/react";
 import { Post } from "../../../../Model/Post";
 import { formatDistanceToNow } from "date-fns";
+import { likePost } from "../../../../API/PostApi";
 
 interface PostCardProps {
   post: Post
   openCommentModal: (id: string) => void;
+  rootUserId: string | undefined
 }
 
-export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal}) => {
+export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootUserId}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPostLiked, setIsPostLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
@@ -26,7 +28,8 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal}) => {
   const [inputText, setInputText] = useState<string>("");
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-
+  const accessToken = localStorage.getItem("accessToken");
+  const user = localStorage.getItem("user");
   const toggleCaption = () => {
     setIsExpanded(!isExpanded);
   };
@@ -34,8 +37,11 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal}) => {
   const handleClick = () => {
     setShowDropdown(!showDropdown);
   };
-  const handlePostLike = () => {
+  const handlePostLike = async () => {
     setIsPostLiked(!isPostLiked);
+    const likeResponse = await likePost(accessToken, {postId : post.id, userId: rootUserId})
+    console.log(likeResponse.data)
+    
   };
   const handleSavePost = () => {
     setIsSaved(!isSaved);
@@ -48,6 +54,14 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal}) => {
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
   };
+  useEffect(() => {
+    const setInit = () => {
+      if(post.likeByUser){
+        setIsPostLiked(true)
+      }
+    }
+    setInit()
+  }, [post])
 
   return (
     <div>
@@ -163,7 +177,7 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal}) => {
               {post.authorProfileName}
             </span>
             <span>
-              {post.caption}
+              {post.caption} dqw eqweqwe qweqwe  wqqdc ddwvwd vdv wdv wvdwvd wdv dvdw vdw vwd v vc f b efneb w wv q  q fq f q fq f qf qd v qdv w vw rv  vq e f qef qefq ef qf eq feq f eqf qe fqf qvv eq vq 
             </span>
           </p>
           <button

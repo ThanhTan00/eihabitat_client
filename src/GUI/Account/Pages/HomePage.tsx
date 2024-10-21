@@ -68,7 +68,7 @@ export const HomePage = () => {
             </div>
             <div className="container space-y-4 mx-auto w-[80%] mt-5">
               {posts?.map((post) => (
-                <PostCard post={post} openCommentModal={openCommentModal}/>
+                <PostCard post={post} openCommentModal={openCommentModal} rootUserId={user?.id}/>
               ))}
             </div>
           </div>
