@@ -8,6 +8,7 @@ import { date } from "zod";
 import { registerUser } from "../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../Toast/CustomToast";
 import { ToastContainer } from "react-toastify";
+import { createNewUser } from "../../../API/UserApi";
 
 interface formFields {
   firstName: string;
@@ -42,19 +43,17 @@ export const RegisterPage: React.FC = () => {
       return;
     }
     try {
-      const result = await dispatch(
-        registerUser({
-          profileName: data.profileName,
-          firstName: data.firstName,
-          lastName: data.lastName,
-          email: data.email,
-          password: data.password,
-        }) as any
-      );
-      if (result.payload.code === 1000) {
-        showToastMessage("Account created successfully.", "success");
+      const result = await createNewUser({
+        profileName: data.profileName,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        email: data.email,
+        password: data.password,
+      });
+      if (result.code === 1000) {
+        showToastMessage("Account is waiting for confirmation", "success");
         setTimeout(() => {
-          navigate("/");
+          navigate("/confirmEmail");
         }, 2000);
       } else {
         showToastMessage(result.payload.message, "error");

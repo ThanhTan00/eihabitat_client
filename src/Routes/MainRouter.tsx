@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
+  ConFirmEmailPage,
   EditProfilePage,
   ErrorPage,
   HomePage,
@@ -23,6 +24,10 @@ const router = createBrowserRouter([
   {
     path: "/loginWithGoogle",
     element: <LoginWithGGSuccessful />,
+  },
+  {
+    path: "/confirmEmail",
+    element: <ConFirmEmailPage />,
   },
   {
     path: "/",
