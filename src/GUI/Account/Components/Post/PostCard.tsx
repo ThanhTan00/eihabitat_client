@@ -177,7 +177,7 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
               {post.authorProfileName}
             </span>
             <span>
-              {post.caption} dqw eqweqwe qweqwe  wqqdc ddwvwd vdv wdv wvdwvd wdv dvdw vdw vwd v vc f b efneb w wv q  q fq f q fq f qf qd v qdv w vw rv  vq e f qef qefq ef qf eq feq f eqf qe fqf qvv eq vq 
+              {post.caption}
             </span>
           </p>
           <button
