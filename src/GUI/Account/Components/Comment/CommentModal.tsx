@@ -1,5 +1,5 @@
 import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
-import { AiFillHeart } from "react-icons/ai";
+import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsBookmarkFill, BsEmojiSmile, BsThreeDots } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
@@ -14,8 +14,11 @@ import {
   addComment,
   getAllCommentOfPost,
   getSelectedPost,
+  likePost,
 } from "../../../../API/PostApi";
 import "./CommentModal.css";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../Store/store";
 
 interface ModalProps {
   isOpen: boolean;
@@ -33,7 +36,9 @@ export const CommentModal: React.FC<ModalProps> = ({
   const [post, setPost] = useState<Post | null>(null);
   const [comment, setComment] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isPostLiked, setIsPostLiked] = useState(false);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const { user } = useSelector((state: RootState) => state.auth);
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const getPost = async () => {
@@ -71,15 +76,30 @@ export const CommentModal: React.FC<ModalProps> = ({
         console.log(error);
       }
     };
+    const setInit = () => {
+      if(post?.likeByUser){
+        setIsPostLiked(true)
+      }
+    }
     getPost();
     getComments();
     setCurrentIndex(0);
+    setInit()
     setIsLoading(false);
   }, [selectedPost]);
 
   const handleEmojiSelect = (emoji: any) => {
     setInputText(inputText + emoji.native);
     //setShowEmojiPicker(false);
+  };
+
+  const handlePostLike = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    setIsPostLiked(!isPostLiked);
+    if(post) {
+      const likeResponse = await likePost(accessToken, {postId : post.id, userId: user?.id})
+      console.log(likeResponse.data)
+    }
   };
 
   const totalImages = post?.postContentSet.length;
@@ -213,7 +233,18 @@ export const CommentModal: React.FC<ModalProps> = ({
               <div className="h-auto mx-3">
                 <div className="flex justify-between items-center w-full mt-5 py-1">
                   <div className="flex items-center space-x-4 ">
-                    <AiFillHeart className="text-3xl hover:opacity-50 cursor-pointer text-red-600" />
+                  {isPostLiked ? (
+              <AiFillHeart
+                className="text-3xl hover:opacity-50 cursor-pointer text-red-500"
+                onClick={handlePostLike}
+              />
+            ) : (
+              <AiOutlineHeart
+                className="text-3xl hover:opacity-50 cursor-pointer"
+                onClick={handlePostLike}
+              />
+            )}
+                    {/* <AiFillHeart className="text-3xl hover:opacity-50 cursor-pointer text-red-600" /> */}
 
                     {/* <AiOutlineHeart
                           onClick={handleLikePost}

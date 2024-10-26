@@ -13,7 +13,7 @@ function App() {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <ChakraProvider>
-          <TestPage />
+          <MainRouter />
         </ChakraProvider>
       </PersistGate>
       <ToastContainer />

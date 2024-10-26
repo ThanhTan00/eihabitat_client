@@ -12,7 +12,6 @@ import {
   AiOutlinePlusCircle,
   AiFillPlusCircle,
 } from "react-icons/ai";
-import { CgProfile } from "react-icons/cg";
 import { RiVideoFill, RiVideoLine } from "react-icons/ri";
 
 export const mainu = [
@@ -45,10 +44,5 @@ export const mainu = [
     title: "Notification",
     icon: <AiOutlineHeart className="text-3xl mr-5" />,
     activeIcon: <AiFillHeart className="text-3xl mr-5" />,
-  },
-  {
-    title: "Create",
-    icon: <AiOutlinePlusCircle className="text-3xl mr-5" />,
-    activeIcon: <AiFillPlusCircle className="text-3xl mr-5" />,
-  },
+  }
 ];

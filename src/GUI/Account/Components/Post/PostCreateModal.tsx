@@ -1,12 +1,20 @@
 import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faCoffee,
-  faHome,
   faUserGroup,
+  faLock,
+  faEarth,
+  faTrash,
+  faClose,
+  faImages
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
-import Select, { SingleValue, GroupBase } from 'react-select';
+import Select, { SingleValue, GroupBase } from "react-select";
+import { BsEmojiSmile } from "react-icons/bs";
+import Picker from "@emoji-mart/react";
+import { User } from "../../../../Model/User";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../Store/store";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -23,8 +31,12 @@ const options = [
 ];
 
 export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
+  const { user } = useSelector((state: RootState) => state.auth);
   const [dragActive, setDragActive] = useState(false);
   const [images, setImages] = useState<string[]>([]);
+  const [inputText, setInputText] = useState<string>("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
@@ -54,6 +66,11 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     });
   };
 
+  const handleEmojiSelect = (emoji: any) => {
+    setInputText(inputText + emoji.native);
+    //setShowEmojiPicker(false);
+  };
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const validImages = files.filter((file) => file.type.startsWith("image/"));
@@ -67,6 +84,10 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     });
   };
 
+  const handleRemoveFile = (file: string) => {
+    setImages((prevItems) => prevItems.filter((item) => item !== file));
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -74,7 +95,7 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       <ModalOverlay />
       <ModalContent>
         <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white rounded-lg shadow-lg min-w-[30vw] min-h-[60vh]">
+          <div className="relative bg-white rounded-lg shadow-lg min-w-[30vw] min-h-[60vh]">
             <div className="text-center p-4 border-b">
               <h2 className="text-xl font-bold">Create Post</h2>
             </div>
@@ -83,13 +104,14 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 <div className="flex items-center">
                   <div className="">
                     <img
-                      className="w-9 h-9 rounded-full"
-                      src="https://cdn.pixabay.com/photo/2023/08/30/22/59/chicken-8224162_640.jpg"
+                      className="w-12 h-12 rounded-full"
+                      src={user?.profileAvatar}
                       alt="efwf"
                     />
                   </div>
-                  <div className="ml-3 font-semibold text-md">
-                    <p>username</p>
+                  <div className="ml-3">
+                    <p className="font-semibold text-md">{user?.profileName}</p>
+                    <p className="font-thin text-sm">{user?.firstName} {user?.lastName}</p>
                   </div>
                 </div>
                 <textarea
@@ -97,21 +119,36 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   id="grid-address"
                   placeholder="What are you thinking?"
                   rows={1}
+                  value={inputText}
+                  onChange={(e) => setInputText(e.target.value)}
                 ></textarea>
-                <div className="flex">
+                <div className="relative flex items-center justify-between">
                   <Select<OptionType, false, GroupBase<OptionType>>
-                    className="w-32 h-10"
+                    className="h-10"
                     options={options}
+                    placeholder="privacy"
                     formatOptionLabel={(option: OptionType) => (
                       <span>
                         {option.value === "friends" && (
-                          <FontAwesomeIcon icon={faUserGroup} className="mr-2" size="xs"/>
+                          <FontAwesomeIcon
+                            icon={faUserGroup}
+                            className="mr-2"
+                            size="xs"
+                          />
                         )}
                         {option.value === "public" && (
-                          <FontAwesomeIcon icon={faCoffee} className="mr-2" size="xs"/>
+                          <FontAwesomeIcon
+                            icon={faEarth}
+                            className="mr-2"
+                            size="xs"
+                          />
                         )}
                         {option.value === "private" && (
-                          <FontAwesomeIcon icon={faCoffee} className="mr-2" size="xs"/>
+                          <FontAwesomeIcon
+                            icon={faLock}
+                            className="mr-2"
+                            size="xs"
+                          />
                         )}
                         {option.label}
                       </span>
@@ -121,18 +158,37 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                       console.log(selectedOption?.value); // Handle option selection
                     }}
                   />
+                  <BsEmojiSmile
+                    onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                    className="mr-3 text-2xl cursor-pointer"
+                  />
+                  {showEmojiPicker && (
+                    <div className=" absolute top-[100%] left-[100%]">
+                      <Picker onEmojiSelect={handleEmojiSelect} />
+                    </div>
+                  )}
                 </div>
                 <div className="mt-2 p-2 grid grid-cols-2 p-2 gap-2 border-2 border-dashed rounded-md h-48 mb-4 overflow-auto">
                   {images.length > 0 && (
                     <>
                       {images.map((image, index) => (
-                        <div className="h-16 hover:border-2 hover:opacity-70 border-[#A58751] rounded-lg cursor-pointer">
+                        <div className="relative h-16 hover:opacity-80 group rounded-lg cursor-pointer">
                           <img
                             key={index}
                             src={image}
                             alt={`Uploaded ${index}`}
                             className="h-full w-full object-cover rounded-md"
                           />
+                          <div
+                            onClick={() => handleRemoveFile(image)}
+                            className="absolute right-3 top-1/2 transform -translate-y-1/2 opacity-0 group-hover:opacity-60 bg-[#EBE4D8] rounded-md hover:text-red-500"
+                          >
+                            <FontAwesomeIcon
+                              icon={faTrash}
+                              size="sm"
+                              className="p-2"
+                            />
+                          </div>
                         </div>
                       ))}
                     </>
@@ -150,7 +206,12 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 >
                   <label htmlFor="imageUpload" className="cursor-pointer">
                     <p className="text-gray-500">
-                      Drag & drop an image here, or click to select
+                      <FontAwesomeIcon
+                            icon={faImages}
+                            size="2xl"
+                            className="mr-2"
+                          />
+                          Add images
                     </p>
                     <input
                       id="imageUpload"
@@ -171,14 +232,12 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               </form>
             </div>
 
-            {/* <div className="mt-4 flex justify-end">
-              <button
-                onClick={onClose}
-                className="bg-red-500 hover:bg-red-600 text-white py-2 px-4 rounded-lg"
-              >
-                Close
-              </button>
-            </div> */}
+            <div
+              className="absolute top-0 right-0 m-4 flex items-center justify-center w-6 h-6 rounded-full bg-[#E4E4E4]"
+              onClick={onClose}
+            >
+              <FontAwesomeIcon icon={faClose} />
+            </div>
           </div>
         </div>
       </ModalContent>

@@ -4,18 +4,28 @@ import { mainu } from "./SidebarConfig";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "../../../../Store/store";
 import { useSelector } from "react-redux";
+import { PostCreateModal } from "../Post/PostCreateModal";
+import { AiOutlinePlusCircle } from "react-icons/ai";
 
 export const Sidebar = () => {
   const [activeTab, setActiveTab] = useState<string>();
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
+  const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
+
+  const closePostModal = () => {
+    setIsPostModalOpen(false);
+  };
 
   const handleTabClick = (title: string) => {
-    setActiveTab(title);
-    if (title === "profile") {
+    if (title === "Profile") {
       navigate("/" + user?.profileName);
+      setActiveTab(title);
     } else if (title === "Home") {
       navigate("/");
+      setActiveTab(title);
+    } else if (title === "Create") {
+      setIsPostModalOpen(true)
     }
   };
 
@@ -42,19 +52,30 @@ export const Sidebar = () => {
                 </div>
               ))}
               <div
-                onClick={() => handleTabClick("profile")}
+                  onClick={() => handleTabClick("Create")}
+                  className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-lg"
+                >
+                  <AiOutlinePlusCircle className="text-3xl mr-5" />
+                  <p
+                    className="font-semibold"
+                  >
+                    Create
+                  </p>
+                </div>
+              <div
+                onClick={() => handleTabClick("Profile")}
                 className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-md"
               >
                 <img
                   className={`h-8 w-8 mr-5 rounded-full ${
-                    activeTab === "profile" ? "border-white border-4" : ""
+                    activeTab === "Profile" ? "border-white border-4" : ""
                   }`}
                   src={user?.profileAvatar}
                   alt=""
                 />
                 <p
                   className={`${
-                    activeTab === "profile" ? "font-bold" : "font-semibold"
+                    activeTab === "Profile" ? "font-bold" : "font-semibold"
                   }`}
                 >
                   Profile
@@ -68,6 +89,7 @@ export const Sidebar = () => {
           <p className="ml-5">More</p>
         </div>
       </div>
+      <PostCreateModal isOpen={isPostModalOpen} onClose={closePostModal}/>
     </div>
   );
 };
