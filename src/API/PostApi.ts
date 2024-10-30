@@ -29,9 +29,9 @@ export const getAllUserPost = async (accessToken: string, username: string) => {
     }
 }
 
-export const getSelectedPost = async (accessToken: string, id: string | undefined) => {
+export const getSelectedPost = async (accessToken: string, id: string | undefined, rootUserId: string | undefined) => {
     try {
-        const response = await api.get(`post/${id}`, {
+        const response = await api.get(`post/${id}/${rootUserId}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

@@ -44,11 +44,18 @@ export const CommentModal: React.FC<ModalProps> = ({
     const getPost = async () => {
       try {
         if (accessToken && selectedPost) {
-          const postModal = await getSelectedPost(accessToken, selectedPost);
+          const postModal = await getSelectedPost(
+            accessToken,
+            selectedPost,
+            user?.id
+          );
           if (postModal.data) {
             setPost(postModal.data);
-            //setIsLoading(false);
-            //console.log(postModal.data)
+            if(postModal.data.likeByUser){
+              setIsPostLiked(true)
+            } else {
+              setIsPostLiked(false)
+            }
           }
         }
       } catch (error) {
@@ -76,15 +83,9 @@ export const CommentModal: React.FC<ModalProps> = ({
         console.log(error);
       }
     };
-    const setInit = () => {
-      if(post?.likeByUser){
-        setIsPostLiked(true)
-      }
-    }
     getPost();
     getComments();
     setCurrentIndex(0);
-    setInit()
     setIsLoading(false);
   }, [selectedPost]);
 
@@ -96,9 +97,12 @@ export const CommentModal: React.FC<ModalProps> = ({
   const handlePostLike = async () => {
     const accessToken = localStorage.getItem("accessToken");
     setIsPostLiked(!isPostLiked);
-    if(post) {
-      const likeResponse = await likePost(accessToken, {postId : post.id, userId: user?.id})
-      console.log(likeResponse.data)
+    if (post) {
+      const likeResponse = await likePost(accessToken, {
+        postId: post.id,
+        userId: user?.id,
+      });
+      console.log(likeResponse.data);
     }
   };
 
@@ -233,17 +237,17 @@ export const CommentModal: React.FC<ModalProps> = ({
               <div className="h-auto mx-3">
                 <div className="flex justify-between items-center w-full mt-5 py-1">
                   <div className="flex items-center space-x-4 ">
-                  {isPostLiked ? (
-              <AiFillHeart
-                className="text-3xl hover:opacity-50 cursor-pointer text-red-500"
-                onClick={handlePostLike}
-              />
-            ) : (
-              <AiOutlineHeart
-                className="text-3xl hover:opacity-50 cursor-pointer"
-                onClick={handlePostLike}
-              />
-            )}
+                    {isPostLiked ? (
+                      <AiFillHeart
+                        className="text-3xl hover:opacity-50 cursor-pointer text-red-500"
+                        onClick={handlePostLike}
+                      />
+                    ) : (
+                      <AiOutlineHeart
+                        className="text-3xl hover:opacity-50 cursor-pointer"
+                        onClick={handlePostLike}
+                      />
+                    )}
                     {/* <AiFillHeart className="text-3xl hover:opacity-50 cursor-pointer text-red-600" /> */}
 
                     {/* <AiOutlineHeart

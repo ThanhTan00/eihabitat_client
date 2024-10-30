@@ -26,10 +26,11 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
   const [isSaved, setIsSaved] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const [inputText, setInputText] = useState<string>("");
+  const [numberOfLikes, setNumberOfLikes] = useState<number>(post.numberOfLikes);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  // const [currentIndex, setCurrentIndex] = useState<number>(0);
   const accessToken = localStorage.getItem("accessToken");
-  const user = localStorage.getItem("user");
+  // const user = localStorage.getItem("user");
   const toggleCaption = () => {
     setIsExpanded(!isExpanded);
   };
@@ -39,10 +40,18 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
   };
   const handlePostLike = async () => {
     setIsPostLiked(!isPostLiked);
+    post.numberOfLikes += 1;
+    setNumberOfLikes(numberOfLikes+1)
     const likeResponse = await likePost(accessToken, {postId : post.id, userId: rootUserId})
-    console.log(likeResponse.data)
-    
+    //console.log(likeResponse.data)
   };
+  const handlePostDislike = async () => {
+    setIsPostLiked(!isPostLiked);
+    post.numberOfLikes -= 1;
+    setNumberOfLikes(numberOfLikes-1);
+    const likeResponse = await likePost(accessToken, {postId : post.id, userId: rootUserId})
+    //console.log(likeResponse.data)
+  }
   const handleSavePost = () => {
     setIsSaved(!isSaved);
   };
@@ -68,11 +77,6 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
       <div className="w-full">
         <div className="flex justify-between items-center w-full py-2">
           <div className="flex items-center">
-            {/* <img
-              className="h-12 w-12 rounded-full"
-              src="https://cdn.pixabay.com/photo/2022/01/07/01/21/girl-6920625_640.jpg"
-              alt=""
-            /> */}
             <div className="flex flex-col items-center">
               <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500">
                 <div className="w-full h-full rounded-full bg-white p-0.5">
@@ -137,7 +141,7 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
             {isPostLiked ? (
               <AiFillHeart
                 className="text-3xl hover:opacity-50 cursor-pointer text-red-500"
-                onClick={handlePostLike}
+                onClick={handlePostDislike}
               />
             ) : (
               <AiOutlineHeart
@@ -167,7 +171,7 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
         </div>
 
         <div className="w-full space-y-2 mb-2">
-          <p className="font-bold text-sm">{post.numberOfLikes} likes</p>
+          <p className="font-bold text-sm">{numberOfLikes} likes</p>
           <p
             className={`text-sm ${
               isExpanded ? "" : "line-clamp-1"
