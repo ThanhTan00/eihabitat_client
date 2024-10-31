@@ -37,8 +37,11 @@ export const CommentModal: React.FC<ModalProps> = ({
   const [comment, setComment] = useState<Comment[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPostLiked, setIsPostLiked] = useState(false);
+  const [likes, setLikes] = useState<number>(0);
+  const [latestUserLike, setLatestUserLike] = useState<string | undefined>();
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const { user } = useSelector((state: RootState) => state.auth);
+
   useEffect(() => {
     const accessToken = localStorage.getItem("accessToken");
     const getPost = async () => {
@@ -51,12 +54,15 @@ export const CommentModal: React.FC<ModalProps> = ({
           );
           if (postModal.data) {
             setPost(postModal.data);
-            if(postModal.data.likeByUser){
-              setIsPostLiked(true)
+            //console.log(post)
+            if (postModal.data.likeByUser) {
+              setIsPostLiked(true);
             } else {
-              setIsPostLiked(false)
+              setIsPostLiked(false);
             }
           }
+          setLikes(postModal.data.numberOfLikes);
+          setLatestUserLike(postModal.data.latestUserLike);
         }
       } catch (error) {
         console.log(error);
@@ -97,13 +103,24 @@ export const CommentModal: React.FC<ModalProps> = ({
   const handlePostLike = async () => {
     const accessToken = localStorage.getItem("accessToken");
     setIsPostLiked(!isPostLiked);
-    if (post) {
-      const likeResponse = await likePost(accessToken, {
-        postId: post.id,
-        userId: user?.id,
-      });
-      console.log(likeResponse.data);
+    setLikes(likes + 1);
+    if (likes === 0) {
+      setLatestUserLike(user?.profileName);
     }
+    const likeResponse = await likePost(accessToken, {
+      postId: post?.id,
+      userId: user?.id,
+    });
+  };
+
+  const handlePostDisLike = async () => {
+    const accessToken = localStorage.getItem("accessToken");
+    setIsPostLiked(!isPostLiked);
+    setLikes(likes - 1);
+    const likeResponse = await likePost(accessToken, {
+      postId: post?.id,
+      userId: user?.id,
+    });
   };
 
   const totalImages = post?.postContentSet.length;
@@ -135,8 +152,6 @@ export const CommentModal: React.FC<ModalProps> = ({
     ownerProfileName: post?.authorProfileName,
   };
 
-  if (!isOpen) return null;
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
@@ -159,6 +174,8 @@ export const CommentModal: React.FC<ModalProps> = ({
       setInputText("");
     }
   };
+  if (!isOpen) return null;
+
   return (
     <div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
@@ -240,7 +257,7 @@ export const CommentModal: React.FC<ModalProps> = ({
                     {isPostLiked ? (
                       <AiFillHeart
                         className="text-3xl hover:opacity-50 cursor-pointer text-red-500"
-                        onClick={handlePostLike}
+                        onClick={handlePostDisLike}
                       />
                     ) : (
                       <AiOutlineHeart
@@ -265,9 +282,36 @@ export const CommentModal: React.FC<ModalProps> = ({
                         /> */}
                   </div>
                 </div>
-                <p className="text-sm font-semibold">
-                  liked by {post?.latestUserLike} and{" "}
-                  {post?.numberOfLikes ? post.numberOfLikes - 1 : ""} others
+                <p className="text-sm">
+                  {likes === 0 ? (
+                    <>
+                      Be the first to{" "}
+                      <span
+                        className="font-semibold cursor-pointer"
+                        onClick={handlePostLike}
+                      >
+                        like this
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      Like by{" "}
+                      <span className="font-semibold cursor-pointer">
+                        {latestUserLike}
+                      </span>
+                      {likes === 1 ? (
+                        ""
+                      ) : (
+                        <>
+                          {" "}
+                          and{" "}
+                          <span className="font-semibold cursor-pointer">
+                            {likes - 1} others
+                          </span>
+                        </>
+                      )}
+                    </>
+                  )}
                 </p>
                 <p className="opacity-70 pb-5 text-xs">
                   {post ? formatDate(post.createdAt) : ""}

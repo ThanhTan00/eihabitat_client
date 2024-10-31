@@ -104,9 +104,9 @@ export const getMyInfo = async (accessToken: string) => {
     }
 }
 
-export const getUserInfo = async (accessToken: string, userProfileName: string) => {
+export const getUserInfo = async (accessToken: string, userProfileName: string, rootUser: string | undefined) => {
     try {
-        const response = await api.get('users/' + userProfileName, {
+        const response = await api.get('users/' + userProfileName + "/" + rootUser, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },

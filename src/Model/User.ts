@@ -55,7 +55,8 @@ export type User = {
     signupDate: Date
     followers: string
     following: string
-
+    followMe: boolean
+    isFollowedByMe: boolean
 }
 
 export type UserUpdate = {

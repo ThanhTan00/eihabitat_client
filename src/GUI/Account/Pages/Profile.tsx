@@ -9,10 +9,13 @@ import { getUserInfo } from "../../../API/UserApi";
 import { useNavigate, useParams } from "react-router-dom";
 import { getAllUserPost } from "../../../API/PostApi";
 import { Post, PostOnPersonalWall } from "../../../Model/Post";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../Store/store";
 
 export const Profile = () => {
+  const { user } = useSelector((state: RootState) => state.auth);
   const { username } = useParams<{ username: string | undefined }>();
-  const [user, setUser] = useState<User | null>(null);
+  const [hostUser, setHostUser] = useState<User | null>(null);
   const [postList, setPostList] = useState<PostOnPersonalWall[] | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
@@ -23,11 +26,12 @@ export const Profile = () => {
     const getUser = async () => {
       try {
         if (accessToken && username) {
-          const userInfo = await getUserInfo(accessToken, username);
+          const userInfo = await getUserInfo(accessToken, username, user?.profileName);
           const userPostList = await getAllUserPost(accessToken, username);
 
           if (userInfo.code === 1000) {
-            setUser(userInfo.data);
+            setHostUser(userInfo.data);
+            console.log(userInfo.data)
           } else {
             navigate("/error");
           }
@@ -49,7 +53,7 @@ export const Profile = () => {
     <div className="px-20">
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}
-        <ProfileUserDetails user={user} numberOfPosts={postList?.length} />
+        <ProfileUserDetails user={hostUser} numberOfPosts={postList?.length} />
       </div>
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}

@@ -44,6 +44,6 @@ export type PostOnPersonalWall = {
 
 export type LikePostRequest = {
   userId : string | undefined
-  postId : string
+  postId : string | undefined
 }
 
