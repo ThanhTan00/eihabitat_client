@@ -8,7 +8,6 @@ export const HomeRight = () => {
   const { token } = useSelector((state: RootState) => state.auth);
 
   const dispatch = useDispatch<AppDispatch>();
-  const navigate = useNavigate();
 
   const handleLogout = async () => {
     try {

@@ -53,7 +53,7 @@ export const Profile = () => {
     <div className="px-20">
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}
-        <ProfileUserDetails user={hostUser} numberOfPosts={postList?.length} />
+        <ProfileUserDetails hostUser={hostUser} numberOfPosts={postList?.length} />
       </div>
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}

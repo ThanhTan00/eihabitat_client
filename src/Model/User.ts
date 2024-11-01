@@ -56,7 +56,7 @@ export type User = {
     followers: string
     following: string
     followMe: boolean
-    isFollowedByMe: boolean
+    followedByMe: boolean
 }
 
 export type UserUpdate = {
@@ -70,19 +70,6 @@ export type UserUpdate = {
     address?: string | undefined
     nationality?: Nationality | undefined
 };
-
-export type UserDemoInfo = {
-    profileName: string
-    email: string
-    profileAvatar : string
-}
-
-export type Follower = {
-    profileName: string
-    firstName: string
-    lastName: string
-    profileAvatar: string
-}
 
 export const UserUpdateRequestSchema = z.object({
 
@@ -106,3 +93,22 @@ export const UserUpdateRequestSchema = z.object({
     address: z.string().optional(),
     nationality: NationalityEnum.optional()
 });
+
+export type UserDemoInfo = {
+    profileName: string
+    email: string
+    profileAvatar : string
+}
+
+export type Follower = {
+    profileName: string
+    firstName: string
+    lastName: string
+    profileAvatar: string
+}
+
+export type followRequest = {
+    followerId: string | null
+    followedId: string | null
+}
+
