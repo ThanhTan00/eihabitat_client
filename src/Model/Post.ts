@@ -37,6 +37,7 @@ export type Post = {
 
 export type PostOnPersonalWall = {
   id: string
+  createdAt: string
   representImage: string
   numberOfLikes: number
   numberOfComments: number
@@ -47,3 +48,8 @@ export type LikePostRequest = {
   postId : string | undefined
 }
 
+export type createPostRequest = {
+  caption: string | null
+  type: string | null
+  images : File[]
+}

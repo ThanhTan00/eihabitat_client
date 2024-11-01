@@ -3,7 +3,7 @@ import { RootState } from "../Store/store";
 import api from "./api";
 import { BackendError } from "./UserApi";
 import { AxiosError } from "axios";
-import { AddCommentRequest, LikePostRequest } from "../Model/Post";
+import { AddCommentRequest, createPostRequest, LikePostRequest } from "../Model/Post";
 
 
 
@@ -73,9 +73,9 @@ export const getAllCommentOfPost = async (accessToken: string, id: string | unde
     }
 }
 
-export const addComment =  async (accessToken: string, commentRequest: AddCommentRequest) => {
+export const addComment =  async (accessToken: string, userId: string | undefined, commentRequest: AddCommentRequest) => {
     try {
-        const response = await api.post(`comment`, commentRequest, {
+        const response = await api.post(`comment/` + userId, commentRequest, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -120,6 +120,29 @@ export const getNewsFeedPosts = async (accessToken: string, id: string | undefin
 export const likePost = async (accessToken: string | null, likePostRequest : LikePostRequest) => {
     try {
         const response = await api.post(`api/likes`, likePostRequest,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const createPost = async (accessToken: string | null, userId: string | undefined, formData: FormData) => {
+    console.log(formData)
+    try {
+        const response = await api.post(`post/`+userId, formData,{
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

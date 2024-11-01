@@ -160,7 +160,7 @@ export const CommentModal: React.FC<ModalProps> = ({
   const addCommentHandler = async () => {
     const accessToken = localStorage.getItem("accessToken");
     if (inputText && post && accessToken) {
-      const newComment = await addComment(accessToken, {
+      const newComment = await addComment(accessToken, user?.id, {
         content: inputText,
         postId: post?.id,
       });

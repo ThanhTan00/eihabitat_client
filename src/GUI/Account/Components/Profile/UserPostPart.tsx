@@ -6,7 +6,7 @@ import {
 } from "react-icons/ai";
 import { RiVideoAddLine } from "react-icons/ri";
 import { BiBookmark } from "react-icons/bi";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { UserPostCard } from "./UserPostCard";
 import { Comment, Post, PostOnPersonalWall } from "../../../../Model/Post";
 import { CommentModal } from "../Comment/CommentModal";
@@ -18,6 +18,7 @@ type Props = {
 
 export const UserPostPart = ({ postList }: Props) => {
   const [activeTab, setActiveTab] = useState<string>("post");
+  const [posts, setPost] = useState<PostOnPersonalWall[]>([]);
   const tabs = [
     {
       tab: "post",
@@ -54,6 +55,17 @@ export const UserPostPart = ({ postList }: Props) => {
     setSelectedPost(null);
   };
 
+  useEffect(() => {
+    if (postList) {
+      setPost(
+        postList?.sort(
+          (a: PostOnPersonalWall, b: PostOnPersonalWall) =>
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        )
+      );
+    }
+  });
+
   return (
     <div className="w-[80%]">
       <div className="flex border-t relative items-center justify-between pr-32 pl-32">
@@ -83,7 +95,7 @@ export const UserPostPart = ({ postList }: Props) => {
           </div>
         ) : (
           <div className="grid grid-flow-row grid-cols-3">
-            {postList.map((post) => (
+            {posts.map((post) => (
               <UserPostCard
                 key={post.id}
                 post={post}

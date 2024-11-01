@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { IoReorderThreeOutline } from "react-icons/io5";
 import { mainu } from "./SidebarConfig";
 import { useNavigate } from "react-router-dom";
@@ -12,6 +12,7 @@ export const Sidebar = () => {
   const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
   const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
+  const [userAvatar, setUserAvatar] = useState<string | undefined>("nul");
 
   const closePostModal = () => {
     setIsPostModalOpen(false);
@@ -25,9 +26,12 @@ export const Sidebar = () => {
       navigate("/");
       setActiveTab(title);
     } else if (title === "Create") {
-      setIsPostModalOpen(true)
+      setIsPostModalOpen(true);
     }
   };
+  useEffect(() => {
+    setUserAvatar(user?.profileAvatar);
+  });
 
   return (
     <div className="sticky top-0 h-[100vh]">
@@ -52,16 +56,12 @@ export const Sidebar = () => {
                 </div>
               ))}
               <div
-                  onClick={() => handleTabClick("Create")}
-                  className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-lg"
-                >
-                  <AiOutlinePlusCircle className="text-3xl mr-5" />
-                  <p
-                    className="font-semibold"
-                  >
-                    Create
-                  </p>
-                </div>
+                onClick={() => handleTabClick("Create")}
+                className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-lg"
+              >
+                <AiOutlinePlusCircle className="text-3xl mr-5" />
+                <p className="font-semibold">Create</p>
+              </div>
               <div
                 onClick={() => handleTabClick("Profile")}
                 className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-md"
@@ -70,7 +70,7 @@ export const Sidebar = () => {
                   className={`h-8 w-8 mr-5 rounded-full ${
                     activeTab === "Profile" ? "border-white border-4" : ""
                   }`}
-                  src={user?.profileAvatar}
+                  src={userAvatar}
                   alt=""
                 />
                 <p
@@ -89,7 +89,7 @@ export const Sidebar = () => {
           <p className="ml-5">More</p>
         </div>
       </div>
-      <PostCreateModal isOpen={isPostModalOpen} onClose={closePostModal}/>
+      <PostCreateModal isOpen={isPostModalOpen} onClose={closePostModal} />
     </div>
   );
 };

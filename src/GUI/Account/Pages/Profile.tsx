@@ -1,8 +1,4 @@
-import {
-  Loading,
-  ProfileUserDetails,
-  UserPostPart,
-} from "../Components";
+import { Loading, ProfileUserDetails, UserPostPart } from "../Components";
 import { useEffect, useState } from "react";
 import { User } from "../../../Model/User";
 import { getUserInfo } from "../../../API/UserApi";
@@ -26,16 +22,21 @@ export const Profile = () => {
     const getUser = async () => {
       try {
         if (accessToken && username) {
-          const userInfo = await getUserInfo(accessToken, username, user?.profileName);
+          const userInfo = await getUserInfo(
+            accessToken,
+            username,
+            user?.profileName
+          );
           const userPostList = await getAllUserPost(accessToken, username);
 
           if (userInfo.code === 1000) {
             setHostUser(userInfo.data);
-            console.log(userInfo.data)
+            console.log(userInfo.data);
           } else {
             navigate("/error");
           }
           if (userPostList.data) {
+            console.log(userPostList.data);
             setPostList(userPostList.data);
           }
         }
@@ -53,7 +54,10 @@ export const Profile = () => {
     <div className="px-20">
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}
-        <ProfileUserDetails hostUser={hostUser} numberOfPosts={postList?.length} />
+        <ProfileUserDetails
+          hostUser={hostUser}
+          numberOfPosts={postList?.length}
+        />
       </div>
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}

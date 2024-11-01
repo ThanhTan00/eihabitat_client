@@ -6,7 +6,7 @@ import {
   faEarth,
   faTrash,
   faClose,
-  faImages
+  faImages,
 } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import Select, { SingleValue, GroupBase } from "react-select";
@@ -15,6 +15,10 @@ import Picker from "@emoji-mart/react";
 import { User } from "../../../../Model/User";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
+import { set } from "date-fns";
+import { createPost } from "../../../../API/PostApi";
+import { showToastMessage } from "../../../../Toast/CustomToast";
+import { useNavigate } from "react-router-dom";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -31,10 +35,11 @@ const options = [
 ];
 
 export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, token } = useSelector((state: RootState) => state.auth);
   const [dragActive, setDragActive] = useState(false);
-  const [images, setImages] = useState<string[]>([]);
+  const [images, setImages] = useState<File[]>([]);
   const [inputText, setInputText] = useState<string>("");
+  const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -57,13 +62,8 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     const files = Array.from(e.dataTransfer.files);
     const validImages = files.filter((file) => file.type.startsWith("image/"));
 
-    validImages.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages((prevImages) => [...prevImages, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
+    // Update the list of images by appending the new valid images
+    setImages((prevImages) => [...prevImages, ...validImages]);
   };
 
   const handleEmojiSelect = (emoji: any) => {
@@ -71,21 +71,31 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     //setShowEmojiPicker(false);
   };
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    const validImages = files.filter((file) => file.type.startsWith("image/"));
-
-    validImages.forEach((file) => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImages((prevImages) => [...prevImages, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
+  const handleRemoveFile = (file: File) => {
+    setImages((prevItems) => prevItems.filter((item) => item !== file));
   };
 
-  const handleRemoveFile = (file: string) => {
-    setImages((prevItems) => prevItems.filter((item) => item !== file));
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const formData = new FormData();
+    formData.append("caption", inputText); // Add the caption to the form data
+    images.forEach((image) => {
+      formData.append("images", image); // Append each file with the key "images"
+    });
+
+    try {
+      const response = await createPost(token, user?.id, formData);
+      if (response.code === 1000) {
+        onClose();
+        showToastMessage("New post added", "success");
+      } else {
+        showToastMessage("Post added failed!", "error");
+        console.log(response);
+      }
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
   };
 
   if (!isOpen) return null;
@@ -100,7 +110,7 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
               <h2 className="text-xl font-bold">Create Post</h2>
             </div>
             <div className="p-4">
-              <form className="">
+              <form className="" onSubmit={handleSubmit}>
                 <div className="flex items-center">
                   <div className="">
                     <img
@@ -111,7 +121,9 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   </div>
                   <div className="ml-3">
                     <p className="font-semibold text-md">{user?.profileName}</p>
-                    <p className="font-thin text-sm">{user?.firstName} {user?.lastName}</p>
+                    <p className="font-thin text-sm">
+                      {user?.firstName} {user?.lastName}
+                    </p>
                   </div>
                 </div>
                 <textarea
@@ -175,7 +187,7 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                         <div className="relative h-16 hover:opacity-80 group rounded-lg cursor-pointer">
                           <img
                             key={index}
-                            src={image}
+                            src={URL.createObjectURL(image)}
                             alt={`Uploaded ${index}`}
                             className="h-full w-full object-cover rounded-md"
                           />
@@ -207,11 +219,11 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                   <label htmlFor="imageUpload" className="cursor-pointer">
                     <p className="text-gray-500">
                       <FontAwesomeIcon
-                            icon={faImages}
-                            size="2xl"
-                            className="mr-2"
-                          />
-                          Add images
+                        icon={faImages}
+                        size="2xl"
+                        className="mr-2"
+                      />
+                      Add images
                     </p>
                     <input
                       id="imageUpload"
@@ -219,12 +231,11 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={handleFileChange}
                     />
                   </label>
                 </div>
                 <button
-                  type="button"
+                  type="submit"
                   className="w-full bg-purple-500 py-3 text-center text-white rounded-md"
                 >
                   Upload

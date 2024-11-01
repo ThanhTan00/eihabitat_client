@@ -1,8 +1,4 @@
-import {
-  Modal,
-  ModalContent,
-  ModalOverlay,
-} from "@chakra-ui/react";
+import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
 import { Follower } from "../../../../Model/User";
 import { getAllFollowers } from "../../../../API/UserApi";
@@ -55,7 +51,7 @@ export const FollowerModal: React.FC<ModalProps> = ({
         }
       }
     };
-    setFilter('');
+    setFilter("");
     getFollowers();
   }, [userProfileName]);
 
@@ -71,7 +67,7 @@ export const FollowerModal: React.FC<ModalProps> = ({
   return (
     <Modal onClose={onClose} isOpen={isOpen} isCentered>
       <ModalOverlay />
-      <ModalContent className="h-4/6 w-64">
+      <ModalContent className="h-96 w-64">
         <div className="">
           <div className="flex justify-around items-center p-4 text-lg font-semibold">
             Followers

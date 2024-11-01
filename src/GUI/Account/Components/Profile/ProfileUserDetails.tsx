@@ -1,7 +1,7 @@
 import { TbCircleDashed } from "react-icons/tb";
 import { User } from "../../../../Model/User";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { FollowerModal } from "./FollowerModal";
 import { FollowingModal } from "./FollowingModal";
 import { faAngleDown, faEllipsis } from "@fortawesome/free-solid-svg-icons";
@@ -11,7 +11,7 @@ import { AppDispatch, RootState } from "../../../../Store/store";
 import { logoutUser } from "../../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../../Toast/CustomToast";
 import { SignoutConfirmModal } from "../ComfirmationModal/SignoutConfirmModal";
-import { followUser } from "../../../../API/UserApi";
+import { followUser, unFollowUser } from "../../../../API/UserApi";
 
 type Props = {
   hostUser: User | null;
@@ -22,8 +22,11 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
   const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
+  const [isFollowDropdown, setIsFollowDropdown] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [isFollowing, setIsFollowing] = useState<boolean | undefined>(hostUser?.followedByMe);
+  const [isFollowing, setIsFollowing] = useState<boolean | undefined>(
+    hostUser?.followedByMe
+  );
   const dispatch = useDispatch<AppDispatch>();
   const { token, user } = useSelector((state: RootState) => state.auth);
 
@@ -59,6 +62,10 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
     setIsSignOutModalOpen(false);
   };
 
+  const toggleFollowDropdown = () => {
+    setIsFollowDropdown((prev) => !prev);
+  };
+
   const handleLogout = async () => {
     try {
       const auth = await dispatch(logoutUser({ token: token }) as any);
@@ -71,27 +78,37 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
     }
   };
 
-  useEffect(() => {
-    setIsFollowing(hostUser?.followedByMe)
-    //console.log(isFollowing)
-  }, [hostUser])
-
   const handleFollowUser = async () => {
-
     if (token && hostUser?.id && user?.id) {
       const followUserResponse = await followUser(token, {
         followedId: hostUser?.id,
         followerId: user?.id,
       });
       if (followUserResponse.code === 1000) {
-        showToastMessage(
-          "You followed "+hostUser.profileName,
-          "info"
-        );
-        setIsFollowing(true)
+        showToastMessage("You followed " + hostUser.profileName, "info");
+        setIsFollowing(true);
       }
     }
   };
+
+  const handleUnFollowUser = async () => {
+    if (token && hostUser?.id && user?.id) {
+      const unFollowUserResponse = await unFollowUser(token, {
+        followedId: hostUser?.id,
+        followerId: user?.id,
+      });
+      if (unFollowUserResponse.code === 1000) {
+        showToastMessage("You unfollowed " + hostUser.profileName, "info");
+        setIsFollowing(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    setIsFollowing(hostUser?.followedByMe);
+    //console.log(isFollowing)
+  }, [hostUser]);
+
   return (
     <div className="py-10 px-10 w-[80%]">
       <div className="flex items-center justify-center space-x-5">
@@ -123,8 +140,11 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
             ) : (
               <>
                 {isFollowing ? (
-                  <div className="flex space-x-2">
-                    <button className="bg-[#0C5083] hover:bg-[#143D5C] px-5 py-1 text-white p-2 duration-300 rounded-md">
+                  <div className="relative flex space-x-2">
+                    <button
+                      onClick={toggleFollowDropdown}
+                      className="min-w-36 bg-[#0C5083] hover:bg-[#143D5C] px-5 py-1 text-white p-2 duration-300 rounded-md"
+                    >
                       Following{" "}
                       <FontAwesomeIcon
                         icon={faAngleDown}
@@ -132,13 +152,39 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
                         size="xs"
                       />
                     </button>
+                    {isFollowDropdown && (
+                      <div className="absolute right-0 top-[35px] w-48 bg-[#E8F4FD] rounded-md shadow-lg z-20">
+                        <a
+                          onClick={handleUnFollowUser}
+                          href="#"
+                          className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
+                        >
+                          Unfollow
+                        </a>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
+                        >
+                          Mute
+                        </a>
+                        <a
+                          href="#"
+                          className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
+                        >
+                          Block
+                        </a>
+                      </div>
+                    )}
                     <button className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md">
                       Message
                     </button>
                   </div>
                 ) : (
                   <div className="flex space-x-2">
-                    <button onClick={handleFollowUser} className="bg-[#0C5083] hover:bg-[#143D5C] px-5 py-1 text-white p-2 duration-300 rounded-md">
+                    <button
+                      onClick={handleFollowUser}
+                      className="bg-[#0C5083] hover:bg-[#143D5C] px-5 py-1 text-white p-2 duration-300 rounded-md"
+                    >
                       Follow {hostUser?.followMe ? "back" : ""}
                     </button>
                     <button className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md">
