@@ -15,22 +15,48 @@ import { formatDistanceToNow } from "date-fns";
 import { likePost } from "../../../../API/PostApi";
 
 interface PostCardProps {
-  post: Post
+  post: Post;
   openCommentModal: (id: string) => void;
-  rootUserId: string | undefined
+  rootUserId: string | undefined;
 }
 
-export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootUserId}) => {
+export const PostCard: React.FC<PostCardProps> = ({
+  post,
+  openCommentModal,
+  rootUserId,
+}) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPostLiked, setIsPostLiked] = useState(false);
   const [isSaved, setIsSaved] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [inputText, setInputText] = useState<string>("");
-  const [numberOfLikes, setNumberOfLikes] = useState<number>(post.numberOfLikes);
+  const [numberOfLikes, setNumberOfLikes] = useState<number>(
+    post.numberOfLikes
+  );
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
-  // const [currentIndex, setCurrentIndex] = useState<number>(0);
   const accessToken = localStorage.getItem("accessToken");
   // const user = localStorage.getItem("user");
+  const totalImages = post?.postContentSet.length;
+  const nextSlide = () => {
+    if (totalImages)
+      setCurrentIndex((prevIndex) =>
+        prevIndex === totalImages - 1 ? 0 : prevIndex + 1
+      );
+  };
+
+  const prevSlide = () => {
+    if (totalImages)
+      setCurrentIndex((prevIndex) =>
+        prevIndex === 0 ? totalImages - 1 : prevIndex - 1
+      );
+  };
+
+  const slideImage = () => {
+    return {
+      transform: `translateX(-${currentIndex * 100}%)`,
+    };
+  };
   const toggleCaption = () => {
     setIsExpanded(!isExpanded);
   };
@@ -41,17 +67,23 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
   const handlePostLike = async () => {
     setIsPostLiked(!isPostLiked);
     post.numberOfLikes += 1;
-    setNumberOfLikes(numberOfLikes+1)
-    const likeResponse = await likePost(accessToken, {postId : post.id, userId: rootUserId})
+    setNumberOfLikes(numberOfLikes + 1);
+    const likeResponse = await likePost(accessToken, {
+      postId: post.id,
+      userId: rootUserId,
+    });
     //console.log(likeResponse.data)
   };
   const handlePostDislike = async () => {
     setIsPostLiked(!isPostLiked);
     post.numberOfLikes -= 1;
-    setNumberOfLikes(numberOfLikes-1);
-    const likeResponse = await likePost(accessToken, {postId : post.id, userId: rootUserId})
+    setNumberOfLikes(numberOfLikes - 1);
+    const likeResponse = await likePost(accessToken, {
+      postId: post.id,
+      userId: rootUserId,
+    });
     //console.log(likeResponse.data)
-  }
+  };
   const handleSavePost = () => {
     setIsSaved(!isSaved);
   };
@@ -65,12 +97,12 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
   };
   useEffect(() => {
     const setInit = () => {
-      if(post.likeByUser){
-        setIsPostLiked(true)
+      if (post.likeByUser) {
+        setIsPostLiked(true);
       }
-    }
-    setInit()
-  }, [post])
+    };
+    setInit();
+  }, [post]);
 
   return (
     <div>
@@ -90,7 +122,9 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
             </div>
             <div className="pl-4">
               <div className="flex justify-between items-end">
-                <p className="font-semibold text-base">{post.authorProfileName}</p>
+                <p className="font-semibold text-base">
+                  {post.authorProfileName}
+                </p>
                 <svg
                   width="20px"
                   height="20px"
@@ -110,7 +144,9 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
                     <circle cx="12" cy="12" r="2" fill="#c7c2c2"></circle>{" "}
                   </g>
                 </svg>
-                <p className="text-sm text-gray-500 font-light">{formatDate(post.createdAt)}</p>
+                <p className="text-sm text-gray-500 font-light">
+                  {formatDate(post.createdAt)}
+                </p>
               </div>
               <p className="font-thin text-sm">location</p>
             </div>
@@ -127,13 +163,53 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
             </div>
           </div>
         </div>
-
-        <div className="w-full">
-          <img
-            className="w-full rounded-md"
-            src={post.postContentSet[0].imageId}
-            alt=""
-          />
+        <div className="relative overflow-hidden bg-black rounded-lg w-full">
+          <div
+            style={slideImage()}
+            className="flex transition-transform duration-500 ease-in-out"
+          >
+            {post?.postContentSet.map((image, index) => (
+              <div
+                key={index}
+                className="flex-shrink-0 w-full max-h-[500px] flex justify-center items-center bg-black"
+              >
+                <img
+                  className="h-full w-auto object-contain rounded-md "
+                  src={image.imageId}
+                  alt={`Slide ${index + 1}`}
+                />
+              </div>
+            ))}
+          </div>
+          {totalImages > 1 && (
+            <div className="absolute h-full top-1/2 left-0 flex justify-between items-center w-full transform -translate-y-1/2">
+              <button
+                onClick={prevSlide}
+                className="h-full w-[10%] flex text-white items-center h-8 w-8 justify-around bg-gray-200 opacity-50 bg-opacity-0 hover:bg-opacity-30 hover:opacity-100 duration-200"
+              >
+                &#10094; {/* Left arrow */}
+              </button>
+              <button
+                onClick={nextSlide}
+                className="h-full w-[10%] flex text-white items-center h-8 w-8 justify-around bg-gray-200 opacity-50 bg-opacity-0 hover:bg-opacity-30 hover:opacity-100 duration-200"
+              >
+                &#10095; {/* Right arrow */}
+              </button>
+            </div>
+          )}
+          {totalImages > 1 && (
+            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex">
+              {post?.postContentSet.map((_, index) => (
+                <button
+                  key={index}
+                  onClick={() => setCurrentIndex(index)}
+                  className={`w-1.5 h-1.5 rounded-full mx-0.5 ${
+                    currentIndex === index ? "bg-blue-600" : "bg-gray-300"
+                  }`}
+                />
+              ))}
+            </div>
+          )}
         </div>
 
         <div className="flex justify-between items-center w-full py-2">
@@ -150,7 +226,10 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
               />
             )}
 
-            <FaRegComment onClick={() => openCommentModal(post.id)} className="text-2xl hover:opacity-50 cursor-pointer" />
+            <FaRegComment
+              onClick={() => openCommentModal(post.id)}
+              className="text-2xl hover:opacity-50 cursor-pointer"
+            />
 
             <RiSendPlaneLine className="text-2xl hover:opacity-50 cursor-pointer" />
           </div>
@@ -172,17 +251,11 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
 
         <div className="w-full space-y-2 mb-2">
           <p className="font-bold text-sm">{numberOfLikes} likes</p>
-          <p
-            className={`text-sm ${
-              isExpanded ? "" : "line-clamp-1"
-            } max-w-xl`}
-          >
+          <p className={`text-sm ${isExpanded ? "" : "line-clamp-1"} max-w-xl`}>
             <span className="font-semibold text-base mr-2 leading-none">
               {post.authorProfileName}
             </span>
-            <span>
-              {post.caption}
-            </span>
+            <span>{post.caption}</span>
           </p>
           <button
             onClick={toggleCaption}
@@ -190,7 +263,12 @@ export const PostCard: React.FC<PostCardProps> = ({post, openCommentModal, rootU
           >
             {isExpanded ? "view less" : "view more"}
           </button>
-          <p onClick={() => openCommentModal(post.id)} className="opacity-50 cursor-pointer">view all {post.numberOfComments} comments</p>
+          <p
+            onClick={() => openCommentModal(post.id)}
+            className="opacity-50 cursor-pointer"
+          >
+            view all {post.numberOfComments} comments
+          </p>
         </div>
 
         <div className="w-full mb-3">

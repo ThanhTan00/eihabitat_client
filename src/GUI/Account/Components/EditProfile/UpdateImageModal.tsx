@@ -38,6 +38,8 @@ export const UpdateImageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       const response = await updateUserAvatar(token, user?.id, formData);
       if (response.code === 1000) {
         showToastMessage("Updated avatar successfully!", "success");
+        setSelectedImage(null);
+        onClose()
       } else {
         showToastMessage("Updated avatar failed!", "error");
         console.log(response);

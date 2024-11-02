@@ -180,54 +180,60 @@ export const CommentModal: React.FC<ModalProps> = ({
     <div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent className="min-w-[50vw] h-auto">
-          <div className="flex">
-            <div className="relative w-[55%] overflow-hidden flex bg-black">
-              <div
-                style={slideImage()}
-                className="flex items-center transition-transform duration-500 ease-in-out"
-              >
-                {post?.postContentSet.map((image, index) => (
-                  <img
-                    key={index}
-                    src={image.imageId}
-                    alt={`Slide ${index + 1}`}
-                    className="h-full w-full object-contain"
-                  />
-                ))}
-                {/* <img
-                    src={post?.postContentSet[currentIndex].imageId}
-                    alt={`Slide ${index + 1}`}
-                    className="h-full object-contain"
-                  /> */}
-              </div>
-              <div className="absolute top-1/2 left-0 flex justify-between w-full transform -translate-y-1/2">
-                <button
-                  onClick={prevSlide}
-                  className="ml-2 flex text-white items-center h-8 w-8 rounded-full justify-around hover:bg-gray-200 hover:text-black"
+        <ModalContent className="min-w-[60vw] h-auto">
+          <div className="flex w-full">
+            <div className="w-[60%]">
+              <div className="relative overflow-hidden bg-black rounded-md w-full min-h-full max-h-[90vh]">
+                <div
+                  style={slideImage()}
+                  className="flex transition-transform duration-500 ease-in-out"
                 >
-                  &#10094; {/* Left arrow */}
-                </button>
-                <button
-                  onClick={nextSlide}
-                  className="mr-2 flex text-white items-center h-8 w-8 rounded-full justify-around p-2 hover:bg-gray-200 hover:text-black"
-                >
-                  &#10095; {/* Right arrow */}
-                </button>
-              </div>
-              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex">
-                {post?.postContentSet.map((_, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentIndex(index)}
-                    className={`w-2 h-2 rounded-full mx-1 ${
-                      currentIndex === index ? "bg-blue-600" : "bg-gray-300"
-                    }`}
-                  />
-                ))}
+                  {post?.postContentSet.map((image, index) => (
+                    <div
+                      key={index}
+                      className="flex-shrink-0 w-full max-h-[90vh] flex justify-center items-center bg-black"
+                    >
+                      <img
+                        className="h-full w-auto object-contain rounded-md "
+                        src={image.imageId}
+                        alt={`Slide ${index + 1}`}
+                      />
+                    </div>
+                  ))}
+                </div>
+
+                {totalImages !== undefined && totalImages > 1 && (
+                  <div className="absolute h-full top-1/2 left-0 flex justify-between items-center w-full transform -translate-y-1/2">
+                    <button
+                      onClick={prevSlide}
+                      className="h-full w-[10%] flex text-white items-center h-8 w-8 justify-around bg-gray-200 opacity-50 bg-opacity-0 hover:bg-opacity-30 hover:opacity-100 duration-200"
+                    >
+                      &#10094; {/* Left arrow */}
+                    </button>
+                    <button
+                      onClick={nextSlide}
+                      className="h-full w-[10%] flex text-white items-center h-8 w-8 justify-around bg-gray-200 opacity-50 bg-opacity-0 hover:bg-opacity-30 hover:opacity-100 duration-200"
+                    >
+                      &#10095; {/* Right arrow */}
+                    </button>
+                  </div>
+                )}
+                {totalImages !== undefined && totalImages > 1 && (
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex">
+                    {post?.postContentSet.map((_, index) => (
+                      <button
+                        key={index}
+                        onClick={() => setCurrentIndex(index)}
+                        className={`w-1.5 h-1.5 rounded-full mx-0.5 ${
+                          currentIndex === index ? "bg-blue-600" : "bg-gray-300"
+                        }`}
+                      />
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
-            <div className="w-[50%] relative">
+            <div className="w-[40%]">
               <div className="reqUser flex justify-between items-center py-3 px-5">
                 <div className="flex items-center">
                   <div className="">
@@ -245,9 +251,9 @@ export const CommentModal: React.FC<ModalProps> = ({
               </div>
               <hr />
               <div className="comments px-5 py-4">
-                <CommentCard comment={status} />
+                <CommentCard comment={status} type={"status"} />
                 {comment?.map((comment) => (
-                  <CommentCard comment={comment} />
+                  <CommentCard comment={comment} type={""} />
                 ))}
               </div>
               <hr />

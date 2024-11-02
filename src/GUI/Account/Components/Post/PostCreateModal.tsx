@@ -39,7 +39,6 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
   const [dragActive, setDragActive] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [inputText, setInputText] = useState<string>("");
-  const navigate = useNavigate();
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
 
   const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
@@ -87,6 +86,8 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     try {
       const response = await createPost(token, user?.id, formData);
       if (response.code === 1000) {
+        setImages([]);
+        setInputText("");
         onClose();
         showToastMessage("New post added", "success");
       } else {
