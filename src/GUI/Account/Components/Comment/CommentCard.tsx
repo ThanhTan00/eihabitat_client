@@ -28,7 +28,7 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
       </div>
 
       <div className="block">
-        <div className={type==="status"? "w-full pl-3 mb-2" : "w-auto pl-3"}>
+        <div className={type === "status" ? "w-full pl-3 mb-2" : "w-auto pl-3"}>
           <span className="font-medium mr-2">
             <a href="#" className="hover:opacity-[50%] text-sm">
               {comment?.ownerProfileName}
@@ -53,13 +53,13 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
                 </a>
               </div>
             </div>
-            <div className="flex font-semibold text-gray-500 px-2 flex items-center text-xs py-4">
+            <div className="flex font-semibold text-gray-500 px-2 flex items-center text-xs py-2">
               <hr className="w-8 mr-4" />
               <p className="cursor-pointer">View reply (7)</p>
             </div>
           </>
         ) : (
-          <hr className="my-4"/>
+          <div className="my-8" />
         )}
       </div>
       {type !== "status" && (

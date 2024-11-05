@@ -46,10 +46,9 @@ export const HomePage = () => {
         if (accessToken) {
           const listPosts = await getNewsFeedPosts(accessToken, user?.id);
           console.log(accessToken);
-          console.log(listPosts.data)
+          console.log(listPosts.data);
           if (listPosts.data) {
             setPosts(listPosts.data);
-            //setIsLoading(false);
           }
         }
       } catch (error) {

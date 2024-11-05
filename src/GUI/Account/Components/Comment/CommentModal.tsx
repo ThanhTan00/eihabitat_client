@@ -243,7 +243,7 @@ export const CommentModal: React.FC<ModalProps> = ({
                       alt=""
                     />
                   </div>
-                  <div className="ml-3">
+                  <div className="ml-3 font-semibold">
                     <p>{post?.authorProfileName}</p>
                   </div>
                 </div>

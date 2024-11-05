@@ -53,16 +53,22 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
     setDragActive(false);
   };
 
+  const handleFiles = (files: FileList | null) => {
+    if (files) {
+      const fileArray = Array.from(files);
+      setImages((prevImages) => [...prevImages, ...fileArray]);
+    }
+  };
+
   const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
+    handleFiles(e.dataTransfer.files);
+  };
 
-    const files = Array.from(e.dataTransfer.files);
-    const validImages = files.filter((file) => file.type.startsWith("image/"));
-
-    // Update the list of images by appending the new valid images
-    setImages((prevImages) => [...prevImages, ...validImages]);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    handleFiles(e.target.files);
   };
 
   const handleEmojiSelect = (emoji: any) => {
@@ -231,6 +237,7 @@ export const PostCreateModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                       multiple
                       type="file"
                       accept="image/*"
+                      onChange={handleInputChange}
                       className="hidden"
                     />
                   </label>
