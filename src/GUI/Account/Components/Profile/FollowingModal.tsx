@@ -32,7 +32,12 @@ export const FollowingModal: React.FC<ModalProps> = ({
 
     const getFollowers = async () => {
       if (accessToken) {
-        const followers = await getAllFollowings(accessToken, userProfileName);
+        const followers = await getAllFollowings(
+          accessToken,
+          userProfileName,
+          user?.id
+        );
+        console.log(followers.data);
         setLisFollowing(followers.data);
         setListFilterFollowing(followers.data);
         if (user && userProfileName !== user.profileName) {
@@ -118,12 +123,23 @@ export const FollowingModal: React.FC<ModalProps> = ({
                   user?.profileName === following.profileName ? (
                     ""
                   ) : (
-                    <button
-                      type="submit"
-                      className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
-                    >
-                      Follow
-                    </button>
+                    <>
+                      {following.followedByMe ? (
+                        <button
+                          type="submit"
+                          className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
+                        >
+                          Following
+                        </button>
+                      ) : (
+                        <button
+                          type="submit"
+                          className="font-medium text-white rounded-lg text-sm px-5 py-2 bg-[#0C5083] hover:bg-[#143D5C]"
+                        >
+                          Follow
+                        </button>
+                      )}
+                    </>
                   )
                 ) : (
                   <button

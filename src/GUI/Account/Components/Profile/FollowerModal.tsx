@@ -4,6 +4,7 @@ import { Follower } from "../../../../Model/User";
 import { getAllFollowers } from "../../../../API/UserApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface ModalProps {
   isOpen: boolean;
@@ -31,20 +32,14 @@ export const FollowerModal: React.FC<ModalProps> = ({
 
     const getFollowers = async () => {
       if (accessToken) {
-        const followers = await getAllFollowers(accessToken, userProfileName);
+        const followers = await getAllFollowers(
+          accessToken,
+          userProfileName,
+          user?.id
+        );
         setLisFollower(followers.data);
         setListFilterFollower(followers.data);
         if (user && userProfileName !== user.profileName) {
-          setLisFollower((prevListFollower) =>
-            prevListFollower?.filter(
-              (item) => item.profileName !== user.profileName
-            )
-          );
-          setListFilterFollower((prevListFollower) =>
-            prevListFollower?.filter(
-              (item) => item.profileName !== user.profileName
-            )
-          );
           setIsGuess(true);
         } else {
           setIsGuess(false);
@@ -114,9 +109,46 @@ export const FollowerModal: React.FC<ModalProps> = ({
 
               <div className="block">
                 <div className="w-auto pl-3">
-                  <a href="#" className="hover:opacity-[50%] font-bold">
-                    {follower.profileName}
-                  </a>
+                  <p className="flex items-center">
+                    <span className="hover:opacity-[50%] font-bold">
+                      {follower.profileName}
+                    </span>
+                    {!follower.followedByMe && !isGuess ? (
+                      <>
+                        <span>
+                          <svg
+                            width="20px"
+                            height="20px"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            xmlns="http://www.w3.org/2000/svg"
+                            stroke="#ece4e4"
+                          >
+                            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                            <g
+                              id="SVGRepo_tracerCarrier"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                              {" "}
+                              <circle
+                                cx="12"
+                                cy="12"
+                                r="2"
+                                fill="#c7c2c2"
+                              ></circle>{" "}
+                            </g>
+                          </svg>
+                        </span>
+                        <span className="text-sm font-semibold text-blue-500 hover:text-black cursor-pointer">
+                          Follow
+                        </span>
+                      </>
+                    ) : (
+                      ""
+                    )}
+                  </p>
                   <p className="text-sm text-gray-500">
                     {follower.firstName} {follower.lastName}
                   </p>
@@ -124,12 +156,27 @@ export const FollowerModal: React.FC<ModalProps> = ({
               </div>
               <div className="ml-auto">
                 {isGuess ? (
-                  <button
-                    type="submit"
-                    className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
-                  >
-                    Follow
-                  </button>
+                  user?.profileName === follower.profileName ? (
+                    ""
+                  ) : (
+                    <>
+                      {follower.followedByMe ? (
+                        <button
+                          type="submit"
+                          className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
+                        >
+                          Following
+                        </button>
+                      ) : (
+                        <button
+                          type="submit"
+                          className="font-medium text-white rounded-lg text-sm px-5 py-2 bg-[#0C5083] hover:bg-[#143D5C]"
+                        >
+                          Follow
+                        </button>
+                      )}
+                    </>
+                  )
                 ) : (
                   <button
                     type="submit"

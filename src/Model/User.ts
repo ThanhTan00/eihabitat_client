@@ -101,10 +101,16 @@ export type UserDemoInfo = {
 }
 
 export type Follower = {
+    id: string
     profileName: string
     firstName: string
     lastName: string
     profileAvatar: string
+    followers: number
+    following: number
+    followMe: boolean
+    followedByMe: boolean
+
 }
 
 export type followRequest = {

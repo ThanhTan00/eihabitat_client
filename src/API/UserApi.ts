@@ -183,9 +183,9 @@ export const logout = async ({token} : {token : string | null}) => {
     }
 }
 
-export const getAllFollowers = async (accessToken: string, userProfileName: string | null) => {
+export const getAllFollowers = async (accessToken: string, userProfileName: string | null, rootUserId: string | undefined) => {
     try {
-        const response = await api.get('api/follow/'+userProfileName+'/followers', {
+        const response = await api.get('api/follow/'+userProfileName+'/followers/'+rootUserId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
@@ -204,9 +204,9 @@ export const getAllFollowers = async (accessToken: string, userProfileName: stri
     }
 }
 
-export const getAllFollowings = async (accessToken: string, userProfileName: string | null) => {
+export const getAllFollowings = async (accessToken: string, userProfileName: string | null, rootUserId: string | undefined) => {
     try {
-        const response = await api.get('api/follow/'+userProfileName+'/following', {
+        const response = await api.get('api/follow/'+userProfileName+'/following/' + rootUserId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },

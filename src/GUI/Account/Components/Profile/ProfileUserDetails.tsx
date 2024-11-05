@@ -106,7 +106,6 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
 
   useEffect(() => {
     setIsFollowing(hostUser?.followedByMe);
-    //console.log(isFollowing)
   }, [hostUser]);
 
   return (

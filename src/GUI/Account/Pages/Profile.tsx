@@ -31,12 +31,12 @@ export const Profile = () => {
 
           if (userInfo.code === 1000) {
             setHostUser(userInfo.data);
-            console.log(userInfo.data);
+            //console.log(userInfo.data);
           } else {
             navigate("/error");
           }
           if (userPostList.data) {
-            console.log(userPostList.data);
+            //console.log(userPostList.data);
             setPostList(userPostList.data);
           }
         }
