@@ -4,7 +4,11 @@ import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { FollowerModal } from "./FollowerModal";
 import { FollowingModal } from "./FollowingModal";
-import { faAngleDown, faEllipsis } from "@fortawesome/free-solid-svg-icons";
+import {
+  faAngleDown,
+  faEllipsis,
+  faUserMinus,
+} from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch, RootState } from "../../../../Store/store";
@@ -24,9 +28,7 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [isFollowDropdown, setIsFollowDropdown] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
-  const [isFollowing, setIsFollowing] = useState<boolean | undefined>(
-    hostUser?.followedByMe
-  );
+  const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
   const dispatch = useDispatch<AppDispatch>();
   const { token, user } = useSelector((state: RootState) => state.auth);
 
@@ -106,6 +108,9 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
 
   useEffect(() => {
     setIsFollowing(hostUser?.followedByMe);
+    closeFollowerModal();
+    closeFollowingModal();
+    closeSignOutModal();
   }, [hostUser]);
 
   return (
@@ -118,7 +123,7 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
             alt=""
           />
         </div>
-        <div className="space-y-4">
+        <div className="space-y-2">
           <div className="flex space-x-6 items-center">
             <p className="font-semibold">{hostUser?.profileName}</p>
             {hostUser?.profileName === user?.profileName ? (
@@ -152,12 +157,17 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
                       />
                     </button>
                     {isFollowDropdown && (
-                      <div className="absolute right-0 top-[35px] w-48 bg-[#E8F4FD] rounded-md shadow-lg z-20">
+                      <div className="absolute right-0 top-[35px] w-48 bg-gray-100 rounded-md shadow-lg z-20">
                         <a
                           onClick={handleUnFollowUser}
                           href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
+                          className="w-full block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
                         >
+                          <FontAwesomeIcon
+                            icon={faUserMinus}
+                            className="mr-4"
+                            size="xs"
+                          />
                           Unfollow
                         </a>
                         <a

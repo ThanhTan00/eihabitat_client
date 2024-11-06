@@ -45,7 +45,6 @@ export const HomePage = () => {
       try {
         if (accessToken) {
           const listPosts = await getNewsFeedPosts(accessToken, user?.id);
-          console.log(accessToken);
           console.log(listPosts.data);
           if (listPosts.data) {
             setPosts(listPosts.data);

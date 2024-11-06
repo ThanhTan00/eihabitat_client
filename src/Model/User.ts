@@ -51,6 +51,7 @@ export type User = {
     phone: string
     address: string
     nationality: Nationality
+    userUrl: string
     dateOfBirth: Date
     signupDate: Date
     followers: string
@@ -106,11 +107,11 @@ export type Follower = {
     firstName: string
     lastName: string
     profileAvatar: string
+    userUrl: string
     followers: number
     following: number
     followMe: boolean
     followedByMe: boolean
-
 }
 
 export type followRequest = {

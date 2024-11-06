@@ -2,6 +2,7 @@ import { useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Comment } from "../../../../Model/Post";
 import { formatDistanceToNow } from "date-fns";
+import { Link } from "react-router-dom";
 
 interface CommentCardProps {
   comment: Comment;
@@ -30,9 +31,12 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
       <div className="block">
         <div className={type === "status" ? "w-full pl-3 mb-2" : "w-auto pl-3"}>
           <span className="font-medium mr-2">
-            <a href="#" className="hover:opacity-[50%] text-sm">
+            <Link
+              to={comment.ownerUrl}
+              className="hover:opacity-70 duration-100 text-sm"
+            >
               {comment?.ownerProfileName}
-            </a>
+            </Link>
           </span>
           <span className="md:text-sm"> {comment?.content}</span>
         </div>
@@ -40,17 +44,13 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
           <>
             <div className="flex justify-start items-center text-xs w-full">
               <div className="font-semibold text-gray-500 px-2 flex items-center justify-center space-x-4">
-                <a href="#" className="hover:underline">
+                <p className="hover:underline cursor-pointer">
                   {comment?.creationDate
                     ? formatDate(comment?.creationDate)
                     : ""}
-                </a>
-                <a href="#" className="hover:underline">
-                  12 likes
-                </a>
-                <a href="#" className="hover:underline">
-                  Reply
-                </a>
+                </p>
+                <p className="hover:underline cursor-pointer">12 likes</p>
+                <p className="hover:underline cursor-pointer">Reply</p>
               </div>
             </div>
             <div className="flex font-semibold text-gray-500 px-2 flex items-center text-xs py-2">
@@ -59,7 +59,7 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
             </div>
           </>
         ) : (
-          <div className="my-8" />
+          " "
         )}
       </div>
       {type !== "status" && (

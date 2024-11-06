@@ -19,6 +19,7 @@ import {
 import "./CommentModal.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
+import { Link } from "react-router-dom";
 
 interface ModalProps {
   isOpen: boolean;
@@ -75,7 +76,7 @@ export const CommentModal: React.FC<ModalProps> = ({
             accessToken,
             selectedPost
           );
-          //console.log(commentsData);
+          console.log(commentsData);
           const sortedComments = commentsData.data.sort(
             (a: Comment, b: Comment) =>
               new Date(b.creationDate).getTime() -
@@ -150,6 +151,7 @@ export const CommentModal: React.FC<ModalProps> = ({
     creationDate: post?.createdAt,
     ownerAvatar: post?.authorProfileAvatar,
     ownerProfileName: post?.authorProfileName,
+    ownerUrl: post?.authorUrl,
   };
 
   const formatDate = (dateString: string) => {
@@ -181,9 +183,9 @@ export const CommentModal: React.FC<ModalProps> = ({
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent className="min-w-[60vw] h-auto">
-          <div className="flex w-full">
+          <div className="flex w-full bg-none">
             <div className="w-[60%]">
-              <div className="relative overflow-hidden bg-black rounded-md w-full min-h-full max-h-[90vh]">
+              <div className="relative overflow-hidden bg-black rounded-tl-md rounded-bl-md w-full min-h-full max-h-[90vh]">
                 <div
                   style={slideImage()}
                   className="flex transition-transform duration-500 ease-in-out"
@@ -191,10 +193,10 @@ export const CommentModal: React.FC<ModalProps> = ({
                   {post?.postContentSet.map((image, index) => (
                     <div
                       key={index}
-                      className="flex-shrink-0 w-full max-h-[90vh] flex justify-center items-center bg-black"
+                      className="flex-shrink-0 w-full h-[90vh] flex justify-center items-center bg-black"
                     >
                       <img
-                        className="h-full w-auto object-contain rounded-md "
+                        className="h-full w-auto object-contain"
                         src={image.imageId}
                         alt={`Slide ${index + 1}`}
                       />
@@ -243,15 +245,18 @@ export const CommentModal: React.FC<ModalProps> = ({
                       alt=""
                     />
                   </div>
-                  <div className="ml-3 font-semibold">
-                    <p>{post?.authorProfileName}</p>
+                  <div className="ml-3 font-semibold hover:opacity-70 duration-200">
+                    <Link to={"/" + post?.authorProfileName}>
+                      {post?.authorProfileName}
+                    </Link>
                   </div>
                 </div>
                 <BsThreeDots />
               </div>
               <hr />
-              <div className="comments px-5 py-4">
+              <div className="comments px-5 space-y-4 py-4">
                 <CommentCard comment={status} type={"status"} />
+                <hr />
                 {comment?.map((comment) => (
                   <CommentCard comment={comment} type={""} />
                 ))}

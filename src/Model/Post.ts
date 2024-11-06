@@ -7,10 +7,11 @@ interface Image {
   altText?: string; // Optional alt text for accessibility
 }
 export interface Comment {
-  id: string,
-  content: string,
-  ownerProfileName: string,
-  ownerAvatar: string,
+  id: string
+  content: string
+  ownerProfileName: string
+  ownerAvatar: string
+  ownerUrl:string
   creationDate: string
  }
 
@@ -26,11 +27,12 @@ export type Post = {
     createdAt: string 
     authorProfileName: string
     authorProfileAvatar: string
+    authorUrl: string
     postContentSet: Image[]
     commentSet: Comment[]
-    numberOfLikes: number,
-    numberOfComments: number,
-    latestUserLike: string,
+    numberOfLikes: number
+    numberOfComments: number
+    latestUserLike: string
     latestUserLikeAvatar: string
     likeByUser: boolean
 }

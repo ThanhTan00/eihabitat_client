@@ -5,6 +5,7 @@ import { getAllFollowings } from "../../../../API/UserApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { Link } from "react-router-dom";
+import { UserFollowingCard } from "./UserFollowingCard";
 
 interface ModalProps {
   isOpen: boolean;
@@ -99,58 +100,12 @@ export const FollowingModal: React.FC<ModalProps> = ({
         </div>
         <div className="px-4 h-full overflow-y-auto">
           {listFilterFollowing?.map((following) => (
-            <div className="flex items-center py-2">
-              <div className="flex flex-shrink-0 self-start cursor-pointer">
-                <img
-                  src={following.profileAvatar}
-                  alt=""
-                  className="h-12 w-12 object-cover rounded-full"
-                />
-              </div>
-
-              <Link to={"/" + following.profileName} className="block">
-                <div className="w-auto pl-3">
-                  <a href="#" className="hover:opacity-[50%] font-bold">
-                    {following.profileName}
-                  </a>
-                  <p className="text-sm text-gray-500">
-                    {following.firstName} {following.lastName}
-                  </p>
-                </div>
-              </Link>
-              <div className="ml-auto">
-                {isGuess ? (
-                  user?.profileName === following.profileName ? (
-                    ""
-                  ) : (
-                    <>
-                      {following.followedByMe ? (
-                        <button
-                          type="submit"
-                          className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
-                        >
-                          Following
-                        </button>
-                      ) : (
-                        <button
-                          type="submit"
-                          className="font-medium text-white rounded-lg text-sm px-5 py-2 bg-[#0C5083] hover:bg-[#143D5C]"
-                        >
-                          Follow
-                        </button>
-                      )}
-                    </>
-                  )
-                ) : (
-                  <button
-                    type="submit"
-                    className="font-medium rounded-lg text-sm px-5 py-2 bg-[#E4E4E4] hover:bg-[#EBE4D8]"
-                  >
-                    Following
-                  </button>
-                )}
-              </div>
-            </div>
+            <UserFollowingCard
+              following={following}
+              isGuess={isGuess}
+              setLisFollowing={setLisFollowing}
+              setListFilterFollowing={setListFilterFollowing}
+            />
           ))}
         </div>
       </ModalContent>

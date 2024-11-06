@@ -12,7 +12,11 @@ import "./PostCard.css";
 import Picker from "@emoji-mart/react";
 import { Post } from "../../../../Model/Post";
 import { formatDistanceToNow } from "date-fns";
-import { likePost } from "../../../../API/PostApi";
+import { addComment, likePost } from "../../../../API/PostApi";
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../Store/store";
+import { showToastMessage } from "../../../../Toast/CustomToast";
 
 interface PostCardProps {
   post: Post;
@@ -35,7 +39,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     post.numberOfLikes
   );
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
-  const accessToken = localStorage.getItem("accessToken");
+  const { user, token } = useSelector((state: RootState) => state.auth);
   // const user = localStorage.getItem("user");
   const totalImages = post?.postContentSet.length;
   const nextSlide = () => {
@@ -68,7 +72,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     setIsPostLiked(!isPostLiked);
     post.numberOfLikes += 1;
     setNumberOfLikes(numberOfLikes + 1);
-    const likeResponse = await likePost(accessToken, {
+    const likeResponse = await likePost(token, {
       postId: post.id,
       userId: rootUserId,
     });
@@ -78,7 +82,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     setIsPostLiked(!isPostLiked);
     post.numberOfLikes -= 1;
     setNumberOfLikes(numberOfLikes - 1);
-    const likeResponse = await likePost(accessToken, {
+    const likeResponse = await likePost(token, {
       postId: post.id,
       userId: rootUserId,
     });
@@ -95,6 +99,25 @@ export const PostCard: React.FC<PostCardProps> = ({
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
   };
+
+  const addCommentHandler = async () => {
+    if (inputText && token) {
+      const newComment = await addComment(token, user?.id, {
+        content: inputText,
+        postId: post?.id,
+      });
+      if (newComment.code === 1000) {
+        showToastMessage("New comment added", "info");
+      }
+      setInputText("");
+    }
+  };
+
+  const handleAddCommentSubmit = (e: React.FormEvent) => {
+    e.preventDefault(); // Prevents the default page reload
+    addCommentHandler(); // Calls your handler function
+  };
+
   useEffect(() => {
     const setInit = () => {
       if (post.likeByUser) {
@@ -122,9 +145,12 @@ export const PostCard: React.FC<PostCardProps> = ({
             </div>
             <div className="pl-4">
               <div className="flex justify-between items-end">
-                <p className="font-semibold text-base">
+                <Link
+                  to={"/" + post.authorProfileName}
+                  className="font-semibold text-base hover:opacity-70 duration-200"
+                >
                   {post.authorProfileName}
-                </p>
+                </Link>
                 <svg
                   width="20px"
                   height="20px"
@@ -174,7 +200,7 @@ export const PostCard: React.FC<PostCardProps> = ({
                 className="flex-shrink-0 w-full max-h-[500px] flex justify-center items-center bg-black"
               >
                 <img
-                  className="h-full w-auto object-contain rounded-md "
+                  className="h-full w-auto object-contain"
                   src={image.imageId}
                   alt={`Slide ${index + 1}`}
                 />
@@ -252,9 +278,12 @@ export const PostCard: React.FC<PostCardProps> = ({
         <div className="w-full space-y-2 mb-2">
           <p className="font-bold text-sm">{numberOfLikes} likes</p>
           <p className={`text-sm ${isExpanded ? "" : "line-clamp-1"} max-w-xl`}>
-            <span className="font-semibold text-base mr-2 leading-none">
+            <Link
+              to={post.authorUrl}
+              className="font-semibold text-base mr-2 leading-none hover:opacity-70 duration-200"
+            >
               {post.authorProfileName}
-            </span>
+            </Link>
             <span>{post.caption}</span>
           </p>
           <button
@@ -272,7 +301,10 @@ export const PostCard: React.FC<PostCardProps> = ({
         </div>
 
         <div className="w-full mb-3">
-          <form className="relative flex w-full items-center">
+          <form
+            onSubmit={handleAddCommentSubmit}
+            className="relative flex w-full items-center"
+          >
             <input
               className="commentInput text-sm"
               type="text"
