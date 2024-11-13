@@ -42,7 +42,7 @@ export const FollowerModal: React.FC<ModalProps> = ({
           userProfileName,
           user?.id
         );
-        console.log(followers.data);
+        //console.log(followers.data);
         setLisFollower(followers.data);
         setListFilterFollower(followers.data);
       }
