@@ -3,7 +3,7 @@ import { ModalContent, ModalOverlay, Modal } from "@chakra-ui/react";
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  authorId: string | null;
+  authorId: string | undefined;
 }
 export const StoryModal: React.FC<ModalProps> = ({
   isOpen,

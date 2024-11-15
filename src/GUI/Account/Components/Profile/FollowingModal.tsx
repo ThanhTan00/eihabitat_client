@@ -38,7 +38,7 @@ export const FollowingModal: React.FC<ModalProps> = ({
           userProfileName,
           user?.id
         );
-        console.log(followers.data);
+        //console.log(followers.data);
         setLisFollowing(followers.data);
         setListFilterFollowing(followers.data);
         if (user && userProfileName !== user.profileName) {

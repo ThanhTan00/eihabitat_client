@@ -3,7 +3,6 @@ import { User } from "../../../../Model/User";
 import { Link } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { FollowerModal } from "./FollowerModal";
-import { FollowingModal } from "./FollowingModal";
 import {
   faAngleDown,
   faEllipsis,
@@ -16,6 +15,7 @@ import { logoutUser } from "../../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../../Toast/CustomToast";
 import { SignoutConfirmModal } from "../ComfirmationModal/SignoutConfirmModal";
 import { followUser, unFollowUser } from "../../../../API/UserApi";
+import { FollowingModal } from "./FollowingModal";
 
 type Props = {
   hostUser: User | null;
@@ -224,7 +224,7 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
               <span>following</span>
             </div>
           </div>
-          <div className="max-w-80">
+          <div className="max-w-90">
             <p className="font-semibold">
               {hostUser?.firstName + " " + hostUser?.lastName}
             </p>

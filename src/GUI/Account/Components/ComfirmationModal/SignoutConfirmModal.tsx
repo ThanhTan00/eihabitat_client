@@ -35,6 +35,7 @@ export const SignoutConfirmModal: React.FC<ModalProps> = ({
         </p>
         <div className="flex justify-center items-center space-x-6">
           <button
+            onClick={onClose}
             type="button"
             className="w-24 py-2 px-3 text-sm font-medium bg-[#EBE4D8] hover:bg-[#D6C7AD] rounded-lg"
           >

@@ -3,9 +3,10 @@ import { AppDispatch, RootState } from "../../../../Store/store";
 import { useNavigate } from "react-router-dom";
 import { logoutUser } from "../../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../../Toast/CustomToast";
+import { Link } from "react-router-dom";
 
 export const HomeRight = () => {
-  const { token } = useSelector((state: RootState) => state.auth);
+  const { token, user } = useSelector((state: RootState) => state.auth);
 
   const dispatch = useDispatch<AppDispatch>();
 
@@ -20,15 +21,41 @@ export const HomeRight = () => {
   };
 
   return (
-    <div className="border w-96">
-      <a
-        className="group inline-block rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 p-[2px] hover:text-white focus:outline-none focus:ring active:text-opacity-75"
-        onClick={handleLogout}
-      >
-        <span className="block rounded-full bg-white px-8 py-3 text-sm font-medium group-hover:bg-transparent">
-          Logout
-        </span>
-      </a>
+    <div className="border w-80">
+      <div className="flex justify-between items-center w-full py-2">
+        <div className="flex items-center">
+          <div className="flex flex-col items-center">
+            <div className="w-12 h-12 rounded-full">
+              <img
+                className="w-full h-full rounded-full object-cover"
+                src={user?.profileAvatar}
+                alt="Story"
+              />
+            </div>
+          </div>
+          <div className="pl-4">
+            <div className="flex justify-between items-end">
+              <Link
+                to={user ? user.userUrl : ""}
+                className="font-semibold text-base hover:opacity-70 duration-200"
+              >
+                {user?.profileName}
+              </Link>
+            </div>
+            <p className="font-thin text-sm">
+              {user?.firstName} {user?.lastName}
+            </p>
+          </div>
+        </div>
+        <p
+          onClick={async () => {
+            await handleLogout();
+          }}
+          className="text-sm font-semibold text-blue-500 hover:text-black cursor-pointer"
+        >
+          Sign out
+        </p>
+      </div>
     </div>
   );
 };

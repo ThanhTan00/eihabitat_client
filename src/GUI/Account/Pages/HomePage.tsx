@@ -7,26 +7,54 @@ import {
   StoryCircle,
   StoryModal,
 } from "../Components";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Post } from "../../../Model/Post";
 import { getNewsFeedPosts } from "../../../API/PostApi";
+import { getAllFollowings } from "../../../API/UserApi";
+import { Follower } from "../../../Model/User";
+import "./Style.css";
 
 export const HomePage = () => {
-  const { user } = useSelector((state: RootState) => state.auth);
-  const [selectedStory, setSelectedStory] = useState<string | null>(null);
+  const [selectedStory, setSelectedStory] = useState<string | undefined>(
+    undefined
+  );
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const [posts, setPosts] = useState<Post[] | null>(null);
+  const [followings, setFollowings] = useState<Follower[] | null>(null);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const { token, user } = useSelector((state: RootState) => state.auth);
 
-  const openStoryModal = (authorId: string | null) => {
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const scrollAmount = 200;
+
+  const scrollLeft = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: scrollRef.current.scrollLeft - scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        left: scrollRef.current.scrollLeft + scrollAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const openStoryModal = (authorId: string | undefined) => {
     setSelectedStory(authorId);
     setIsStoryModalOpen(true);
   };
 
   const closeStoryModal = () => {
     setIsStoryModalOpen(false);
-    setSelectedStory(null);
+    setSelectedStory(undefined);
   };
 
   const openCommentModal = (postId: string) => {
@@ -40,12 +68,10 @@ export const HomePage = () => {
   };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
     const getNewsFeed = async () => {
       try {
-        if (accessToken) {
-          const listPosts = await getNewsFeedPosts(accessToken, user?.id);
-          console.log(listPosts.data);
+        if (token) {
+          const listPosts = await getNewsFeedPosts(token, user?.id);
           if (listPosts.data) {
             setPosts(listPosts.data);
           }
@@ -54,23 +80,71 @@ export const HomePage = () => {
         console.log(error);
       }
     };
+    const getFollowings = async () => {
+      try {
+        if (token && user) {
+          const followings = await getAllFollowings(
+            token,
+            user?.profileName,
+            user?.id
+          );
+          setFollowings(followings.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getFollowings();
     getNewsFeed();
   }, [user?.id]);
   return (
     <div>
       <div className="mt-5 flex w-[100%]">
-        <div className="flex justify-center w-full px-10">
-          <div className="max-w-3xl container mx-auto">
-            <div
-              onClick={() => openStoryModal(user ? user.id : null)}
-              className="flex space-x-2 border rounded-md justify-start w-full"
-            >
-              <StoryCircle
-                userAvatar={user?.profileAvatar}
-                userProfileName={user?.profileName}
-              />
+        <div className="flex justify-center w-[60%]">
+          <div className="container mx-auto">
+            <div className="flex justify-center items-center w-full">
+              <div className="relative w-[80%] flex items-center">
+                <button
+                  onClick={scrollLeft}
+                  className="absolute left-2 bottom-9 h-6 w-6 rounded-full flex text-black bg-white items-center justify-around duration-200 shadow-md"
+                >
+                  &#10094;
+                </button>
+                <div
+                  ref={scrollRef}
+                  className="w-full overflow-x-auto whitespace-nowrap story-part"
+                >
+                  <div className="flex space-x-4">
+                    <StoryCircle
+                      key={user?.id}
+                      userId={user?.id}
+                      userProfileName={user?.profileName}
+                      userAvatar={user?.profileAvatar}
+                      openStoryModal={openStoryModal}
+                    />
+                    {followings?.map((following) => (
+                      <StoryCircle
+                        key={following.id}
+                        userId={following.id}
+                        userProfileName={following.profileName}
+                        userAvatar={following.profileAvatar}
+                        openStoryModal={openStoryModal}
+                      />
+                    ))}
+                  </div>
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={scrollRight}
+                  className="absolute right-2 bottom-9 h-6 w-6 rounded-full flex text-black bg-white items-center justify-around duration-200 shadow-md"
+                >
+                  &#10095;
+                </button>
+              </div>
             </div>
-            <div className="container space-y-4 mx-auto w-[80%] mt-5">
+
+            <div className="container space-y-4 mx-auto w-[65%] mt-5">
               {posts?.map((post) => (
                 <PostCard
                   post={post}
@@ -81,7 +155,7 @@ export const HomePage = () => {
             </div>
           </div>
         </div>
-        <div className="ml-auto">
+        <div className="w-[30%]">
           <HomeRight />
         </div>
       </div>
