@@ -11,6 +11,9 @@ import {
 } from "../GUI/Account/Pages";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { Profile } from "../GUI/Account/Pages/Profile";
+import { useSelector } from "react-redux";
+import { RootState } from "../Store/store";
+import ChatBox from "../GUI/Account/Components/chat/ChatBox";
 
 const router = createBrowserRouter([
   {
@@ -52,6 +55,10 @@ const router = createBrowserRouter([
             path: "/error",
             element: <ErrorPage />,
           },
+          {
+            path: "/chat/:id",
+            element: <ChatBox />,
+          },
         ],
       },
     ],
@@ -63,5 +70,6 @@ const router = createBrowserRouter([
 ]);
 
 export const MainRouter = () => {
+  const { token, user } = useSelector((state: RootState) => state.auth);
   return <RouterProvider router={router} />;
 };

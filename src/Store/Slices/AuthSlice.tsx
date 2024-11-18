@@ -4,12 +4,12 @@ import { Role } from "../../Model/Enums/Role";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   authenticate,
+  authenticateWithGG,
   createNewUser,
   getMyInfo,
   loginWithGG,
   logout,
 } from "../../API/UserApi";
-import { userInfo } from "os";
 
 interface AuthState {
   user: User | null;
@@ -61,27 +61,30 @@ export const loginUser = createAsyncThunk(
   }
 );
 
-// export const loginWithGoogle = createAsyncThunk("auth/login", async () => {
-//   const response = await loginWithGG();
-//   const auth = response.data;
+export const loginWithGoogle = createAsyncThunk(
+  "auth/loginWithGG",
+  async ({ email, token }: { email: string | null; token: string | null }) => {
+    const response = await authenticateWithGG(email, token);
+    const auth = response.data;
 
-//   const accessToken = auth.token.toString();
+    const accessToken = auth.token.toString();
 
-//   localStorage.setItem("accessToken", accessToken);
+    localStorage.setItem("accessToken", accessToken);
 
-//   const userInfo = await getMyInfo(accessToken);
-//   const user = userInfo.data;
-//   console.log(user);
-//   const roles = user.roles;
+    const userInfo = await getMyInfo(accessToken);
+    const user = userInfo.data;
+    console.log(user);
+    const roles = user.roles;
 
-//   //console.log(user);
-//   //console.log(roles);
+    //console.log(user);
+    //console.log(roles);
 
-//   localStorage.setItem("user", JSON.stringify(user));
-//   localStorage.setItem("role", JSON.stringify(roles));
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("role", JSON.stringify(roles));
 
-//   return { response, accessToken, user, roles };
-// });
+    return { response, accessToken, user, roles };
+  }
+);
 
 export const logoutUser = createAsyncThunk(
   "auth/logout",
@@ -124,6 +127,31 @@ const authSlice = createSlice({
         }
       )
       .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(loginWithGoogle.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(
+        loginWithGoogle.fulfilled,
+        (
+          state,
+          action: PayloadAction<{
+            accessToken: string;
+            user: User;
+            roles: Role;
+          }>
+        ) => {
+          state.loading = false;
+          state.isAuthenticated = true;
+          state.token = action.payload.accessToken;
+          state.user = action.payload.user;
+          state.role = action.payload.roles;
+        }
+      )
+      .addCase(loginWithGoogle.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       })

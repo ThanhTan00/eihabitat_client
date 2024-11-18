@@ -1,6 +1,6 @@
 import { TbCircleDashed } from "react-icons/tb";
 import { User } from "../../../../Model/User";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { FollowerModal } from "./FollowerModal";
 import {
@@ -29,6 +29,7 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
   const [isFollowDropdown, setIsFollowDropdown] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { token, user } = useSelector((state: RootState) => state.auth);
 
@@ -104,6 +105,10 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
         setIsFollowing(false);
       }
     }
+  };
+
+  const handleMessage = () => {
+    navigate("/chat/" + hostUser?.id);
   };
 
   useEffect(() => {
@@ -184,7 +189,10 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
                         </a>
                       </div>
                     )}
-                    <button className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md">
+                    <button
+                      onClick={handleMessage}
+                      className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md"
+                    >
                       Message
                     </button>
                   </div>

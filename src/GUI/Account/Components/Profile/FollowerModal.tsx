@@ -33,12 +33,10 @@ export const FollowerModal: React.FC<ModalProps> = ({
   const { user, token } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
-
     const getFollowers = async () => {
-      if (accessToken) {
+      if (token) {
         const followers = await getAllFollowers(
-          accessToken,
+          token,
           userProfileName,
           user?.id
         );

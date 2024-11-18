@@ -21,7 +21,7 @@ export const HomeRight = () => {
   };
 
   return (
-    <div className="border w-80">
+    <div className="w-80">
       <div className="flex justify-between items-center w-full py-2">
         <div className="flex items-center">
           <div className="flex flex-col items-center">

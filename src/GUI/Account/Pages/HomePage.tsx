@@ -27,7 +27,7 @@ export const HomePage = () => {
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  const scrollAmount = 200;
+  const scrollAmount = 400;
 
   const scrollLeft = () => {
     if (scrollRef.current) {

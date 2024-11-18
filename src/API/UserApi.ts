@@ -44,6 +44,22 @@ export const authenticate = async (email:string, password: string) => {
     }
 }
 
+export const authenticateWithGG = async (email: string | null, token: string | null) => {
+    try {
+        const response = await api.post('auth/loginWithGG/'+ email + "/" + token);
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
 export const loginWithGG = async () => {
     try {
         const response = await axios.get(window.location.href = "http://localhost:8080/oauth2/authorization/google");

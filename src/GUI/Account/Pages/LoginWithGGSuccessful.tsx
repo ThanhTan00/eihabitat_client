@@ -1,15 +1,17 @@
 import { Link, useNavigate } from "react-router-dom";
 import {
+  authenticateWithGG,
   createNewAccountWithGG,
   getUserDemo,
   getUserInfo,
+  loginWithGG,
 } from "../../../API/UserApi";
 import { useEffect, useState } from "react";
 import { UserDemoInfo } from "../../../Model/User";
 import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../../Store/store";
-import { loginUser } from "../../../Store/Slices/AuthSlice";
+import { loginUser, loginWithGoogle } from "../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../Toast/CustomToast";
 import { Loading } from "../Components";
 
@@ -20,27 +22,22 @@ interface formFields {
 
 export const LoginWithGGSuccessful = () => {
   const [email, setEmail] = useState<string | null>(null);
+  const [token, setToken] = useState<string | null>(null);
   const [userDemoInfo, setUserDemoInfo] = useState<UserDemoInfo | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<formFields>({
-    mode: "all",
-  });
-
   useEffect(() => {
     const urlParams = new URLSearchParams(window.location.search);
     const emailParam = urlParams.get("email");
+    const tokenParam = urlParams.get("token");
 
-    if (emailParam) {
+    if (emailParam && tokenParam) {
       setEmail(emailParam);
+      setToken(tokenParam);
     } else {
-      navigate("/login"); // If no token, redirect to login
+      navigate("/login");
     }
 
     const getUser = async () => {
@@ -59,14 +56,14 @@ export const LoginWithGGSuccessful = () => {
     };
     getUser();
     setIsLoading(false);
-  }, [email]);
+  }, []);
 
-  const onSubmit = async (data: formFields) => {
+  const handleAuthWithGG = async () => {
     try {
       const auth = await dispatch(
-        loginUser({
-          email: data.email,
-          password: data.password,
+        loginWithGoogle({
+          email: email,
+          token: token,
         }) as any
       );
       const result = auth.payload;
@@ -85,7 +82,7 @@ export const LoginWithGGSuccessful = () => {
         }
       });
     } catch (error) {
-      showToastMessage("Your password is incorrect!", "error");
+      showToastMessage("error", "error");
     }
   };
 
@@ -122,25 +119,12 @@ export const LoginWithGGSuccessful = () => {
               </p>
             </div>
           </div>
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
-              <input
-                type="email"
-                className="hidden"
-                value={userDemoInfo.email}
-                {...register("email", { required: true })}
-              />
-              <label className="font-medium">Password</label>
-              <input
-                type="password"
-                className="w-full mt-2 px-3 py-2 text-gray-500 bg-transparent outline-none border focus:border-indigo-600 shadow-sm rounded-lg"
-                {...register("password", { required: true })}
-              />
-            </div>
-            <button className="w-full mt-4 px-4 py-2 text-white font-medium bg-[#002D74] hover:bg-[#052338] active:bg-indigo-600 rounded-lg duration-150">
-              Sign in
-            </button>
-          </form>
+          <button
+            onClick={handleAuthWithGG}
+            className="w-full mt-4 px-4 py-2 text-white font-medium bg-[#002D74] hover:bg-[#052338] active:bg-indigo-600 rounded-lg duration-150"
+          >
+            Go to Newfeed
+          </button>
           <div className="relative">
             <span className="block w-full h-px bg-gray-300"></span>
             <p className="inline-block w-fit text-sm bg-white px-2 absolute -top-2 inset-x-0 mx-auto">
