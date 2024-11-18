@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import connectWebSocket from "../../../../API/connectWebsocket";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import { timeStamp } from "console";
 import { addMessage } from "../../../../API/PostApi";
 
@@ -13,12 +13,9 @@ interface Message {
   timestamp: string;
 }
 
-
-
 const ChatBox: React.FC = () => {
   const { token, user } = useSelector((state: RootState) => state.auth);
-  //   const { id } = useParams<{ id: string }>();
-  const id = "46f15d43-b7c8-4351-932f-fea8bd2d952c";
+  const { id } = useParams<{ id: string }>();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -32,7 +29,7 @@ const ChatBox: React.FC = () => {
   }, [user]);
 
   const sendMessage = async () => {
-    if (token && user) {
+    if (token && user && id) {
       const addNewMessage = await addMessage(token, {
         content: input,
         recipientId: id,
