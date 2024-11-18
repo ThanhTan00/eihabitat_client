@@ -12,7 +12,7 @@ const connectWebSocket = (
         webSocketFactory: () => new SockJS(URL),
         onConnect: () => {
             console.log(`Connected as ${user}`);
-            client.subscribe(`/user/${user}/queue/messages`, (msg) =>
+            client.subscribe(`/topic/messages`, (msg) =>
                 onMessageReceived(JSON.parse(msg.body))
             );
         },
@@ -22,3 +22,4 @@ const connectWebSocket = (
 };
 
 export default connectWebSocket;
+

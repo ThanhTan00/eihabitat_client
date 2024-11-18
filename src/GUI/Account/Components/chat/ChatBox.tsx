@@ -5,17 +5,20 @@ import { RootState } from "../../../../Store/store";
 import { useParams } from "react-router";
 import { timeStamp } from "console";
 import { addMessage } from "../../../../API/PostApi";
+
 interface Message {
   content: string;
-  sender: string;
-  recipient: string;
+  senderId: string;
+  recipientId: string;
   timestamp: string;
 }
+
+
 
 const ChatBox: React.FC = () => {
   const { token, user } = useSelector((state: RootState) => state.auth);
   //   const { id } = useParams<{ id: string }>();
-  const id = "6068ac7e-f6a3-4857-a0c9-5960d49dd207";
+  const id = "46f15d43-b7c8-4351-932f-fea8bd2d952c";
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -32,8 +35,8 @@ const ChatBox: React.FC = () => {
     if (token && user) {
       const addNewMessage = await addMessage(token, {
         content: input,
-        recipient: id,
-        sender: user?.id,
+        recipientId: id,
+        senderId: user?.id,
       });
     }
     console.log(messages);
@@ -48,7 +51,7 @@ const ChatBox: React.FC = () => {
         {messages.map((msg, index) => (
           <div key={index}>
             <strong>
-              {msg.sender} to {msg.recipient}
+              {msg.senderId} to {msg.recipientId}
             </strong>
             : {msg.content} ({new Date(msg.timestamp).toLocaleString()})
           </div>

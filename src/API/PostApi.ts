@@ -165,7 +165,7 @@ export const createPost = async (accessToken: string | null, userId: string | un
 
 export const addMessage =  async (accessToken: string, message: MessageRequest) => {
     try {
-        const response = await api.post(`app/message` , message, {
+        const response = await api.post(`api/chat/send` , message, {
             headers: {
                "Content-Type": "application/json" 
             }

@@ -7,6 +7,6 @@ export type Message = {
 
 export type MessageRequest= {
     content: string;
-    sender: string;
-    recipient: string;
+    senderId: string;
+    recipientId: string;
 }
