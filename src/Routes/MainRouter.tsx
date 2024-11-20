@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import {
+  ChatPage,
   ConFirmEmailPage,
   EditProfilePage,
   ErrorPage,
@@ -8,12 +9,12 @@ import {
   LoginWithGGSuccessful,
   RegisterPage,
   UserLayout,
+  
 } from "../GUI/Account/Pages";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { Profile } from "../GUI/Account/Pages/Profile";
 import { useSelector } from "react-redux";
 import { RootState } from "../Store/store";
-import ChatBox from "../GUI/Account/Components/chat/ChatBox";
 
 const router = createBrowserRouter([
   {
@@ -57,7 +58,7 @@ const router = createBrowserRouter([
           },
           {
             path: "/chat/:id",
-            element: <ChatBox />,
+            element: <ChatPage />,
           },
         ],
       },

@@ -35,14 +35,14 @@ export const mainu = [
     icon: <RiVideoLine className="text-3xl mr-5" />,
     activeIcon: <RiVideoFill className="text-3xl mr-5" />,
   },
-  {
-    title: "Message",
-    icon: <AiOutlineMessage className="text-3xl mr-5" />,
-    activeIcon: <AiFillMessage className="text-3xl mr-5" />,
-  },
-  {
-    title: "Notification",
-    icon: <AiOutlineHeart className="text-3xl mr-5" />,
-    activeIcon: <AiFillHeart className="text-3xl mr-5" />,
-  }
+  // {
+  //   title: "Message",
+  //   icon: <AiOutlineMessage className="text-3xl mr-5" />,
+  //   activeIcon: <AiFillMessage className="text-3xl mr-5" />,
+  // },
+  // {
+  //   title: "Notification",
+  //   icon: <AiOutlineHeart className="text-3xl mr-5" />,
+  //   activeIcon: <AiFillHeart className="text-3xl mr-5" />,
+  // }
 ];

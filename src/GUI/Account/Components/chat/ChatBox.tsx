@@ -5,6 +5,8 @@ import { RootState } from "../../../../Store/store";
 import { useParams } from "react-router-dom";
 import { timeStamp } from "console";
 import { addMessage } from "../../../../API/PostApi";
+import { faMessage } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 interface Message {
   content: string;
@@ -13,9 +15,12 @@ interface Message {
   timestamp: string;
 }
 
-const ChatBox: React.FC = () => {
+interface ChatBoxProps {
+  recipientId: string | null;
+}
+
+export const ChatBox = ({ recipientId }: ChatBoxProps) => {
   const { token, user } = useSelector((state: RootState) => state.auth);
-  const { id } = useParams<{ id: string }>();
 
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -29,16 +34,28 @@ const ChatBox: React.FC = () => {
   }, [user]);
 
   const sendMessage = async () => {
-    if (token && user && id) {
+    if (token && user && recipientId) {
       const addNewMessage = await addMessage(token, {
         content: input,
-        recipientId: id,
+        recipientId: recipientId,
         senderId: user?.id,
       });
     }
     console.log(messages);
     setInput("");
   };
+
+  if (!recipientId) {
+    return (
+      <div className="absolute bg-white bg-opacity-70 z-10 w-full h-full flex items-center justify-center">
+        <div className="flex items-center">
+          <span className="text-2xl mr-4 font-bold text-[#083555]">
+            <FontAwesomeIcon icon={faMessage} className="" size="xl" />{" "}
+          </span>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
