@@ -1,18 +1,33 @@
-import { useState } from "react";
-import { PostCreateModal } from "../Post/PostCreateModal";
+import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { RootState } from "../../../../Store/store";
+import { messageCallbackType } from "@stomp/stompjs";
+import { AiFillCompass, AiFillHeart, AiFillHome, AiFillMessage, AiFillPlusCircle, AiOutlineCompass, AiOutlineHeart, AiOutlineHome, AiOutlineMessage, AiOutlinePlusCircle, AiOutlineSearch } from "react-icons/ai";
+import { RiVideoFill, RiVideoLine } from "react-icons/ri";
+import { IoReorderThreeOutline } from "react-icons/io5";
 
-import { SideBarMenu } from "./SideBarMenu";
+interface MenuProps {
+    activeTab:string | undefined;
+    setActiveTab: React.Dispatch<React.SetStateAction<string | undefined>>;
+    setIsPostModalOpen: React.Dispatch<React.SetStateAction<boolean | false>>;
+}
 
-export const Sidebar = () => {
-  const [activeTab, setActiveTab] = useState<string>();
-  const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
+export const SideBarMenu = ({activeTab, setActiveTab, setIsPostModalOpen} : MenuProps) => {
+    const navigate = useNavigate();
+    const { user } = useSelector((state: RootState) => state.auth);
 
-  const closePostModal = () => {
-    setIsPostModalOpen(false);
-  };
-  return (
-    <div className="sticky top-0 h-[100vh]">
-      {/* <div className="flex flex-col justify-between h-full px-10">
+    const handleTabClick = (title: string) => {
+        if (title === "Profile") {
+          navigate("/" + user?.profileName);
+        } else if (title === "Home") {
+          navigate("/");
+        } else if (title === "Create") {
+          setIsPostModalOpen(true);
+        }
+        setActiveTab(title);
+      };
+    return (
+        <div className="flex flex-col justify-between h-full px-10">
         <div className="pt-10">
           <img className="w-40" src="\eiuhabitat-logo.png" alt="" />
           <div className="mt-10 space-y-4">
@@ -143,7 +158,7 @@ export const Sidebar = () => {
                 className={`h-8 w-8 mr-5 rounded-full ${
                   activeTab === "Profile" ? "border-white border-4" : ""
                 }`}
-                src={userAvatar}
+                src={user?.profileAvatar}
                 alt=""
               />
               <p
@@ -160,14 +175,6 @@ export const Sidebar = () => {
           <IoReorderThreeOutline className="text-2xl" />
           <p className="ml-5">More</p>
         </div>
-      </div> */}
-      <SideBarMenu 
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        setIsPostModalOpen={setIsPostModalOpen}
-      />
-
-      <PostCreateModal isOpen={isPostModalOpen} onClose={closePostModal} />
-    </div>
-  );
-};
+      </div>
+    )
+}
