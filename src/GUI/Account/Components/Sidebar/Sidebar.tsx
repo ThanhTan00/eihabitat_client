@@ -11,16 +11,16 @@ export const Sidebar = () => {
   const [isPostModalOpen, setIsPostModalOpen] = useState<boolean>(false);
   const [isVisible, setIsVisible] = useState<boolean>(false);
   const { user } = useSelector((state: RootState) => state.auth);
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const handleTabClick = (title: string) => {
-    // if (title === "Profile") {
-    //   navigate("/" + user?.profileName);
-    // } else if (title === "Home") {
-    //   navigate("/");
-    // } else if (title === "Create") {
-    //   setIsPostModalOpen(true);
-    // }
+    if (title === "Profile") {
+      navigate("/" + user?.profileName);
+    } else if (title === "Home") {
+      navigate("/");
+    } else if (title === "Create") {
+      setIsPostModalOpen(true);
+    }
     setActiveTab(title);
   };
 
@@ -29,22 +29,18 @@ export const Sidebar = () => {
   };
 
   return (
-    <div className="sticky top-0 h-[100vh]">
-      {activeTab === "Home" || activeTab === "Create" || activeTab === "Profile" ? (
-        <SideBarMenu
-          activeTab={activeTab}
-          handleTabClick={handleTabClick}
-          setActiveTab={setActiveTab}
-          setIsPostModalOpen={setIsPostModalOpen}
-        />
+    <div className="sticky top-0 left-0 h-[100vh]">
+      {activeTab === "Home" ||
+      activeTab === "Create" ||
+      activeTab === "Profile" ? (
+        <SideBarMenu activeTab={activeTab} handleTabClick={handleTabClick} />
       ) : (
         <SideBarMenuIcon
           activeTab={activeTab}
           handleTabClick={handleTabClick}
-          setActiveTab={setActiveTab}
-          setIsPostModalOpen={setIsPostModalOpen}
         />
       )}
+      <PostCreateModal isOpen={isPostModalOpen} onClose={closePostModal} />
     </div>
   );
 

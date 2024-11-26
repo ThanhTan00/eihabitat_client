@@ -23,31 +23,14 @@ import { NotificationBar } from "./NotificationBar";
 interface MenuProps {
   activeTab: string | undefined;
   handleTabClick: (title: string) => void;
-  setActiveTab: React.Dispatch<React.SetStateAction<string | undefined>>;
-  setIsPostModalOpen: React.Dispatch<React.SetStateAction<boolean | false>>;
 }
 
-export const SideBarMenuIcon = ({
-  activeTab,
-  setActiveTab,
-  setIsPostModalOpen,
-}: MenuProps) => {
-  //const navigate = useNavigate();
+export const SideBarMenuIcon = ({ activeTab, handleTabClick }: MenuProps) => {
+  const navigate = useNavigate();
   const { user } = useSelector((state: RootState) => state.auth);
 
-  const handleTabClick = (title: string) => {
-    // if (title === "Profile") {
-    //   navigate("/" + user?.profileName);
-    // } else if (title === "Home") {
-    //   navigate("/");
-    // } else if (title === "Create") {
-    //   setIsPostModalOpen(true);
-    // }
-    setActiveTab(title);
-  };
-
   return (
-    <div className="relative w-20 flex flex-col justify-between h-full px-4 border border-r-stone-400">
+    <div className="relative w-20 flex flex-col justify-between h-full px-4">
       <div className="pt-8 flex flex-col justify-between">
         <img className="w-10 h-10" src="\eiuhabitat-icon.png" alt="" />
         <div className="mt-10 space-y-4">
@@ -113,12 +96,11 @@ export const SideBarMenuIcon = ({
       <div className="flex justify-around items-center cursor-pointer pb-10">
         <IoReorderThreeOutline className="text-2xl" />
       </div>
-      <div className="absolute left-full top-0 w-[400px] h-full rounded-r-2xl shadow-xl">
-        {activeTab === "Search" ?
-          <SearchBar />
-        :
-          <NotificationBar/>
-        }
+      <div
+        style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
+        className="h-full absolute left-full top-0 bg-white w-[400px] h-full rounded-r-2xl"
+      >
+        {activeTab === "Search" ? <SearchBar /> : <NotificationBar />}
       </div>
     </div>
   );

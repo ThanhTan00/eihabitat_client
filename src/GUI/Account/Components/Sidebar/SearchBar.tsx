@@ -1,6 +1,6 @@
 export const SearchBar = () => {
   return (
-    <div className="flex flex-col pt-6 h-full">
+    <div className="flex flex-col pt-6 h-full border-l border-gray-200">
       <div className="border-b border-gray-200 px-5 pb-5">
         <p className="font-bold text-2xl mb-10">Search</p>
         <input

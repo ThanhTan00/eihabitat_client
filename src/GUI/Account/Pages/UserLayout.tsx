@@ -5,11 +5,14 @@ export const UserLayout = () => {
   return (
     <div>
       <div className="flex">
-        <div className="w-auto border border-l-slate-500">
+        <div className="fixed bg-white z-50 w-auto">
           <Sidebar />
         </div>
-        <div className="w-full">
-          <Outlet />
+        <div className="absolute w-full grid grid-cols-8">
+          <div className="col-span-2"></div>
+          <div className="col-span-6">
+            <Outlet />
+          </div>
         </div>
       </div>
     </div>
