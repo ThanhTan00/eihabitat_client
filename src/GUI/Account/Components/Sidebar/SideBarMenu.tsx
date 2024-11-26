@@ -8,28 +8,17 @@ import { IoReorderThreeOutline } from "react-icons/io5";
 
 interface MenuProps {
     activeTab:string | undefined;
+    handleTabClick: (title: string) => void;
     setActiveTab: React.Dispatch<React.SetStateAction<string | undefined>>;
     setIsPostModalOpen: React.Dispatch<React.SetStateAction<boolean | false>>;
 }
 
-export const SideBarMenu = ({activeTab, setActiveTab, setIsPostModalOpen} : MenuProps) => {
-    const navigate = useNavigate();
+export const SideBarMenu = ({activeTab, handleTabClick, setActiveTab, setIsPostModalOpen} : MenuProps) => {
     const { user } = useSelector((state: RootState) => state.auth);
-
-    const handleTabClick = (title: string) => {
-        if (title === "Profile") {
-          navigate("/" + user?.profileName);
-        } else if (title === "Home") {
-          navigate("/");
-        } else if (title === "Create") {
-          setIsPostModalOpen(true);
-        }
-        setActiveTab(title);
-      };
     return (
         <div className="flex flex-col justify-between h-full px-10">
-        <div className="pt-10">
-          <img className="w-40" src="\eiuhabitat-logo.png" alt="" />
+        <div className="pt-8">
+          <img className="w-40 h-10" src="\eiuhabitat-logo.png" alt="" />
           <div className="mt-10 space-y-4">
             <div
               onClick={() => handleTabClick("Home")}
@@ -63,40 +52,6 @@ export const SideBarMenu = ({activeTab, setActiveTab, setIsPostModalOpen} : Menu
                 }`}
               >
                 Search
-              </p>
-            </div>
-            <div
-              onClick={() => handleTabClick("Explore")}
-              className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-lg"
-            >
-              {activeTab === "Explore" ? (
-                <AiFillCompass className="text-3xl mr-5" />
-              ) : (
-                <AiOutlineCompass className="text-3xl mr-5" />
-              )}
-              <p
-                className={`${
-                  activeTab === "Explore" ? "font-bold" : "font-semibold"
-                }`}
-              >
-                Explore
-              </p>
-            </div>
-            <div
-              onClick={() => handleTabClick("Reels")}
-              className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-lg"
-            >
-              {activeTab === "Reels" ? (
-                <RiVideoFill className="text-3xl mr-5" />
-              ) : (
-                <RiVideoLine className="text-3xl mr-5" />
-              )}
-              <p
-                className={`${
-                  activeTab === "Reels" ? "font-bold" : "font-semibold"
-                }`}
-              >
-                Reels
               </p>
             </div>
             <div
