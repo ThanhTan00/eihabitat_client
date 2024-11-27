@@ -308,3 +308,25 @@ export const updateUserAvatar = async (accessToken: string | null, userId: strin
         }
     }
 }
+
+export const searchUser = async (accessToken: string | null, profileName: string) => {
+    try {
+        const response = await api.get('users/search/' + profileName, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        })
+        return response.data
+
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+

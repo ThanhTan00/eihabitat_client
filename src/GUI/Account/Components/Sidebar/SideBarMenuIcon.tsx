@@ -96,12 +96,24 @@ export const SideBarMenuIcon = ({ activeTab, handleTabClick }: MenuProps) => {
       <div className="flex justify-around items-center cursor-pointer pb-10">
         <IoReorderThreeOutline className="text-2xl" />
       </div>
-      <div
-        style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
-        className="h-full absolute left-full top-0 bg-white w-[400px] h-full rounded-r-2xl"
-      >
-        {activeTab === "Search" ? <SearchBar /> : <NotificationBar />}
-      </div>
+
+      {activeTab === "Search" ? (
+        <div
+          style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
+          className="h-full absolute left-full top-0 bg-white w-[400px] h-full rounded-r-2xl"
+        >
+          <SearchBar />
+        </div>
+      ) : activeTab === "Notification" ? (
+        <div
+          style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
+          className="h-full absolute left-full top-0 bg-white w-[400px] h-full rounded-r-2xl"
+        >
+          <NotificationBar />
+        </div>
+      ) : (
+        <></>
+      )}
     </div>
   );
 };

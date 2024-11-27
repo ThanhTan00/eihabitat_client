@@ -119,3 +119,13 @@ export type followRequest = {
     followedId: string | null
 }
 
+export type SearchUserResponse = {
+    id: string,
+    firstName: string,
+    lastName: string,
+    profileName: string,
+    profileAvatar: string,
+    userUrl: string,
+    followers: number
+}
+
