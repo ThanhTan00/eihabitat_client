@@ -57,7 +57,7 @@ const router = createBrowserRouter([
             element: <ErrorPage />,
           },
           {
-            path: "/chat/:id",
+            path: "/chat",
             element: <ChatPage />,
           },
         ],

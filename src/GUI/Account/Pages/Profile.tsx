@@ -51,7 +51,7 @@ export const Profile = () => {
   }, [username]);
 
   return (
-    <div className="px-20">
+    <div className="ml-96 w-full">
       <div className="relative flex items-center justify-center">
         {isLoading && <Loading />}
         <ProfileUserDetails

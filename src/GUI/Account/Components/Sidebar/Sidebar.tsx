@@ -20,6 +20,8 @@ export const Sidebar = () => {
       navigate("/");
     } else if (title === "Create") {
       setIsPostModalOpen(true);
+    } else if (title === "Message") {
+      navigate("/chat");
     }
     setActiveTab(title);
   };

@@ -8,11 +8,8 @@ export const UserLayout = () => {
         <div className="fixed bg-white z-50 w-auto">
           <Sidebar />
         </div>
-        <div className="absolute w-full grid grid-cols-8">
-          <div className="col-span-2"></div>
-          <div className="col-span-6">
-            <Outlet />
-          </div>
+        <div className="absolute">
+          <Outlet />
         </div>
       </div>
     </div>

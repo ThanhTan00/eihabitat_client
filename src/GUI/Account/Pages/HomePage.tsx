@@ -88,6 +88,7 @@ export const HomePage = () => {
             user?.profileName,
             user?.id
           );
+          console.log(followings.data);
           setFollowings(followings.data);
         }
       } catch (error) {
@@ -98,7 +99,7 @@ export const HomePage = () => {
     getNewsFeed();
   }, [user?.id]);
   return (
-    <div>
+    <div className="ml-96">
       <div className="mt-5 flex w-[100%]">
         <div className="flex justify-center w-[60%]">
           <div className="container mx-auto">

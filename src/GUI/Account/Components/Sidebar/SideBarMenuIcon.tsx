@@ -30,7 +30,7 @@ export const SideBarMenuIcon = ({ activeTab, handleTabClick }: MenuProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   return (
-    <div className="relative w-20 flex flex-col justify-between h-full px-4">
+    <div className="relative w-20 flex flex-col justify-between h-full px-4 border-r border-gray-200">
       <div className="pt-8 flex flex-col justify-between">
         <img className="w-10 h-10" src="\eiuhabitat-icon.png" alt="" />
         <div className="mt-10 space-y-4">
