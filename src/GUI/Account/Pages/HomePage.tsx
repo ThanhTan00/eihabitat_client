@@ -100,8 +100,8 @@ export const HomePage = () => {
   }, [user?.id]);
   return (
     <div className="ml-96">
-      <div className="mt-5 flex w-[100%]">
-        <div className="flex justify-center w-[60%]">
+      <div className="mt-5 flex w-[1000px]">
+        <div className="flex justify-center w-[70%]">
           <div className="container mx-auto">
             <div className="flex justify-center items-center w-full">
               <div className="relative w-[80%] flex items-center">

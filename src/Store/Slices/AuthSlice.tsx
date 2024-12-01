@@ -1,5 +1,4 @@
-import { noUnrecognized } from "zod";
-import { User, UserCreationRequest, UserLoginRequest } from "../../Model/User";
+import { User, UserCreationRequest } from "../../Model/User";
 import { Role } from "../../Model/Enums/Role";
 import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
@@ -7,7 +6,6 @@ import {
   authenticateWithGG,
   createNewUser,
   getMyInfo,
-  loginWithGG,
   logout,
 } from "../../API/UserApi";
 
@@ -73,7 +71,6 @@ export const loginWithGoogle = createAsyncThunk(
 
     const userInfo = await getMyInfo(accessToken);
     const user = userInfo.data;
-    console.log(user);
     const roles = user.roles;
 
     //console.log(user);

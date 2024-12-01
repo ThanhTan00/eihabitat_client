@@ -4,6 +4,8 @@ import { updateUserAvatar } from "../../../../API/UserApi";
 import { RootState } from "../../../../Store/store";
 import { useSelector } from "react-redux";
 import { showToastMessage } from "../../../../Toast/CustomToast";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImages } from "@fortawesome/free-solid-svg-icons";
 
 interface ModalProps {
   isOpen: boolean;
@@ -39,7 +41,7 @@ export const UpdateImageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
       if (response.code === 1000) {
         showToastMessage("Updated avatar successfully!", "success");
         setSelectedImage(null);
-        onClose()
+        onClose();
       } else {
         showToastMessage("Updated avatar failed!", "error");
         console.log(response);
@@ -57,25 +59,37 @@ export const UpdateImageModal: React.FC<ModalProps> = ({ isOpen, onClose }) => {
           onSubmit={handleSubmit}
           className="max-w-md mx-auto p-4 border rounded-md shadow-md"
         >
-          <label
-            className="block text-gray-700 text-sm font-bold mb-2"
-            htmlFor="image"
-          >
-            Upload an Image
+          <p className="block text-gray-700 text-lg font-bold mb-2">
+            Upload your avatar
+          </p>
+          <label htmlFor="image" className="cursor-pointer">
+            <p className="text-gray-500">
+              <FontAwesomeIcon icon={faImages} size="2xl" className="mr-2" />
+              Add image from your device
+            </p>
+            <input
+              type="file"
+              id="image"
+              accept="image/*"
+              onChange={handleImageChange}
+              className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 hidden"
+            />
           </label>
-          <input
-            type="file"
-            id="image"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50"
-          />
 
-          {previewUrl && (
+          {previewUrl ? (
             <div className="mt-4">
               <p className="text-gray-700 text-sm">Preview:</p>
               <img
                 src={previewUrl}
+                alt="Image Preview"
+                className="w-full h-auto rounded-md"
+              />
+            </div>
+          ) : (
+            <div className="mt-4">
+              <p className="text-gray-700 text-sm">Preview:</p>
+              <img
+                src={user?.profileAvatar}
                 alt="Image Preview"
                 className="w-full h-auto rounded-md"
               />

@@ -19,14 +19,16 @@ import { IoReorderThreeOutline } from "react-icons/io5";
 import { Link } from "react-router-dom";
 import { SearchBar } from "./SearchBar";
 import { NotificationBar } from "./NotificationBar";
+import { useState } from "react";
 
 interface MenuProps {
   activeTab: string | undefined;
+  isSearchBarOpen: boolean | false;
+  isNotiBarOpen: boolean | false;
   handleTabClick: (title: string) => void;
 }
 
-export const SideBarMenuIcon = ({ activeTab, handleTabClick }: MenuProps) => {
-  const navigate = useNavigate();
+export const SideBarMenuIcon = ({ activeTab, isSearchBarOpen, isNotiBarOpen, handleTabClick }: MenuProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   return (
@@ -43,7 +45,7 @@ export const SideBarMenuIcon = ({ activeTab, handleTabClick }: MenuProps) => {
           <div
             onClick={() => handleTabClick("Search")}
             className={` ${
-              activeTab === "Search" ? "border-[1px] border-stone-400" : ""
+              isSearchBarOpen ? "border-[1px] border-stone-400" : ""
             } flex justify-around h-10 px-2 py-4 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-xl`}
           >
             <AiOutlineSearch className="text-3xl" />
@@ -97,23 +99,23 @@ export const SideBarMenuIcon = ({ activeTab, handleTabClick }: MenuProps) => {
         <IoReorderThreeOutline className="text-2xl" />
       </div>
 
-      {activeTab === "Search" ? (
+      {isSearchBarOpen && (
         <div
           style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
-          className="h-full absolute left-full top-0 bg-white w-[400px] h-full rounded-r-2xl"
+          className=
+          "h-full absolute left-full top-0 bg-white w-[400px] rounded-r-2xl"
         >
           <SearchBar />
         </div>
-      ) : activeTab === "Notification" ? (
+      )} 
+      {isNotiBarOpen && (
         <div
           style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
           className="h-full absolute left-full top-0 bg-white w-[400px] h-full rounded-r-2xl"
         >
           <NotificationBar />
         </div>
-      ) : (
-        <></>
-      )}
+      ) }
     </div>
   );
 };
