@@ -108,7 +108,7 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
   };
 
   const handleMessage = () => {
-    navigate("/chat/" + hostUser?.id);
+    navigate("/chat");
   };
 
   useEffect(() => {
@@ -204,7 +204,10 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
                     >
                       Follow {hostUser?.followMe ? "back" : ""}
                     </button>
-                    <button className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md">
+                    <button
+                      onClick={handleMessage}
+                      className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md"
+                    >
                       Message
                     </button>
                   </div>

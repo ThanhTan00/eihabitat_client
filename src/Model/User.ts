@@ -96,9 +96,13 @@ export const UserUpdateRequestSchema = z.object({
 });
 
 export type UserDemoInfo = {
-    profileName: string
+    id: string
     email: string
-    profileAvatar : string
+    profileName: string
+    profileAvatar: string
+    firstName: string
+    lastName: string
+    userUrl: string
 }
 
 export type Follower = {
@@ -135,5 +139,12 @@ export type SuggestFollow = {
     profileAvatar: string
     userUrl: string
     followedBy: string
+}
+
+export type ChatUser = {
+    id: string,
+    userProfileName: string,
+    userAvatar: string,
+    lastMessage: string,
 }
 

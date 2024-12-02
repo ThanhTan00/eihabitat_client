@@ -5,8 +5,18 @@ export type Message = {
     timestamp: string;
 }
 
+export type MessageCustom = {
+    id: string,
+    senderId: string,
+    recipientId: string,
+    content: string,
+    timestamp: string,
+    read: boolean
+}
+
 export type MessageRequest= {
     content: string;
     senderId: string;
     recipientId: string;
 }
+

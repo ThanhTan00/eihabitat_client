@@ -4,7 +4,7 @@ import api from "./api";
 import { BackendError } from "./UserApi";
 import { AxiosError } from "axios";
 import { AddCommentRequest, createPostRequest, LikePostRequest } from "../Model/Post";
-import { Message, MessageRequest } from "../Model/Message";
+import { MessageRequest } from "../Model/Message";
 
 
 
