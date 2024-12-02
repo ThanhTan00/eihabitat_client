@@ -129,3 +129,11 @@ export type SearchUserResponse = {
     followers: number
 }
 
+export type SuggestFollow = {
+    id: string
+    profileName: string
+    profileAvatar: string
+    userUrl: string
+    followedBy: string
+}
+

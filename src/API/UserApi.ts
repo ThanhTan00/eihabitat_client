@@ -330,3 +330,45 @@ export const searchUser = async (accessToken: string | null, profileName: string
     }
 }
 
+export const suggestFollow = async (accessToken: string | null, userId: string) => {
+    try {
+        const response = await api.get('api/follow/suggestions/' + userId, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        })
+        return response.data
+
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const suggestFollowByFollowedMe = async (accessToken: string | null, userId: string) => {
+    try {
+        const response = await api.get('api/follow/followedMeSuggestions/' + userId, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            },
+        })
+        return response.data
+
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
