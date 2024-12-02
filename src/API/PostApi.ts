@@ -96,9 +96,9 @@ export const addComment =  async (accessToken: string, userId: string | undefine
     }
 }
 
-export const getNewsFeedPosts = async (accessToken: string, id: string | undefined) => {
+export const getNewsFeedPosts = async (accessToken: string, id: string | undefined, page : number | undefined, size:number) => {
     try {
-        const response = await api.get(`post/newsFeedPosts/${id}`, {
+        const response = await api.get(`post/newsFeedPosts/${page}/${size}/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -182,3 +182,4 @@ export const addMessage =  async (accessToken: string, message: MessageRequest) 
         }
     }
 }
+

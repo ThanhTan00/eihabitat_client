@@ -3,6 +3,7 @@ import { RootState } from "../../../Store/store";
 import {
   CommentModal,
   HomeRight,
+  NewsFeed,
   PostCard,
   StoryCircle,
   StoryModal,
@@ -19,10 +20,13 @@ export const HomePage = () => {
     undefined
   );
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
-  const [posts, setPosts] = useState<Post[] | null>(null);
+  // const [posts, setPosts] = useState<Post[]>([]);
   const [followings, setFollowings] = useState<Follower[] | null>(null);
-  const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  // const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  // const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [page, setPage] = useState<number>(0);
+  const [hasMore, setHasMore] = useState(true);
+  const [loading, setLoading] = useState(false);
   const { token, user } = useSelector((state: RootState) => state.auth);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -57,50 +61,89 @@ export const HomePage = () => {
     setSelectedStory(undefined);
   };
 
-  const openCommentModal = (postId: string) => {
-    setSelectedPost(postId);
-    setIsCommentModalOpen(true);
-  };
+  // const openCommentModal = (postId: string) => {
+  //   setSelectedPost(postId);
+  //   setIsCommentModalOpen(true);
+  // };
 
-  const closeCommentModal = () => {
-    setIsCommentModalOpen(false);
-    setSelectedPost(null);
+  // const closeCommentModal = () => {
+  //   setIsCommentModalOpen(false);
+  //   setSelectedPost(null);
+  // };
+
+  // const getNewsFeed = async (currentPage: number) => {
+  //   if (loading) return;
+  //   console.log(page);
+  //   try {
+  //     setLoading(true);
+  //     if (token) {
+  //       const result = await getNewsFeedPosts(token, user?.id, currentPage, 4);
+  //       if (result.code === 1000) {
+  //         setPosts((prev) => [...prev, ...result.data.content]);
+  //         setHasMore(!result.data.last);
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.log(error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
+  const getFollowings = async () => {
+    try {
+      if (token && user) {
+        const followings = await getAllFollowings(
+          token,
+          user?.profileName,
+          user?.id
+        );
+        console.log(followings.data);
+        setFollowings(followings.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
-    const getNewsFeed = async () => {
-      try {
-        if (token) {
-          const listPosts = await getNewsFeedPosts(token, user?.id);
-          if (listPosts.data) {
-            setPosts(listPosts.data);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const getFollowings = async () => {
-      try {
-        if (token && user) {
-          const followings = await getAllFollowings(
-            token,
-            user?.profileName,
-            user?.id
-          );
-          console.log(followings.data);
-          setFollowings(followings.data);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     getFollowings();
-    getNewsFeed();
-  }, [user?.id]);
+  }, []);
+
+  // const handleScroll = () => {
+  //   if (loading || !hasMore) return;
+
+  //   const scrollTop = document.documentElement.scrollTop;
+  //   const scrollHeight = document.documentElement.scrollHeight;
+  //   const clientHeight = document.documentElement.clientHeight;
+
+  //   // Check if near the bottom (adjust the threshold as needed)
+  //   if (scrollHeight - scrollTop <= clientHeight + 400) {
+  //     setPage((prevPage) => prevPage + 1);
+  //   }
+  // };
+
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop >=
+        document.documentElement.offsetHeight - 50 &&
+      hasMore &&
+      !loading
+    ) {
+      console.log(page);
+      setPage((prevPage) => prevPage + 1);
+    }
+  };
+
+  // Attach and detach scroll listener
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [hasMore, loading, page]);
+
   return (
     <div className="ml-96">
-      <div className="mt-5 flex w-[1000px]">
+      <div className="mt-5 flex w-[70%]">
         <div className="flex justify-center w-[70%]">
           <div className="container mx-auto">
             <div className="flex justify-center items-center w-full">
@@ -145,15 +188,12 @@ export const HomePage = () => {
               </div>
             </div>
 
-            <div className="container space-y-4 mx-auto w-[65%] mt-5">
-              {posts?.map((post) => (
-                <PostCard
-                  post={post}
-                  openCommentModal={openCommentModal}
-                  rootUserId={user?.id}
-                />
-              ))}
-            </div>
+            <NewsFeed
+              page={page}
+              setHasMore={setHasMore}
+              loading={loading}
+              setLoading={setLoading}
+            />
           </div>
         </div>
         <div className="w-[30%]">
@@ -164,11 +204,6 @@ export const HomePage = () => {
         isOpen={isStoryModalOpen}
         onClose={closeStoryModal}
         authorId={selectedStory}
-      />
-      <CommentModal
-        isOpen={isCommentModalOpen}
-        onClose={closeCommentModal}
-        selectedPost={selectedPost}
       />
     </div>
   );

@@ -21,13 +21,11 @@ import { showToastMessage } from "../../../../Toast/CustomToast";
 interface PostCardProps {
   post: Post;
   openCommentModal: (id: string) => void;
-  rootUserId: string | undefined;
 }
 
 export const PostCard: React.FC<PostCardProps> = ({
   post,
   openCommentModal,
-  rootUserId,
 }) => {
   const [showDropdown, setShowDropdown] = useState(false);
   const [isPostLiked, setIsPostLiked] = useState(false);
@@ -74,7 +72,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     setNumberOfLikes(numberOfLikes + 1);
     const likeResponse = await likePost(token, {
       postId: post.id,
-      userId: rootUserId,
+      userId: user?.id,
     });
     //console.log(likeResponse.data)
   };
@@ -84,7 +82,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     setNumberOfLikes(numberOfLikes - 1);
     const likeResponse = await likePost(token, {
       postId: post.id,
-      userId: rootUserId,
+      userId: user?.id,
     });
     //console.log(likeResponse.data)
   };

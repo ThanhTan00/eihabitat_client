@@ -28,7 +28,12 @@ interface MenuProps {
   handleTabClick: (title: string) => void;
 }
 
-export const SideBarMenuIcon = ({ activeTab, isSearchBarOpen, isNotiBarOpen, handleTabClick }: MenuProps) => {
+export const SideBarMenuIcon = ({
+  activeTab,
+  isSearchBarOpen,
+  isNotiBarOpen,
+  handleTabClick,
+}: MenuProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   return (
@@ -102,12 +107,11 @@ export const SideBarMenuIcon = ({ activeTab, isSearchBarOpen, isNotiBarOpen, han
       {isSearchBarOpen && (
         <div
           style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
-          className=
-          "h-full absolute left-full top-0 bg-white w-[400px] rounded-r-2xl"
+          className="h-full absolute left-full top-0 bg-white w-[400px] rounded-r-2xl"
         >
           <SearchBar />
         </div>
-      )} 
+      )}
       {isNotiBarOpen && (
         <div
           style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
@@ -115,7 +119,7 @@ export const SideBarMenuIcon = ({ activeTab, isSearchBarOpen, isNotiBarOpen, han
         >
           <NotificationBar />
         </div>
-      ) }
+      )}
     </div>
   );
 };

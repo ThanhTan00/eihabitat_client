@@ -41,14 +41,14 @@ export const ChatPage = () => {
   };
 
   return (
-    <div className="ml-20 w-[100%]">
-      <div className="flex w-[100%]">
-        <div className="w-[40%] h-full border-r border-gray-200 ">
-          <div className="flex justify-between items-center px-10 pt-10 pb-10">
+    <div className="ml-20 ">
+      <div className="flex ">
+        <div className="max-w-[500px] relative z-0 border-r border-gray-200 ">
+          <div className="absolute z-10 w-full bg-white top-0 flex justify-between items-center px-10 pt-10 pb-10">
             <p className="text-xl font-bold">{user?.profileName}</p>
             <FontAwesomeIcon icon={faPenToSquare} size="xl" />
           </div>
-          <div className="max-h-[85vh] overflow-y-scroll px-5 space-y-4">
+          <div className="pt-40 h-screen overflow-y-auto px-5 space-y-4">
             <div className="flex justify-center items-center w-full px-4">
               <div className="px-2 relative w-[100%] flex items-center">
                 <button
@@ -312,12 +312,219 @@ export const ChatPage = () => {
                   </div>
                 </div>
               </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4">
+                <div className="flex items-center">
+                  <div className="flex flex-col items-center">
+                    <div className="w-16 h-16 rounded-full">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={user?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                  <div className="pl-4 space-y-2">
+                    <div className="flex justify-between items-end">
+                      <p className="text-md  max-w-[200px] duration-200 truncate">
+                        Lnt.Tan00
+                      </p>
+                    </div>
+                    <p className="font-thin text-xs opacity-80">
+                      How are you today?
+                    </p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        <div className="w-[60%] relative">
-          <div className="flex items-center border-b border-gray-200">
+        <div className="w-full h-full relative z-0">
+          <div className="absolute bg-white w-full z-10 top-0 flex items-center border-b border-gray-200">
             <div className="flex items-center space-x-4 px-10 py-5">
               <div className="w-14 h-14 rounded-full">
                 <img
@@ -350,7 +557,7 @@ export const ChatPage = () => {
               />
             </div>
           </div>
-          <div className="flex flex-col max-h-[75vh] overflow-y-scroll px-5 space-y-4">
+          <div className="flex flex-col h-screen overflow-y-scroll px-5 py-28 space-y-4">
             <div className="text-center font-semibold">3 Nov 2024, 17:23</div>
             <div className="grid grid-cols-1 space-y-4">
               <div className="justify-self-start">
@@ -425,7 +632,7 @@ export const ChatPage = () => {
               </div>
             </div>
           </div>
-          <div className="absolute top-0 relative flex items-center w-full px-6 py-6">
+          <div className="absolute bottom-0 left-0 z-10 bg-white w-full flex items-center w-full px-6 py-6">
             {/* Smile icon */}
             <span className="absolute left-8 text-gray-500">
               <svg
