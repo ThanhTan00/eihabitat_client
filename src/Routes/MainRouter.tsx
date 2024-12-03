@@ -9,7 +9,6 @@ import {
   LoginWithGGSuccessful,
   RegisterPage,
   UserLayout,
-  
 } from "../GUI/Account/Pages";
 import { ProtectedRoute } from "./ProtectedRoute";
 import { Profile } from "../GUI/Account/Pages/Profile";
@@ -57,7 +56,7 @@ const router = createBrowserRouter([
             element: <ErrorPage />,
           },
           {
-            path: "/chat",
+            path: "/chat/:userId",
             element: <ChatPage />,
           },
         ],

@@ -119,31 +119,52 @@ export const ChatBox = ({ selectedId }: Props) => {
       <div className="flex flex-col h-screen overflow-y-scroll px-5 py-28 space-y-4">
         <div className="text-center font-semibold">3 Nov 2024, 17:23</div>
         <div className="grid grid-cols-1 space-y-4">
-          {messages.map((message) =>
-            message.senderId === user?.id ? (
-              <div className="justify-self-end space-y-1">
-                <p className="text-md text-white max-w-96 duration-200 p-2 rounded-2xl bg-[#0C5083]">
-                  {message.content}
-                </p>
-              </div>
-            ) : (
-              <div className="justify-self-start">
-                <div className="grid grid-cols-6 max-w-96">
-                  <div className="w-8 h-8 col-span-1 place-self-end rounded-full mr-4">
-                    <img
-                      className="w-full h-full rounded-full object-cover"
-                      src={chatUser?.profileAvatar}
-                      alt="Story"
-                    />
+          {messages &&
+            messages.map((message) =>
+              message.senderId === user?.id ? (
+                <div className="justify-self-end space-y-1">
+                  <p className="text-md text-white max-w-96 duration-200 p-2 rounded-2xl bg-[#0C5083]">
+                    {message.content}
+                  </p>
+                </div>
+              ) : (
+                <div className="justify-self-start">
+                  <div className="grid grid-cols-6 max-w-96">
+                    <div className="w-8 h-8 col-span-1 place-self-end rounded-full mr-4">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={chatUser?.profileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                    <div className="col-span-5 space-y-1">
+                      <p className="text-md max-w-96 duration-200 p-2 rounded-2xl bg-gray-100">
+                        {message.content}
+                      </p>
+                    </div>
                   </div>
-                  <div className="col-span-5 space-y-1">
-                    <p className="text-md max-w-96 duration-200 p-2 rounded-2xl bg-gray-100">
-                      {message.content}
-                    </p>
+                </div>
+              )
+            )}
+          {messages.length === 0 && (
+            <div className="flex justify-around items-center">
+              <div className="max-w-sm w-full text-gray-600 space-y-8">
+                <div className="text-center">
+                  <img
+                    src={chatUser?.profileAvatar}
+                    width={150}
+                    className="mx-auto rounded-full"
+                    alt=""
+                  />
+                  <div className="mt-5 space-y-2">
+                    <p>{chatUser?.profileName}</p>
+                    <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
+                      {chatUser?.firstName} {chatUser?.lastName}
+                    </h3>
                   </div>
                 </div>
               </div>
-            )
+            </div>
           )}
         </div>
       </div>

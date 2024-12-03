@@ -19,7 +19,7 @@ import { ChatBox, ChatRoom } from "../Components";
 export const ChatPage = () => {
   const { user, token } = useSelector((state: RootState) => state.auth);
   const [chatRooms, setChatRooms] = useState<ChatUser[]>([]);
-  const [selectedChat, setSelectedChat] = useState<string>("");
+  const { userId } = useParams<{ userId: string }>();
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -55,9 +55,9 @@ export const ChatPage = () => {
     }
   };
 
-  const HandleChatSelected = (id: string) => {
-    setSelectedChat(id);
-  };
+  // const HandleChatSelected = (id: string) => {
+  //   setSelectedChat(id);
+  // };
 
   useEffect(() => {
     getChatRoms();
@@ -175,15 +175,12 @@ export const ChatPage = () => {
             </div>
             <div className="">
               {chatRooms.map((room) => (
-                <ChatRoom
-                  chatUser={room}
-                  handleChatSelete={HandleChatSelected}
-                />
+                <ChatRoom chatUser={room} />
               ))}
             </div>
           </div>
         </div>
-        {selectedChat && <ChatBox selectedId={selectedChat} />}
+        {userId && userId !== "0" && <ChatBox selectedId={userId} />}
       </div>
       {/* <div className="w-full">
         <ChatBox recipientId={id ? id : ""} />

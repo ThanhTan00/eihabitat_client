@@ -17,31 +17,31 @@ export const Sidebar = () => {
 
   const handleTabClick = (title: string) => {
     if (title === "Profile") {
-      setIsMenuSpan(true)
-      setIsSearchBarOpen(false)
-      setIsNotiBarOpen(false)
-      navigate("/" + user?.profileName)
-      setActiveTab(title)
+      setIsMenuSpan(true);
+      setIsSearchBarOpen(false);
+      setIsNotiBarOpen(false);
+      navigate("/" + user?.profileName);
+      setActiveTab(title);
     } else if (title === "Home") {
-      setIsMenuSpan(true)
-      setIsSearchBarOpen(false)
-      setIsNotiBarOpen(false)
-      navigate("/")
-      setActiveTab(title)
+      setIsMenuSpan(true);
+      setIsSearchBarOpen(false);
+      setIsNotiBarOpen(false);
+      navigate("/");
+      setActiveTab(title);
     } else if (title === "Create") {
-      setIsPostModalOpen(true)
+      setIsPostModalOpen(true);
     } else if (title === "Message") {
-      setIsMenuSpan(false)
-      setIsSearchBarOpen(false)
-      setIsNotiBarOpen(false)
-      navigate("/chat")
-      setActiveTab(title)
+      setIsMenuSpan(false);
+      setIsSearchBarOpen(false);
+      setIsNotiBarOpen(false);
+      navigate("/chat/0");
+      setActiveTab(title);
     } else if (title === "Search") {
-      setIsSearchBarOpen(!isSearchBarOPen)
-      setIsNotiBarOpen(false)
+      setIsSearchBarOpen(!isSearchBarOPen);
+      setIsNotiBarOpen(false);
     } else if (title === "Notification") {
-      setIsNotiBarOpen(!isNotiBarOpen)
-      setIsSearchBarOpen(false)
+      setIsNotiBarOpen(!isNotiBarOpen);
+      setIsSearchBarOpen(false);
     }
   };
 

@@ -108,7 +108,7 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
   };
 
   const handleMessage = () => {
-    navigate("/chat");
+    navigate("/chat/" + hostUser?.id);
   };
 
   useEffect(() => {

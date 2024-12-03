@@ -1,16 +1,20 @@
+import { useNavigate } from "react-router-dom";
 import { getChatHistory } from "../../../../API/UserApi";
 import { ChatUser } from "../../../../Model/User";
 
 interface Props {
   chatUser: ChatUser;
-  handleChatSelete: (id: string) => void;
 }
 
-export const ChatRoom = ({ chatUser, handleChatSelete }: Props) => {
-  console.log(chatUser.id);
+export const ChatRoom = ({ chatUser }: Props) => {
+  const navigate = useNavigate();
+  const handleChatRoomClick = () => {
+    navigate("/chat/" + chatUser.id);
+  };
+
   return (
     <div
-      onClick={() => handleChatSelete(chatUser.id)}
+      onClick={handleChatRoomClick}
       key={chatUser.id}
       className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4"
     >
