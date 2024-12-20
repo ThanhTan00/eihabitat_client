@@ -96,9 +96,31 @@ export const addComment =  async (accessToken: string, userId: string | undefine
     }
 }
 
-export const getNewsFeedPosts = async (accessToken: string, id: string | undefined, page : number | undefined, size:number) => {
+// export const getNewsFeedPosts = async (accessToken: string, id: string | undefined, page : number | undefined, size:number) => {
+//     try {
+//         const response = await api.get(`post/newsFeedPosts/${page}/${size}/${id}`, {
+//             headers: {
+//                 Authorization: `Bearer ${accessToken}`
+//             }
+//         })
+//         return response.data
+//     } catch (error) {
+//         const axiosError = error as AxiosError<BackendError>
+//         if (axiosError.response && axiosError.response.data) {
+//             const backendError = axiosError.response.data;
+//             //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
+//             return backendError;
+//         } else {
+//             console.log('An unexpected error occurred: ', error)
+//             throw new Error('An unexpected error occurred, please try again later')
+//         }
+//     }
+// }
+
+export const getNewsFeedPosts = async (accessToken: string, id: string | undefined) => {
     try {
-        const response = await api.get(`post/newsFeedPosts/${page}/${size}/${id}`, {
+        const response = await api.get(`post/newsFeedPosts/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -113,7 +135,7 @@ export const getNewsFeedPosts = async (accessToken: string, id: string | undefin
             return backendError;
         } else {
             console.log('An unexpected error occurred: ', error)
-            throw new Error('An unexpected error occurred, please try agian later')
+            throw new Error('An unexpected error occurred, please try again later')
         }
     }
 }

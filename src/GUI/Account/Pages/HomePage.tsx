@@ -188,12 +188,7 @@ export const HomePage = () => {
               </div>
             </div>
 
-            <NewsFeed
-              page={page}
-              setHasMore={setHasMore}
-              loading={loading}
-              setLoading={setLoading}
-            />
+            <NewsFeed />
           </div>
         </div>
         <div className="w-[30%]">

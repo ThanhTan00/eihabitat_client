@@ -7,35 +7,24 @@ import { PostCard } from "./PostCard";
 import { CommentModal } from "../Comment/CommentModal";
 import { PAUSE } from "redux-persist";
 
-interface Props {
-  page: number | undefined;
-  setHasMore: (hasmore: boolean) => void;
-  loading: boolean;
-  setLoading: (loading: boolean) => void;
-}
-
-export const NewsFeed = ({ page, setHasMore, loading, setLoading }: Props) => {
+export const NewsFeed = () => {
   const { token, user } = useSelector((state: RootState) => state.auth);
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
 
-  const getNewsFeed = async (currentPage: number | undefined) => {
-    if (loading) return;
-    console.log(page);
+  const getNewsFeed = async () => {
     try {
-      setLoading(true);
       if (token) {
-        const result = await getNewsFeedPosts(token, user?.id, currentPage, 4);
+        const result = await getNewsFeedPosts(token, user?.id);
         if (result.code === 1000) {
-          setPosts((prev) => [...prev, ...result.data.content]);
-          setHasMore(!result.data.last);
+          setPosts(result.data);
         }
       }
     } catch (error) {
       console.log(error);
     } finally {
-      setLoading(false);
+      
     }
   };
 
@@ -50,8 +39,8 @@ export const NewsFeed = ({ page, setHasMore, loading, setLoading }: Props) => {
   };
 
   useEffect(() => {
-    getNewsFeed(page);
-  }, [page]);
+    getNewsFeed();
+  }, []);
   return (
     <div className="container space-y-4 mx-auto w-[65%] mt-5">
       {posts?.map((post) => (
