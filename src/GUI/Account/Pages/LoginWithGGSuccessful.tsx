@@ -109,7 +109,7 @@ export const LoginWithGGSuccessful = () => {
                 Log in to your account via {userDemoInfo.email}
               </h3>
               <p className="">
-                Use annther email?{" "}
+                Use another email?{" "}
                 <a
                   href="javascript:void(0)"
                   className="font-medium text-indigo-600 hover:text-indigo-500"

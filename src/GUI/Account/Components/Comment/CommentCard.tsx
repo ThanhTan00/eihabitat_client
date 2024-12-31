@@ -49,13 +49,13 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
                     ? formatDate(comment?.creationDate)
                     : ""}
                 </p>
-                <p className="hover:underline cursor-pointer">12 likes</p>
+                <p className="hover:underline cursor-pointer">0 likes</p>
                 <p className="hover:underline cursor-pointer">Reply</p>
               </div>
             </div>
             <div className="flex font-semibold text-gray-500 px-2 flex items-center text-xs py-2">
               <hr className="w-8 mr-4" />
-              <p className="cursor-pointer">View reply (7)</p>
+              {/* <p className="cursor-pointer">View reply (0)</p> */}
             </div>
           </>
         ) : (

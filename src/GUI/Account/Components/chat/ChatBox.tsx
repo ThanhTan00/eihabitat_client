@@ -195,7 +195,7 @@ export const ChatBox = ({ selectedId }: Props) => {
           onChange={(e) => setInput(e.target.value)}
           className="w-full py-2 pl-8 pr-20 text-gray-700 bg-white border rounded-full shadow-sm focus:outline-none focus:ring focus:ring-blue-200 border-gray-300"
         />
-        <button onClick={sendMessage}>Send</button>
+        <button className="ml-3 min-w-28 bg-[#0C5083] hover:bg-[#143D5C] px-3 py-1 text-white p-2 duration-300 rounded-full" onClick={sendMessage}>Send</button>
       </div>
     </div>
     // <div>

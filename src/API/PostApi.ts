@@ -130,7 +130,7 @@ export const getNewsFeedPosts = async (accessToken: string, id: string | undefin
         const axiosError = error as AxiosError<BackendError>
         if (axiosError.response && axiosError.response.data) {
             const backendError = axiosError.response.data;
-            //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+            console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
 
             return backendError;
         } else {
