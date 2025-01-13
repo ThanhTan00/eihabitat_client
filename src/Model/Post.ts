@@ -12,6 +12,7 @@ export interface Comment {
   ownerProfileName: string
   ownerAvatar: string
   ownerUrl:string
+  numberOfLike: number
   creationDate: string
  }
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { Comment } from "../../../../Model/Post";
 import { formatDistanceToNow } from "date-fns";
@@ -10,7 +10,13 @@ interface CommentCardProps {
 }
 export const CommentCard = ({ comment, type }: CommentCardProps) => {
   const [isCommentLiked, setIsCommentLiked] = useState(false);
+  const [numberOfLike, setNumberOfLike] = useState<number>(0);
   const handleLikecomment = () => {
+    if (isCommentLiked){
+      setNumberOfLike(numberOfLike -1)
+    } else {
+      setNumberOfLike(numberOfLike+1)
+    }
     setIsCommentLiked(!isCommentLiked);
   };
 
@@ -18,6 +24,11 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
   };
+
+  useEffect(() => {
+    setNumberOfLike(comment.numberOfLike)
+  }, [comment])
+
   return (
     <div className="flex items-center">
       <div className="flex flex-shrink-0 self-start cursor-pointer">
@@ -49,7 +60,7 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
                     ? formatDate(comment?.creationDate)
                     : ""}
                 </p>
-                <p className="hover:underline cursor-pointer">0 likes</p>
+                <p className="hover:underline cursor-pointer">{numberOfLike} likes</p>
                 <p className="hover:underline cursor-pointer">Reply</p>
               </div>
             </div>
