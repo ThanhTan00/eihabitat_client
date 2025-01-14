@@ -1,32 +1,23 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Store/store";
 import {
-  CommentModal,
   HomeRight,
   NewsFeed,
-  PostCard,
   StoryCircle,
   StoryModal,
 } from "../Components";
 import { useEffect, useRef, useState } from "react";
-import { Post } from "../../../Model/Post";
-import { getNewsFeedPosts } from "../../../API/PostApi";
 import { getAllFollowings } from "../../../API/UserApi";
 import { Follower } from "../../../Model/User";
 import "./Style.css";
+import { useChatBase } from "../../hooks/useChatBase";
 
 export const HomePage = () => {
   const [selectedStory, setSelectedStory] = useState<string | undefined>(
     undefined
   );
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
-  // const [posts, setPosts] = useState<Post[]>([]);
   const [followings, setFollowings] = useState<Follower[] | null>(null);
-  // const [selectedPost, setSelectedPost] = useState<string | null>(null);
-  // const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
-  const [page, setPage] = useState<number>(0);
-  const [hasMore, setHasMore] = useState(true);
-  const [loading, setLoading] = useState(false);
   const { token, user } = useSelector((state: RootState) => state.auth);
 
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -61,35 +52,6 @@ export const HomePage = () => {
     setSelectedStory(undefined);
   };
 
-  // const openCommentModal = (postId: string) => {
-  //   setSelectedPost(postId);
-  //   setIsCommentModalOpen(true);
-  // };
-
-  // const closeCommentModal = () => {
-  //   setIsCommentModalOpen(false);
-  //   setSelectedPost(null);
-  // };
-
-  // const getNewsFeed = async (currentPage: number) => {
-  //   if (loading) return;
-  //   console.log(page);
-  //   try {
-  //     setLoading(true);
-  //     if (token) {
-  //       const result = await getNewsFeedPosts(token, user?.id, currentPage, 4);
-  //       if (result.code === 1000) {
-  //         setPosts((prev) => [...prev, ...result.data.content]);
-  //         setHasMore(!result.data.last);
-  //       }
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const getFollowings = async () => {
     try {
       if (token && user) {
@@ -105,41 +67,9 @@ export const HomePage = () => {
       console.log(error);
     }
   };
-
   useEffect(() => {
     getFollowings();
   }, []);
-
-  // const handleScroll = () => {
-  //   if (loading || !hasMore) return;
-
-  //   const scrollTop = document.documentElement.scrollTop;
-  //   const scrollHeight = document.documentElement.scrollHeight;
-  //   const clientHeight = document.documentElement.clientHeight;
-
-  //   // Check if near the bottom (adjust the threshold as needed)
-  //   if (scrollHeight - scrollTop <= clientHeight + 400) {
-  //     setPage((prevPage) => prevPage + 1);
-  //   }
-  // };
-
-  const handleScroll = () => {
-    if (
-      window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 50 &&
-      hasMore &&
-      !loading
-    ) {
-      console.log(page);
-      setPage((prevPage) => prevPage + 1);
-    }
-  };
-
-  // Attach and detach scroll listener
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [hasMore, loading, page]);
 
   return (
     <div className="ml-96">
