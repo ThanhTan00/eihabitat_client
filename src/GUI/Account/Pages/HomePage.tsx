@@ -1,16 +1,10 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Store/store";
-import {
-  HomeRight,
-  NewsFeed,
-  StoryCircle,
-  StoryModal,
-} from "../Components";
+import { HomeRight, NewsFeed, StoryCircle, StoryModal } from "../Components";
 import { useEffect, useRef, useState } from "react";
 import { getAllFollowings } from "../../../API/UserApi";
 import { Follower } from "../../../Model/User";
 import "./Style.css";
-import { useChatBase } from "../../hooks/useChatBase";
 
 export const HomePage = () => {
   const [selectedStory, setSelectedStory] = useState<string | undefined>(

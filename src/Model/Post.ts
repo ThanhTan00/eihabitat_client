@@ -1,25 +1,12 @@
 import { ListFormat } from "typescript";
 import { z } from "zod";
+import { Comment } from "./Comment";
 
 interface Image {
   id?: number;
   imageId: string;
   altText?: string; // Optional alt text for accessibility
 }
-export interface Comment {
-  id: string
-  content: string
-  ownerProfileName: string
-  ownerAvatar: string
-  ownerUrl:string
-  numberOfLike: number
-  creationDate: string
- }
-
- export interface AddCommentRequest {
-  content: string,
-  postId: string
- }
 
 export type Post = {
     id : string

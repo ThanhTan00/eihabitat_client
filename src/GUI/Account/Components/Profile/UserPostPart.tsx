@@ -1,16 +1,10 @@
-import {
-  AiOutlineCamera,
-  AiOutlineTable,
-  AiOutlineUser,
-  AiOutlineVideoCameraAdd,
-} from "react-icons/ai";
+import { AiOutlineCamera, AiOutlineTable, AiOutlineUser } from "react-icons/ai";
 import { RiVideoAddLine } from "react-icons/ri";
 import { BiBookmark } from "react-icons/bi";
 import { useEffect, useState } from "react";
 import { UserPostCard } from "./UserPostCard";
-import { Comment, Post, PostOnPersonalWall } from "../../../../Model/Post";
+import { PostOnPersonalWall } from "../../../../Model/Post";
 import { CommentModal } from "../Comment/CommentModal";
-import { getAllCommentOfPost, getSelectedPost } from "../../../../API/PostApi";
 
 type Props = {
   postList: PostOnPersonalWall[] | null;

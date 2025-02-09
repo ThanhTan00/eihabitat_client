@@ -12,11 +12,12 @@ import "./PostCard.css";
 import Picker from "@emoji-mart/react";
 import { Post } from "../../../../Model/Post";
 import { formatDistanceToNow } from "date-fns";
-import { addComment, likePost } from "../../../../API/PostApi";
+import { likePost } from "../../../../API/PostApi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { showToastMessage } from "../../../../Toast/CustomToast";
+import { addComment } from "../../../../API/CommentApi";
 
 interface PostCardProps {
   post: Post;

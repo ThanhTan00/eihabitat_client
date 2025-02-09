@@ -3,23 +3,19 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { BsBookmarkFill, BsEmojiSmile, BsThreeDots } from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
-import { Comment, Post } from "../../../../Model/Post";
+import { Post } from "../../../../Model/Post";
 import "./CommentModal.css";
 import { CommentCard } from "./CommentCard";
 import { useEffect, useState } from "react";
 import { formatDistanceToNow, set } from "date-fns";
 import Picker from "@emoji-mart/react";
-import { Loading } from "../Loading/Loading";
-import {
-  addComment,
-  getAllCommentOfPost,
-  getSelectedPost,
-  likePost,
-} from "../../../../API/PostApi";
+import { getSelectedPost, likePost } from "../../../../API/PostApi";
 import "./CommentModal.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { Link } from "react-router-dom";
+import { Comment } from "../../../../Model/Comment";
+import { addComment, getAllCommentOfPost } from "../../../../API/CommentApi";
 
 interface ModalProps {
   isOpen: boolean;
@@ -74,7 +70,8 @@ export const CommentModal: React.FC<ModalProps> = ({
         if (accessToken && selectedPost) {
           const commentsData = await getAllCommentOfPost(
             accessToken,
-            selectedPost
+            selectedPost,
+            user?.id
           );
           console.log(commentsData);
           const sortedComments = commentsData.data.sort(
@@ -255,8 +252,23 @@ export const CommentModal: React.FC<ModalProps> = ({
               </div>
               <hr />
               <div className="comments px-5 space-y-4 py-4">
-                <CommentCard comment={status} type={"status"} />
-                <hr />
+                <div className="flex w-[90%] pb-4">
+                  <div className="w-10 mr-2">
+                    <img
+                      className="w-9 h-9 rounded-full"
+                      src={post?.authorProfileAvatar}
+                      alt=""
+                    />
+                  </div>
+                  <div className="w-full">
+                    <span className="font-semibold hover:opacity-70 duration-200 pr-3">
+                      <Link to={"/" + post?.authorProfileName}>
+                        {post?.authorProfileName}
+                      </Link>
+                    </span>
+                    <span className="md:text-sm">{post?.caption}</span>
+                  </div>
+                </div>
                 {comment?.map((comment) => (
                   <CommentCard comment={comment} type={""} />
                 ))}
