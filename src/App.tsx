@@ -11,13 +11,13 @@ import { TestPage } from "./GUI/Account/Pages";
 function App() {
   return (
     <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
+      {/* <PersistGate loading={null} persistor={persistor}>
         <ChakraProvider>
-          <MainRouter />
-          {/* <TestPage /> */}
-        </ChakraProvider>
+          <MainRouter /> */}
+          <TestPage />
+        {/* </ChakraProvider>
       </PersistGate>
-      <ToastContainer />
+      <ToastContainer /> */}
     </Provider>
   );
 }
