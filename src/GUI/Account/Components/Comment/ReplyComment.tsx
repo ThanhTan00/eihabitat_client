@@ -1,11 +1,11 @@
 import { Link } from "react-router-dom";
 import { Comment } from "../../../../Model/Comment";
 import { useSelector } from "react-redux";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { RootState } from "../../../../Store/store";
 import { formatDistanceToNow } from "date-fns";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { likeComment } from "../../../../API/CommentApi";
+import { getAllCommentOfPost, likeComment } from "../../../../API/CommentApi";
 import { showToastMessage } from "../../../../Toast/CustomToast";
 
 interface ReplyCommentProps {
@@ -37,6 +37,11 @@ export const ReplyComment = ({ replyComment }: ReplyCommentProps) => {
     }
     setIsCommentLiked(!isCommentLiked);
   };
+
+  useEffect(() => {
+    setNumberOfLike(replyComment.numberOfLike);
+    setIsCommentLiked(replyComment.likedByMe);
+  }, [replyComment]);
   return (
     <div className="flex min-h-8 mt-3">
       <div className="w-1/6">
@@ -57,11 +62,7 @@ export const ReplyComment = ({ replyComment }: ReplyCommentProps) => {
                 {replyComment?.ownerProfileName}
               </Link>
             </span>
-            <span className="md:text-sm">
-              {" "}
-              {replyComment?.content} nang am xa dan roi nang am xa dan roi,
-              nang am xa dan bo roi de lai nhung giac mo
-            </span>
+            <span className="md:text-sm"> {replyComment?.content}</span>
           </div>
           <div className="font-semibold text-xs text-gray-500 space-x-4">
             <span className="hover:underline cursor-pointer">

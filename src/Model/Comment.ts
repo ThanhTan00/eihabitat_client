@@ -11,7 +11,14 @@ export interface Comment {
 
  export interface AddCommentRequest {
   content: string,
-  postId: string
+  postId: string,
+  replyTo: string
+ }
+
+ export interface getCommentRequest {
+   postId : string | null
+   rootUserID: string | undefined
+   replyTo: string
  }
 
  export interface likeCommentRequest {

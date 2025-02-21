@@ -32,20 +32,47 @@ export const CommentModal: React.FC<ModalProps> = ({
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const [post, setPost] = useState<Post | null>(null);
   const [comment, setComment] = useState<Comment[]>([]);
+  const [replyTo, setReplyTo] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPostLiked, setIsPostLiked] = useState(false);
   const [likes, setLikes] = useState<number>(0);
   const [latestUserLike, setLatestUserLike] = useState<string | undefined>();
   const [currentIndex, setCurrentIndex] = useState<number>(0);
-  const { user } = useSelector((state: RootState) => state.auth);
+  const { user, token } = useSelector((state: RootState) => state.auth);
+
+  const getComments = async (
+    postID: string | null,
+    rootUserID: string | undefined,
+    replyToId: string
+  ) => {
+    try {
+      if (token && selectedPost) {
+        const commentsData = await getAllCommentOfPost(token, {
+          postId: postID,
+          rootUserID: rootUserID,
+          replyTo: replyToId,
+        });
+        console.log(commentsData);
+        const sortedComments = commentsData.data.sort(
+          (a: Comment, b: Comment) =>
+            new Date(b.creationDate).getTime() -
+            new Date(a.creationDate).getTime()
+        );
+        if (commentsData.data) {
+          setComment(sortedComments);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   useEffect(() => {
-    const accessToken = localStorage.getItem("accessToken");
     const getPost = async () => {
       try {
-        if (accessToken && selectedPost) {
+        if (token && selectedPost) {
           const postModal = await getSelectedPost(
-            accessToken,
+            token,
             selectedPost,
             user?.id
           );
@@ -65,30 +92,8 @@ export const CommentModal: React.FC<ModalProps> = ({
         console.log(error);
       }
     };
-    const getComments = async () => {
-      try {
-        if (accessToken && selectedPost) {
-          const commentsData = await getAllCommentOfPost(
-            accessToken,
-            selectedPost,
-            user?.id
-          );
-          console.log(commentsData);
-          const sortedComments = commentsData.data.sort(
-            (a: Comment, b: Comment) =>
-              new Date(b.creationDate).getTime() -
-              new Date(a.creationDate).getTime()
-          );
-          if (commentsData.data) {
-            setComment(sortedComments);
-          }
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
     getPost();
-    getComments();
+    getComments(selectedPost, user?.id, "");
     setCurrentIndex(0);
     setIsLoading(false);
   }, [selectedPost]);
@@ -98,6 +103,10 @@ export const CommentModal: React.FC<ModalProps> = ({
     //setShowEmojiPicker(false);
   };
 
+  const handleReply = (replyToId: string, replyToName: string) => {
+    setReplyTo(replyToId);
+    setInputText(inputText + "@" + replyToName);
+  };
   const handlePostLike = async () => {
     const accessToken = localStorage.getItem("accessToken");
     setIsPostLiked(!isPostLiked);
@@ -143,14 +152,6 @@ export const CommentModal: React.FC<ModalProps> = ({
     };
   };
 
-  const status: Comment | any = {
-    content: post?.caption,
-    creationDate: post?.createdAt,
-    ownerAvatar: post?.authorProfileAvatar,
-    ownerProfileName: post?.authorProfileName,
-    ownerUrl: post?.authorUrl,
-  };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
@@ -162,14 +163,18 @@ export const CommentModal: React.FC<ModalProps> = ({
       const newComment = await addComment(accessToken, user?.id, {
         content: inputText,
         postId: post?.id,
+        replyTo: replyTo,
       });
-      setComment((prevComment) =>
-        [...prevComment, newComment.data].sort(
-          (a: Comment, b: Comment) =>
-            new Date(b.creationDate).getTime() -
-            new Date(a.creationDate).getTime()
-        )
-      );
+      if (replyTo === "") {
+        setComment((prevComment) =>
+          [...prevComment, newComment.data].sort(
+            (a: Comment, b: Comment) =>
+              new Date(b.creationDate).getTime() -
+              new Date(a.creationDate).getTime()
+          )
+        );
+      }
+      setReplyTo("");
       setInputText("");
     }
   };
@@ -270,7 +275,11 @@ export const CommentModal: React.FC<ModalProps> = ({
                   </div>
                 </div>
                 {comment?.map((comment) => (
-                  <CommentCard comment={comment} type={""} />
+                  <CommentCard
+                    comment={comment}
+                    postId={selectedPost}
+                    handleReply={handleReply}
+                  />
                 ))}
               </div>
               <hr />

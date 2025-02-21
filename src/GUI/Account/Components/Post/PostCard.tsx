@@ -104,6 +104,7 @@ export const PostCard: React.FC<PostCardProps> = ({
       const newComment = await addComment(token, user?.id, {
         content: inputText,
         postId: post?.id,
+        replyTo: "",
       });
       if (newComment.code === 1000) {
         showToastMessage("New comment added", "info");

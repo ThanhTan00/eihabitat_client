@@ -1,11 +1,11 @@
-import { AddCommentRequest, likeCommentRequest } from "../Model/Comment";
+import { AddCommentRequest, getCommentRequest, likeCommentRequest } from "../Model/Comment";
 import api from "./api";
 import { BackendError } from "./UserApi";
 import { AxiosError } from "axios";
 
-export const getAllCommentOfPost = async (accessToken: string, id: string | undefined, rootUserId : string | undefined) => {
+export const getAllCommentOfPost = async (accessToken: string, getCommentRequest: getCommentRequest) => {
     try {
-        const response = await api.get(`comment/${id}/${rootUserId}`, {
+        const response = await api.post(`comment/getComment`, getCommentRequest, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }

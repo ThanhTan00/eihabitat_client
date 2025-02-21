@@ -3,7 +3,7 @@ import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { formatDistanceToNow } from "date-fns";
 import { Link } from "react-router-dom";
 import { Comment } from "../../../../Model/Comment";
-import { likeComment } from "../../../../API/CommentApi";
+import { getAllCommentOfPost, likeComment } from "../../../../API/CommentApi";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { showToastMessage } from "../../../../Toast/CustomToast";
@@ -11,13 +11,19 @@ import { ReplyComment } from "./ReplyComment";
 
 interface CommentCardProps {
   comment: Comment;
-  type: string | null;
+  postId: string | null;
+  handleReply: (replyToId: string, replyToName: string) => void;
 }
-export const CommentCard = ({ comment, type }: CommentCardProps) => {
+export const CommentCard = ({
+  comment,
+  postId,
+  handleReply,
+}: CommentCardProps) => {
   const { user, token } = useSelector((state: RootState) => state.auth);
   const [isCommentLiked, setIsCommentLiked] = useState(false);
   const [numberOfLike, setNumberOfLike] = useState<number>(0);
   const [viewReplies, setViewReplies] = useState<boolean>(false);
+  const [replyComment, setReplyComment] = useState<Comment[]>([]);
   const handleLikecomment = async () => {
     const result = await likeComment(token, {
       commentId: comment.id,
@@ -41,7 +47,31 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
   };
 
   const handleViewReplies = () => {
+    getComments();
     setViewReplies(!viewReplies);
+  };
+
+  const getComments = async () => {
+    try {
+      if (token && comment) {
+        const commentsData = await getAllCommentOfPost(token, {
+          postId: postId,
+          rootUserID: user?.id,
+          replyTo: comment.id,
+        });
+        console.log(commentsData);
+        const sortedComments = commentsData.data.sort(
+          (a: Comment, b: Comment) =>
+            new Date(b.creationDate).getTime() -
+            new Date(a.creationDate).getTime()
+        );
+        if (commentsData.data) {
+          setReplyComment(sortedComments);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -75,11 +105,7 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
                     {comment?.ownerProfileName}
                   </Link>
                 </span>
-                <span className="md:text-sm">
-                  {" "}
-                  {comment?.content} nang am xa dan roi nang am xa dan roi, nang
-                  am xa dan bo roi de lai nhung giac mo
-                </span>
+                <span className="md:text-sm"> {comment?.content}</span>
               </div>
               <div className="font-semibold text-xs text-gray-500 space-x-4">
                 <span className="hover:underline cursor-pointer">
@@ -90,7 +116,14 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
                 <span className="hover:underline cursor-pointer">
                   {numberOfLike} likes
                 </span>
-                <span className="hover:underline cursor-pointer">Reply</span>
+                <span
+                  className="hover:underline cursor-pointer"
+                  onClick={() =>
+                    handleReply(comment.id, comment.ownerProfileName)
+                  }
+                >
+                  Reply
+                </span>
               </div>
             </div>
             <div className="w-[10%] mt-2">
@@ -120,7 +153,9 @@ export const CommentCard = ({ comment, type }: CommentCardProps) => {
                   Hide replies
                 </p>
               </div>
-              <ReplyComment replyComment={comment} />
+              {replyComment?.map((replyComment) => (
+                <ReplyComment replyComment={replyComment} />
+              ))}
             </>
           ) : (
             <div className="flex items-center text-sm text-gray-500">
