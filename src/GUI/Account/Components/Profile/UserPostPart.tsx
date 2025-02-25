@@ -11,31 +11,7 @@ type Props = {
 };
 
 export const UserPostPart = ({ postList }: Props) => {
-  const [activeTab, setActiveTab] = useState<string>("post");
   const [posts, setPost] = useState<PostOnPersonalWall[]>([]);
-  const tabs = [
-    {
-      tab: "post",
-      icon: <AiOutlineTable />,
-      activeTab: "",
-    },
-    {
-      tab: "Reels",
-      icon: <RiVideoAddLine />,
-      activeTab: "",
-    },
-    {
-      tab: "Saved",
-      icon: <BiBookmark />,
-      activeTab: "",
-    },
-    {
-      tab: "Tagged",
-      icon: <AiOutlineUser />,
-      activeTab: "",
-    },
-  ];
-
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
 
@@ -61,20 +37,7 @@ export const UserPostPart = ({ postList }: Props) => {
   });
 
   return (
-    <div className="w-[80%]">
-      <div className="flex border-t relative items-center justify-between pr-32 pl-32">
-        {tabs.map((item) => (
-          <div
-            onClick={() => setActiveTab(item.tab)}
-            className={`${
-              activeTab === item.tab ? "border-t border-black" : "opacity-60"
-            } flex items-center cursor-pointer py-2`}
-          >
-            <p>{item.icon}</p>
-            <p className="ml-1">{item.tab}</p>
-          </div>
-        ))}
-      </div>
+    <>
       <div className="min-h-[300px]">
         {postList?.length === 0 || postList === null ? (
           <div className="py-5 flex h-full w-full items-center justify-center">
@@ -104,6 +67,6 @@ export const UserPostPart = ({ postList }: Props) => {
         onClose={closeModal}
         selectedPost={selectedPost}
       />
-    </div>
+    </>
   );
 };

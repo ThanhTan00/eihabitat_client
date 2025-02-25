@@ -14,6 +14,7 @@ import { ProtectedRoute } from "./ProtectedRoute";
 import { Profile } from "../GUI/Account/Pages/Profile";
 import { useSelector } from "react-redux";
 import { RootState } from "../Store/store";
+import { SavePostPage } from "../GUI/Account/Pages/SavePostPage";
 
 const router = createBrowserRouter([
   {
@@ -58,6 +59,10 @@ const router = createBrowserRouter([
           {
             path: "/chat/:userId",
             element: <ChatPage />,
+          },
+          {
+            path: "/saved/:album",
+            element: <SavePostPage />,
           },
         ],
       },
