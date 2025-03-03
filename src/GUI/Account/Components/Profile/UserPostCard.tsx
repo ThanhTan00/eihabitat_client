@@ -26,7 +26,7 @@ export const UserPostCard = ({ post, onClick }: Props) => {
         <div className="absolute w-full flex justify-around top-[50%] text-white font-semibold">
           <div>
             <AiFillHeart className="text-2xl" />
-            <span>3.2M</span>
+            <span>{post.numberOfLikes}</span>
           </div>
           <div>
             <FaComment className="text-xl" />{" "}

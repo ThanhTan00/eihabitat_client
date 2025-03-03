@@ -1,9 +1,7 @@
-import { useSelector } from "react-redux";
-import { RootState } from "../Store/store";
 import api from "./api";
 import { BackendError } from "./UserApi";
 import { AxiosError } from "axios";
-import {LikePostRequest } from "../Model/Post";
+import {LikePostRequest, SavePostRequest } from "../Model/Post";
 import { MessageRequest } from "../Model/Message";
 
 
@@ -119,7 +117,6 @@ export const likePost = async (accessToken: string | null, likePostRequest : Lik
 }
 
 export const createPost = async (accessToken: string | null, userId: string | undefined, formData: FormData) => {
-    console.log(formData)
     try {
         const response = await api.post(`post/`+userId, formData,{
             headers: {
@@ -153,6 +150,72 @@ export const addMessage =  async (accessToken: string, message: MessageRequest) 
         const axiosError = error as AxiosError<BackendError>
         if (axiosError.response && axiosError.response.data) {
             const backendError = axiosError.response.data;
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const savePost = async (accessToken : string | null, savePostRequest: SavePostRequest) => {
+    try {
+        const response = await api.post(`savedPost`, savePostRequest,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const getTop4SavedPosts = async (accessToken : string | null, rootUserId: string | null) => {
+    try {
+        const response = await api.get(`savedPost/top4/`+rootUserId,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
+            return backendError;
+        } else {
+            console.log('An unexpected error occurred: ', error)
+            throw new Error('An unexpected error occurred, please try agian later')
+        }
+    }
+}
+
+export const getAllSavedPosts = async (accessToken : string | null, rootUserId: string | null) => {
+    try {
+        const response = await api.get(`savedPost/`+rootUserId,{
+            headers: {
+                Authorization: `Bearer ${accessToken}`
+            }
+        })
+        return response.data
+    } catch (error) {
+        const axiosError = error as AxiosError<BackendError>
+        if (axiosError.response && axiosError.response.data) {
+            const backendError = axiosError.response.data;
+            //console.error(`Error Code: ${backendError.code}, Message: ${backendError.message}`)
+
             return backendError;
         } else {
             console.log('An unexpected error occurred: ', error)

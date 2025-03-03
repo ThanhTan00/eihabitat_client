@@ -51,7 +51,7 @@ export const UserPostPart = ({ postList }: Props) => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-flow-row grid-cols-3">
+          <div className="grid grid-cols-3 gap-2">
             {posts.map((post) => (
               <UserPostCard
                 key={post.id}

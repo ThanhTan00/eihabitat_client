@@ -43,3 +43,9 @@ export type createPostRequest = {
   type: string | null
   images : File[]
 }
+
+export type SavePostRequest = {
+  postId: string
+  userId: string
+  albumId: string | null
+}
