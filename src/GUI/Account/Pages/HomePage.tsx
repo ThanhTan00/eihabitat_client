@@ -66,9 +66,9 @@ export const HomePage = () => {
   }, []);
 
   return (
-    <div className="ml-96">
+    <div className="relative ml-96">
       <div className="mt-5 flex w-[70%]">
-        <div className="flex justify-center w-[70%]">
+        <div className="flex justify-center ">
           <div className="container mx-auto">
             <div className="flex justify-center items-center w-full">
               <div className="relative w-[80%] flex items-center">
@@ -119,6 +119,8 @@ export const HomePage = () => {
           <HomeRight />
         </div>
       </div>
+
+      {/* <div className="sticky absolute bottom-0 right-0 rounded-full h-52 w-52 bg-black"></div> */}
       <StoryModal
         isOpen={isStoryModalOpen}
         onClose={closeStoryModal}

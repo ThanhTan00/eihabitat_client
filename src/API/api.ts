@@ -4,4 +4,8 @@ const api = axios.create({
     baseURL: "http://localhost:8080/"
 })
 
-export default api
+const botApi = axios.create({
+    baseURL: "http://localhost:5000/chat"
+})
+
+export {api, botApi}

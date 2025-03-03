@@ -1,7 +1,7 @@
 import axios, { AxiosError } from "axios"
 import { ApiResponse } from "../Model/APIResponse"
 import { followRequest, User, UserCreationRequest, UserUpdate } from "../Model/User"
-import api from "./api"
+import { api } from "./api"
 
 export interface BackendError {
     code: number

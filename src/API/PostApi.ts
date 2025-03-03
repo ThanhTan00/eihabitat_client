@@ -1,8 +1,8 @@
-import api from "./api";
 import { BackendError } from "./UserApi";
 import { AxiosError } from "axios";
 import {LikePostRequest, SavePostRequest } from "../Model/Post";
 import { MessageRequest } from "../Model/Message";
+import { api } from "./api";
 
 
 

@@ -8,23 +8,26 @@ import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { PostOnPersonalWall } from "../../../Model/Post";
 import { getAllSavedPosts } from "../../../API/PostApi";
+import { CommentModal } from "../Components";
 
 export const SavePostPage = () => {
   const { user, token } = useSelector((state: RootState) => state.auth);
   const { album } = useParams<{ album: string | undefined }>();
-  const [savePosts, setSavedPosts] = useState<PostOnPersonalWall[]>([])
+  const [savePosts, setSavedPosts] = useState<PostOnPersonalWall[]>([]);
+  const [selectedPost, setSelectedPost] = useState<string | null>(null);
+  const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
   const albums = [
     {
       albumTag: "all-posts",
       Name: "All Posts",
     },
     {
-        albumTag: "favorite",
-        Name: "Favorite",
-      },
+      albumTag: "favorite",
+      Name: "Favorite",
+    },
   ];
 
-const loadSavePosts = async () => {
+  const loadSavePosts = async () => {
     if (user && token) {
       const posts = await getAllSavedPosts(token, user?.id);
       if (posts.code === 1000) {
@@ -33,6 +36,15 @@ const loadSavePosts = async () => {
     }
   };
 
+  const openCommentModal = (postId: string) => {
+    setSelectedPost(postId);
+    setIsCommentModalOpen(true);
+  };
+
+  const closeCommentModal = () => {
+    setIsCommentModalOpen(false);
+    setSelectedPost(null);
+  };
   useEffect(() => {
     loadSavePosts();
   }, []);
@@ -54,21 +66,29 @@ const loadSavePosts = async () => {
         <div className="grid grid-cols-3 gap-1">
           {savePosts?.map((post) => (
             <div className="h-80 rounded-md shadow-lg bg-pink-300 relative">
-            <img
-              className="object-cover h-full w-full"
-              src={post.representImage}
-              alt=""
-            />
-            <div className="absolute top-0 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition ease-in-out duration-300 cursor-pointer">
-              <div className="absolute w-full flex justify-center top-[50%] text-white font-semibold">
-                <AiFillHeart className="text-2xl pr-2" />
-                <span>{post.numberOfLikes}</span>
+              <img
+                className="object-cover h-full w-full"
+                src={post.representImage}
+                alt=""
+              />
+              <div
+                onClick={() => openCommentModal(post.id)}
+                className="absolute top-0 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition ease-in-out duration-300 cursor-pointer"
+              >
+                <div className="absolute w-full flex justify-center top-[50%] text-white font-semibold">
+                  <AiFillHeart className="text-2xl pr-2" />
+                  <span>{post.numberOfLikes}</span>
+                </div>
               </div>
             </div>
-          </div>
           ))}
         </div>
       </div>
+      <CommentModal
+        isOpen={isCommentModalOpen}
+        onClose={closeCommentModal}
+        selectedPost={selectedPost}
+      />
     </div>
   );
 };

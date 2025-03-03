@@ -1,5 +1,6 @@
 import { AddCommentRequest, getCommentRequest, likeCommentRequest } from "../Model/Comment";
-import api from "./api";
+import { api } from "./api";
+
 import { BackendError } from "./UserApi";
 import { AxiosError } from "axios";
 
