@@ -5,11 +5,14 @@ import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { RootState } from "../../../Store/store";
 import { useParams } from "react-router-dom";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { PostOnPersonalWall } from "../../../Model/Post";
+import { getAllSavedPosts } from "../../../API/PostApi";
 
 export const SavePostPage = () => {
   const { user, token } = useSelector((state: RootState) => state.auth);
   const { album } = useParams<{ album: string | undefined }>();
+  const [savePosts, setSavedPosts] = useState<PostOnPersonalWall[]>([])
   const albums = [
     {
       albumTag: "all-posts",
@@ -20,6 +23,19 @@ export const SavePostPage = () => {
         Name: "Favorite",
       },
   ];
+
+const loadSavePosts = async () => {
+    if (user && token) {
+      const posts = await getAllSavedPosts(token, user?.id);
+      if (posts.code === 1000) {
+        setSavedPosts(posts.data);
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadSavePosts();
+  }, []);
 
   return (
     <div className="ml-96 mb-20">
@@ -36,58 +52,21 @@ export const SavePostPage = () => {
           <p className="text-xl pb-2">{al.albumTag === album ? al.Name : ""}</p>
         ))}
         <div className="grid grid-cols-3 gap-1">
-          <div className="h-80 rounded-md shadow-lg bg-pink-300 relative">
+          {savePosts?.map((post) => (
+            <div className="h-80 rounded-md shadow-lg bg-pink-300 relative">
             <img
               className="object-cover h-full w-full"
-              src="https://cdn.pixabay.com/photo/2021/10/08/07/13/autumn-6690466_1280.jpg"
+              src={post.representImage}
               alt=""
             />
             <div className="absolute top-0 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition ease-in-out duration-300 cursor-pointer">
               <div className="absolute w-full flex justify-center top-[50%] text-white font-semibold">
                 <AiFillHeart className="text-2xl pr-2" />
-                <span>3.2M</span>
+                <span>{post.numberOfLikes}</span>
               </div>
             </div>
           </div>
-          <div className="h-80 rounded-md shadow-lg bg-pink-300 relative">
-            <img
-              className="object-cover h-full w-full"
-              src="https://cdn.pixabay.com/photo/2024/10/04/18/30/giant-hummingbird-9097277_1280.jpg"
-              alt=""
-            />
-            <div className="absolute top-0 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition ease-in-out duration-300 cursor-pointer">
-              <div className="absolute w-full flex justify-center top-[50%] text-white font-semibold">
-                <AiFillHeart className="text-2xl pr-2" />
-                <span>3.2M</span>
-              </div>
-            </div>
-          </div>
-          <div className="h-80 rounded-md shadow-lg bg-pink-300 relative">
-            <img
-              className="object-cover h-full w-full"
-              src="https://cdn.pixabay.com/photo/2021/10/08/07/13/autumn-6690466_1280.jpg"
-              alt=""
-            />
-            <div className="absolute top-0 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition ease-in-out duration-300 cursor-pointer">
-              <div className="absolute w-full flex justify-center top-[50%] text-white font-semibold">
-                <AiFillHeart className="text-2xl pr-2" />
-                <span>3.2M</span>
-              </div>
-            </div>
-          </div>
-          <div className="h-80 rounded-md shadow-lg bg-pink-300 relative">
-            <img
-              className="object-cover h-full w-full"
-              src="https://cdn.pixabay.com/photo/2021/10/08/07/13/autumn-6690466_1280.jpg"
-              alt=""
-            />
-            <div className="absolute top-0 w-full h-full bg-black bg-opacity-25 opacity-0 hover:opacity-100 transition ease-in-out duration-300 cursor-pointer">
-              <div className="absolute w-full flex justify-center top-[50%] text-white font-semibold">
-                <AiFillHeart className="text-2xl pr-2" />
-                <span>3.2M</span>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
     </div>

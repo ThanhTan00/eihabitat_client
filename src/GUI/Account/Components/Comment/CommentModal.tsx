@@ -1,6 +1,11 @@
 import { Modal, ModalContent, ModalOverlay } from "@chakra-ui/react";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
-import { BsBookmarkFill, BsEmojiSmile, BsThreeDots } from "react-icons/bs";
+import {
+  BsBookmark,
+  BsBookmarkFill,
+  BsEmojiSmile,
+  BsThreeDots,
+} from "react-icons/bs";
 import { FaRegComment } from "react-icons/fa";
 import { RiSendPlaneLine } from "react-icons/ri";
 import { Post } from "../../../../Model/Post";
@@ -9,13 +14,14 @@ import { CommentCard } from "./CommentCard";
 import { useEffect, useState } from "react";
 import { formatDistanceToNow, set } from "date-fns";
 import Picker from "@emoji-mart/react";
-import { getSelectedPost, likePost } from "../../../../API/PostApi";
+import { getSelectedPost, likePost, savePost } from "../../../../API/PostApi";
 import "./CommentModal.css";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { Link } from "react-router-dom";
 import { Comment } from "../../../../Model/Comment";
 import { addComment, getAllCommentOfPost } from "../../../../API/CommentApi";
+import { showToastMessage } from "../../../../Toast/CustomToast";
 
 interface ModalProps {
   isOpen: boolean;
@@ -35,6 +41,7 @@ export const CommentModal: React.FC<ModalProps> = ({
   const [replyTo, setReplyTo] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isPostLiked, setIsPostLiked] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
   const [likes, setLikes] = useState<number>(0);
   const [latestUserLike, setLatestUserLike] = useState<string | undefined>();
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -76,17 +83,13 @@ export const CommentModal: React.FC<ModalProps> = ({
             selectedPost,
             user?.id
           );
-          if (postModal.data) {
+          if (postModal.code === 1000) {
             setPost(postModal.data);
-            //console.log(post)
-            if (postModal.data.likeByUser) {
-              setIsPostLiked(true);
-            } else {
-              setIsPostLiked(false);
-            }
+            setIsPostLiked(postModal.data.likeByUser);
+            setIsSaved(postModal.data.savedByUser);
+            setLikes(postModal.data.numberOfLikes);
+            setLatestUserLike(postModal.data.latestUserLike);
           }
-          setLikes(postModal.data.numberOfLikes);
-          setLatestUserLike(postModal.data.latestUserLike);
         }
       } catch (error) {
         console.log(error);
@@ -107,6 +110,7 @@ export const CommentModal: React.FC<ModalProps> = ({
     setReplyTo(replyToId);
     setInputText(inputText + "@" + replyToName);
   };
+
   const handlePostLike = async () => {
     const accessToken = localStorage.getItem("accessToken");
     setIsPostLiked(!isPostLiked);
@@ -128,6 +132,20 @@ export const CommentModal: React.FC<ModalProps> = ({
       postId: post?.id,
       userId: user?.id,
     });
+  };
+
+  const handleSavePost = async () => {
+    setIsSaved(!isSaved);
+    if (post) {
+      const saveResponse = await savePost(token, {
+        postId: post.id,
+        userId: user?.id,
+        albumId: "",
+      });
+      if (saveResponse.code === 1000) {
+        showToastMessage(saveResponse.data, "info");
+      }
+    }
   };
 
   const totalImages = post?.postContentSet.length;
@@ -308,10 +326,17 @@ export const CommentModal: React.FC<ModalProps> = ({
                     <RiSendPlaneLine className="text-2xl hover:opacity-50 cursor-pointer" />
                   </div>
                   <div className="cursor-pointer">
-                    <BsBookmarkFill className="text-2xl" />
-                    {/* <BsBookmark
-                          className="text-xl hover:opacity-50 cursor-pointer"
-                        /> */}
+                    {isSaved ? (
+                      <BsBookmarkFill
+                        onClick={handleSavePost}
+                        className="text-xl hover:opacity-50 cursor-pointer"
+                      />
+                    ) : (
+                      <BsBookmark
+                        onClick={handleSavePost}
+                        className="text-xl hover:opacity-50 cursor-pointer"
+                      />
+                    )}
                   </div>
                 </div>
                 <p className="text-sm">

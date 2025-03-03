@@ -12,7 +12,7 @@ import "./PostCard.css";
 import Picker from "@emoji-mart/react";
 import { Post } from "../../../../Model/Post";
 import { formatDistanceToNow } from "date-fns";
-import { likePost } from "../../../../API/PostApi";
+import { likePost, savePost } from "../../../../API/PostApi";
 import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
@@ -87,8 +87,16 @@ export const PostCard: React.FC<PostCardProps> = ({
     });
     //console.log(likeResponse.data)
   };
-  const handleSavePost = () => {
+  const handleSavePost = async () => {
     setIsSaved(!isSaved);
+    const saveResponse = await savePost(token, {
+      postId: post.id,
+      userId: user?.id,
+      albumId: ""
+    });
+    if (saveResponse.code === 1000) {
+      showToastMessage(saveResponse.data, "info");
+    }
   };
   const handleEmojiSelect = (emoji: any) => {
     setInputText(inputText + emoji.native);
@@ -120,9 +128,8 @@ export const PostCard: React.FC<PostCardProps> = ({
 
   useEffect(() => {
     const setInit = () => {
-      if (post.likeByUser) {
-        setIsPostLiked(true);
-      }
+      setIsPostLiked(post.likeByUser);
+      setIsSaved(post.savedByUser)
     };
     setInit();
   }, [post]);

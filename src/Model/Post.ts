@@ -2,7 +2,7 @@ import { ListFormat } from "typescript";
 import { z } from "zod";
 import { Comment } from "./Comment";
 
-interface Image {
+export type Image = {
   id?: number;
   imageId: string;
   altText?: string; // Optional alt text for accessibility
@@ -23,6 +23,7 @@ export type Post = {
     latestUserLike: string
     latestUserLikeAvatar: string
     likeByUser: boolean
+    savedByUser: boolean
 }
 
 export type PostOnPersonalWall = {
@@ -46,6 +47,6 @@ export type createPostRequest = {
 
 export type SavePostRequest = {
   postId: string
-  userId: string
+  userId: string | undefined
   albumId: string | null
 }
