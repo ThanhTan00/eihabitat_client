@@ -4,27 +4,41 @@ import {
   faVideoCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { BotMessagesResponse, MessageCustom } from "../../../../Model/Message";
-import { sendMessage } from "../../../../API/chatbotAPI";
+import { getChatBotHistory, sendMessage } from "../../../../API/chatbotAPI";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../Store/store";
 
 export const ChatBot = () => {
+  const { token, user } = useSelector((state: RootState) => state.auth);
   const [messages, setMessages] = useState<BotMessagesResponse[]>([]);
   const [input, setInput] = useState("");
+  const endOfMessagesRef = useRef<HTMLDivElement | null>(null);
 
-  const getChatHis = async () => {};
+  const scrollToBottom = () => {
+    endOfMessagesRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  const getChatHis = async () => {
+    const history = await getChatBotHistory(user?.id);
+    if (history.code === 1000) {
+      setMessages(history.data);
+    }
+  };
 
   const sendMessagehandler = async () => {
-    setMessages((prev) => [...prev, { from: "user", response: input }]);
-    const answer = await sendMessage({ message: input });
-    if (answer) {
-      setMessages((prev) => [
-        ...prev,
-        { from: "bot", response: answer.response },
-      ]);
+    const answer = await sendMessage(user?.id, { message: input });
+    if (answer.code === 1000) {
+      setMessages((prev) => [...prev, answer.data]);
     }
-    console.log(answer);
+    scrollToBottom();
   };
+
+  useEffect(() => {
+    getChatHis();
+    scrollToBottom();
+  }, []);
 
   return (
     <div className="w-full h-full relative z-0">
@@ -87,14 +101,14 @@ export const ChatBot = () => {
             </div>
           </div>
 
-          {messages.map((message) =>
-            message.from === "user" ? (
+          {messages.map((message) => (
+            <>
               <div className="justify-self-end space-y-1">
                 <p className="text-md text-white max-w-96 duration-200 p-2 rounded-2xl bg-[#0C5083]">
-                  {message.response}
+                  {message.message}
                 </p>
               </div>
-            ) : (
+
               <div className="justify-self-start">
                 <div className="grid grid-cols-6 max-w-96">
                   <div className="w-8 h-8 col-span-1 place-self-end rounded-full mr-4">
@@ -111,8 +125,9 @@ export const ChatBot = () => {
                   </div>
                 </div>
               </div>
-            )
-          )}
+            </>
+          ))}
+          <div ref={endOfMessagesRef}></div>
         </div>
       </div>
       <div className="absolute bottom-0 left-0 z-10 bg-white w-full flex items-center w-full px-6 py-6">

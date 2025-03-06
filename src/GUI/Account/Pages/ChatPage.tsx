@@ -178,9 +178,6 @@ export const ChatPage = () => {
               <p className="text-sm font-semibold text-gray-500">Requests</p>
             </div>
             <div className="">
-              {chatRooms.map((room) => (
-                <ChatRoom chatUser={room} />
-              ))}
               <div
                 onClick={handleChatBotClick}
                 className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4"
@@ -205,6 +202,9 @@ export const ChatPage = () => {
                   </div>
                 </div>
               </div>
+              {chatRooms.map((room) => (
+                <ChatRoom chatUser={room} />
+              ))}
             </div>
           </div>
         </div>

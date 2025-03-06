@@ -15,8 +15,12 @@ export type MessageCustom = {
 }
 
 export type BotMessagesResponse = {
-    from: string
-    response: string | null
+    id: string
+    userId: string
+    message: string
+    response: string
+    sendAt: string
+    receiveAt: string
 }
 
 export type BotMessageRequest = {
