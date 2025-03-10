@@ -4,13 +4,11 @@ import { HomeRight, NewsFeed, StoryCircle, StoryModal } from "../Components";
 import { useEffect, useRef, useState } from "react";
 import { getAllFollowings } from "../../../API/UserApi";
 import { Follower } from "../../../Model/User";
+import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import "./Style.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export const HomePage = () => {
-  const [selectedStory, setSelectedStory] = useState<string | undefined>(
-    undefined
-  );
-  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const [followings, setFollowings] = useState<Follower[] | null>(null);
   const { token, user } = useSelector((state: RootState) => state.auth);
 
@@ -34,16 +32,6 @@ export const HomePage = () => {
         behavior: "smooth",
       });
     }
-  };
-
-  const openStoryModal = (authorId: string | undefined) => {
-    setSelectedStory(authorId);
-    setIsStoryModalOpen(true);
-  };
-
-  const closeStoryModal = () => {
-    setIsStoryModalOpen(false);
-    setSelectedStory(undefined);
   };
 
   const getFollowings = async () => {
@@ -83,12 +71,32 @@ export const HomePage = () => {
                   className="w-full overflow-x-auto whitespace-nowrap story-part"
                 >
                   <div className="flex space-x-4">
+                    <div className="flex flex-col items-center cursor-pointer hover:font-bold duration-300">
+                      <div className="relative w-16 h-16 rounded-full bg-white p-0.5 focus:outline-none hover:scale-105 duration-300">
+                        <img
+                          className="w-full h-full rounded-full object-cover"
+                          src={user?.profileAvatar}
+                          alt="Story"
+                        />
+                        <div className="absolute bottom-0 right-1 h-6 w-6 rounded-full p-0.5 bg-blue-500">
+                          <div className="flex items-center justify-center w-full h-full p-0.5 rounded-full bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500">
+                            <FontAwesomeIcon
+                              icon={faPlus}
+                              size="sm"
+                              className="text-white"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                      <span className="text-xs mt-1 max-w-[60px] truncate">
+                        Upload
+                      </span>
+                    </div>
                     <StoryCircle
                       key={user?.id}
                       userId={user?.id}
                       userProfileName={user?.profileName}
                       userAvatar={user?.profileAvatar}
-                      openStoryModal={openStoryModal}
                     />
                     {followings?.map((following) => (
                       <StoryCircle
@@ -96,7 +104,6 @@ export const HomePage = () => {
                         userId={following.id}
                         userProfileName={following.profileName}
                         userAvatar={following.profileAvatar}
-                        openStoryModal={openStoryModal}
                       />
                     ))}
                   </div>
@@ -121,11 +128,6 @@ export const HomePage = () => {
       </div>
 
       {/* <div className="sticky absolute bottom-0 right-0 rounded-full h-52 w-52 bg-black"></div> */}
-      <StoryModal
-        isOpen={isStoryModalOpen}
-        onClose={closeStoryModal}
-        authorId={selectedStory}
-      />
     </div>
   );
 };

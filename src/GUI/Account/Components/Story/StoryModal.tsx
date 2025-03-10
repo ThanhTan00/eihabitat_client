@@ -1,6 +1,12 @@
 import { ModalContent, ModalOverlay, Modal } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import { Story } from "../../../../Model/Story";
+import { getUserStories } from "../../../../API/StoryAPI";
+import { useSelector } from "react-redux";
+import { RootState } from "../../../../Store/store";
+import { formatDistanceToNow } from "date-fns";
 
 interface ModalProps {
   isOpen: boolean;
@@ -8,141 +14,157 @@ interface ModalProps {
   authorId: string | undefined;
 }
 
-const stories = [
-  {
-    id: 1,
-    image:
-      "https://cdn.pixabay.com/photo/2023/02/08/06/29/fashion-7775824_640.jpg",
-    title: "Story 1",
-  },
-  {
-    id: 2,
-    image:
-      "https://cdn.pixabay.com/photo/2024/11/05/20/59/artistic-9176859_640.jpg",
-    title: "Story 2",
-  },
-  {
-    id: 3,
-    image:
-      "https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg",
-    title: "Story 3",
-  },
-];
 export const StoryModal: React.FC<ModalProps> = ({
   isOpen,
   onClose,
   authorId,
 }) => {
+  const { token, user } = useSelector((state: RootState) => state.auth);
+  const [stories, setStories] = useState<Story[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [progress, setProgress] = useState(0);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [key, setKey] = useState(0); // Key to reset progress animation
+
+  const getStories = async () => {
+    try {
+      if (token) {
+        const result = await getUserStories(token, authorId);
+        if (result.code === 1000) {
+          setStories(result.data);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Reset progress on story change
-    setProgress(0);
-
-    // Increment progress over 20 seconds
-    const progressInterval = setInterval(() => {
-      setProgress((prev) => (prev >= 100 ? 100 : prev + 0.5));
-    }, 100); // Update progress every 100ms
-
-    // Change story when progress completes
-    if (progress >= 100) {
-      setCurrentIndex((prevIndex) =>
-        prevIndex === stories.length - 1 ? 0 : prevIndex + 1
-      );
+    if (isOpen) {
+      getStories();
+      setCurrentIndex(0);
+      setKey((prevKey) => prevKey + 1);
     }
+  }, [isOpen]);
 
-    return () => clearInterval(progressInterval); // Cleanup interval
-  }, [progress, stories.length]);
+  useEffect(() => {
+    if (!isOpen || stories.length === 0) return;
 
-  if (stories.length === 0) {
-    return (
-      <div className="flex items-center justify-center h-screen bg-gray-800 text-white">
-        <p>No stories available.</p>
-      </div>
+    const interval = setInterval(() => {
+      goToNext();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isOpen, currentIndex, stories]);
+
+  const goToNext = () => {
+    if (currentIndex < stories.length - 1) {
+      setCurrentIndex((prevIndex) => prevIndex + 1);
+      setKey((prevKey) => prevKey + 1);
+    } else {
+      onClose();
+    }
+  };
+
+  const goToPrev = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? prevIndex : prevIndex - 1
     );
-  }
+    setKey((prevKey) => prevKey + 1);
+  };
 
-  const { image, title } = stories[currentIndex];
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return formatDistanceToNow(date, { addSuffix: true });
+  };
+
   return (
     <div>
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
-        <ModalContent className="">
-          <div className="flex justify-around items-center">
-            <div className="relative h-[90vh] bg-black">
-              {/* Story Image */}
-              <img
-                src={image}
-                alt={title}
-                className="h-full w-auto object-contain"
-              />
-
-              {/* Overlay for content */}
-              <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-30 flex flex-col justify-between p-4 text-white">
-                <div>
-                  <div className="flex space-x-2 mb-4">
-                    {stories.map((_, index) => (
-                      <div
-                        key={index}
-                        className="relative flex-1 h-1 bg-white bg-opacity-50 rounded"
-                      >
+        <ModalContent>
+          <div className="bg-black h-[90vh]">
+            <div className="relative h-full w-full flex justify-center items-center">
+              {/* Progress Bars */}
+              {isLoading ? (
+                <></>
+              ) : (
+                <>
+                  <div className="px-2 w-full absolute top-0 left-0">
+                    <div className="w-full flex gap-1 py-3">
+                      {stories.map((_, index) => (
                         <div
-                          className={`absolute top-0 left-0 h-1 bg-white rounded ${
-                            currentIndex === index
-                              ? "transition-all duration-[20s]"
-                              : ""
-                          }`}
-                          style={{
-                            width:
-                              currentIndex === index
-                                ? `${progress}%`
-                                : currentIndex > index
-                                ? "100%"
-                                : "0%",
-                          }}
+                          key={index}
+                          className="flex-1 h-1 bg-gray-600 rounded"
+                        >
+                          <motion.div
+                            key={key + index} // Unique key to restart animation
+                            initial={{ width: 0 }}
+                            animate={{
+                              width:
+                                index === currentIndex
+                                  ? "100%"
+                                  : index < currentIndex
+                                  ? "100%"
+                                  : "0%",
+                            }}
+                            transition={{
+                              duration: index === currentIndex ? 5 : 0,
+                              ease: "linear",
+                            }}
+                            className="h-full bg-white rounded"
+                          />
+                        </div>
+                      ))}
+                    </div>
+                    <div className="grid grid-cols-8 w-full cursor-pointer">
+                      <div className="w-8 h-8 col-span-1 place-self-start rounded-full">
+                        <img
+                          className="w-full h-full rounded-full object-cover"
+                          src={stories[currentIndex].authorAvatar}
+                          alt="Story"
                         />
                       </div>
-                    ))}
-                  </div>
-                  {/* Title */}
-                  <div className="grid grid-cols-8 w-full">
-                    <div className="w-8 h-8 col-span-1 place-self-start rounded-full mr-4">
-                      <img
-                        className="w-full h-full rounded-full object-cover"
-                        src="https://cdn.pixabay.com/photo/2022/12/20/12/10/santa-7667744_640.jpg"
-                        alt="Story"
-                      />
-                    </div>
-                    <div className="col-span-7 space-y-1">
-                      <p className="font-semibold text-base hover:opacity-70 duration-200">
-                        Lnt.Tan00
-                      </p>
-                      <p className="font-thin text-xs opacity-80">
-                        You can also use variant modifiers to target media
-                        queries like responsive breakpoints, dark mode,
-                        prefers-reduced-motion, and more. For example, use
-                        md:justify-self-end to apply the justify-self-end
-                        utility at only medium screen sizes and above.
-                      </p>
-                    </div>
-                  </div>
-                </div>
+                      <div className="col-span-7 space-y-1">
+                        <div className="flex items-center space-x-2">
+                          <p className="font-semibold text-base hover:opacity-70 text-white cursor-pointer">
+                            {stories[currentIndex].authorName}
+                          </p>
+                          <p className="text-sm text-gray-300 font-light">
+                            {formatDate(stories[currentIndex].createdAt)}
+                          </p>
+                        </div>
 
-                {/* Navigation Dots */}
-                <div className="flex justify-center space-x-2">
-                  {stories.map((_, index) => (
-                    <button
-                      key={index}
-                      className={`h-2 w-2 rounded-full ${
-                        currentIndex === index
-                          ? "bg-white"
-                          : "bg-white bg-opacity-50"
-                      }`}
-                      onClick={() => setCurrentIndex(index)}
-                    ></button>
-                  ))}
-                </div>
+                        <p className="font-thin text-white text-xs opacity-80 bg-gray-500 bg-opacity-50 p-2 rounded-md hover:bg-opacity-100">
+                          {stories[currentIndex].caption}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Image */}
+                  <img
+                    src={stories[currentIndex].imageUrl}
+                    alt={`Slide ${currentIndex + 1}`}
+                    className="w-full max-h-full object-cover rounded-lg transition-opacity duration-500"
+                  />
+                </>
+              )}
+
+              <div className="absolute flex w-full px-2 justify-between items-center">
+                <button
+                  onClick={goToPrev}
+                  className="h-10 w-10 left-4 text-white px-3 py-2 rounded-full bg-gray-200 opacity-50 bg-opacity-0 hover:bg-opacity-30 hover:opacity-100 duration-200"
+                >
+                  &#10094;
+                </button>
+                <button
+                  onClick={goToNext}
+                  className="h-10 w-10 left-4 text-white px-3 py-2 rounded-full bg-gray-200 opacity-50 bg-opacity-0 hover:bg-opacity-30 hover:opacity-100 duration-200"
+                >
+                  &#10095;
+                </button>
               </div>
             </div>
           </div>
