@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { Story } from "../../../../Model/Story";
-import { getUserStories } from "../../../../API/StoryAPI";
+import { getUserStories, seenStory } from "../../../../API/StoryAPI";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { formatDistanceToNow } from "date-fns";
@@ -40,6 +40,12 @@ export const StoryModal: React.FC<ModalProps> = ({
     }
   };
 
+  const seenStoryHandler = (storyId: string) => {
+    if (token) {
+      seenStory(token, user?.id, storyId);
+    }
+  };
+
   useEffect(() => {
     if (isOpen) {
       getStories();
@@ -50,7 +56,7 @@ export const StoryModal: React.FC<ModalProps> = ({
 
   useEffect(() => {
     if (!isOpen || stories.length === 0) return;
-
+    seenStoryHandler(stories[0].id);
     const interval = setInterval(() => {
       goToNext();
     }, 5000);
@@ -61,6 +67,7 @@ export const StoryModal: React.FC<ModalProps> = ({
   const goToNext = () => {
     if (currentIndex < stories.length - 1) {
       setCurrentIndex((prevIndex) => prevIndex + 1);
+      seenStoryHandler(stories[currentIndex + 1].id);
       setKey((prevKey) => prevKey + 1);
     } else {
       onClose();
@@ -84,7 +91,7 @@ export const StoryModal: React.FC<ModalProps> = ({
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />
         <ModalContent>
-          <div className="bg-black h-[90vh]">
+          <div className="bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 h-[90vh]">
             <div className="relative h-full w-full flex justify-center items-center">
               {/* Progress Bars */}
               {isLoading ? (
@@ -147,7 +154,7 @@ export const StoryModal: React.FC<ModalProps> = ({
                   <img
                     src={stories[currentIndex].imageUrl}
                     alt={`Slide ${currentIndex + 1}`}
-                    className="w-full max-h-full object-cover rounded-lg transition-opacity duration-500"
+                    className="w-full max-h-[500px] object-cover transition-opacity duration-500"
                   />
                 </>
               )}

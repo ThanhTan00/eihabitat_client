@@ -1,14 +1,7 @@
 import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState } from "../../../Store/store";
-import {
-  faPenToSquare,
-  faPhoneFlip,
-  faCameraAlt,
-  faVideoCamera,
-  faIcicles,
-  faInfoCircle,
-} from "@fortawesome/free-solid-svg-icons";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";

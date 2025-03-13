@@ -1,16 +1,27 @@
 import { useSelector } from "react-redux";
 import { RootState } from "../../../Store/store";
-import { HomeRight, NewsFeed, StoryCircle, StoryModal } from "../Components";
+import {
+  HomeRight,
+  NewsFeed,
+  StoryCircle,
+  StoryCreateModel,
+  StoryModal,
+} from "../Components";
 import { useEffect, useRef, useState } from "react";
 import { getAllFollowings } from "../../../API/UserApi";
 import { Follower } from "../../../Model/User";
 import { faPlus } from "@fortawesome/free-solid-svg-icons";
 import "./Style.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { FollowingNewStory } from "../../../Model/Story";
+import { getFollowingNewStory } from "../../../API/StoryAPI";
 
 export const HomePage = () => {
-  const [followings, setFollowings] = useState<Follower[] | null>(null);
+  const [followingNewStory, setFollowingNewStory] = useState<
+    FollowingNewStory[] | null
+  >(null);
   const { token, user } = useSelector((state: RootState) => state.auth);
+  const [isStoryModelOpen, setIsStoryModelOpen] = useState<boolean>(false);
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -34,23 +45,28 @@ export const HomePage = () => {
     }
   };
 
-  const getFollowings = async () => {
+  const fetchFollowingNewStory = async () => {
     try {
       if (token && user) {
-        const followings = await getAllFollowings(
-          token,
-          user?.profileName,
-          user?.id
-        );
-        console.log(followings.data);
-        setFollowings(followings.data);
+        const result = await getFollowingNewStory(token, user?.id);
+        console.log(result.data);
+        setFollowingNewStory(result.data);
       }
     } catch (error) {
       console.log(error);
     }
   };
+
+  const openStoryCreateModel = () => {
+    setIsStoryModelOpen(true);
+  };
+
+  const closeStoryModal = () => {
+    setIsStoryModelOpen(false);
+  };
+
   useEffect(() => {
-    getFollowings();
+    fetchFollowingNewStory();
   }, []);
 
   return (
@@ -71,7 +87,10 @@ export const HomePage = () => {
                   className="w-full overflow-x-auto whitespace-nowrap story-part"
                 >
                   <div className="flex space-x-4">
-                    <div className="flex flex-col items-center cursor-pointer hover:font-bold duration-300">
+                    <div
+                      onClick={() => openStoryCreateModel()}
+                      className="flex flex-col items-center cursor-pointer hover:font-bold duration-300"
+                    >
                       <div className="relative w-16 h-16 rounded-full bg-white p-0.5 focus:outline-none hover:scale-105 duration-300">
                         <img
                           className="w-full h-full rounded-full object-cover"
@@ -92,19 +111,14 @@ export const HomePage = () => {
                         Upload
                       </span>
                     </div>
-                    <StoryCircle
+                    {/* <StoryCircle
                       key={user?.id}
                       userId={user?.id}
                       userProfileName={user?.profileName}
                       userAvatar={user?.profileAvatar}
-                    />
-                    {followings?.map((following) => (
-                      <StoryCircle
-                        key={following.id}
-                        userId={following.id}
-                        userProfileName={following.profileName}
-                        userAvatar={following.profileAvatar}
-                      />
+                    /> */}
+                    {followingNewStory?.map((following) => (
+                      <StoryCircle followingNewStory={following} />
                     ))}
                   </div>
                 </div>
@@ -126,7 +140,7 @@ export const HomePage = () => {
           <HomeRight />
         </div>
       </div>
-
+      <StoryCreateModel isOpen={isStoryModelOpen} onClose={closeStoryModal} />
       {/* <div className="sticky absolute bottom-0 right-0 rounded-full h-52 w-52 bg-black"></div> */}
     </div>
   );

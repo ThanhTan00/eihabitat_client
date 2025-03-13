@@ -9,3 +9,10 @@ export type Story = {
     authorName: string
     authorAvatar: string
 }
+
+export type FollowingNewStory = {
+    authorId: string
+    authorName: string
+    authorAvatar: string
+    newStory: boolean
+}

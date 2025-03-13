@@ -13,9 +13,12 @@ export type Post = {
     caption: string
     type: string
     createdAt: string 
+    authorId: string
     authorProfileName: string
     authorProfileAvatar: string
     authorUrl: string
+    story: boolean
+    newStory: boolean
     postContentSet: Image[]
     commentSet: Comment[]
     numberOfLikes: number

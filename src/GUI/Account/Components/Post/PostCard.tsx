@@ -18,6 +18,7 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { showToastMessage } from "../../../../Toast/CustomToast";
 import { addComment } from "../../../../API/CommentApi";
+import { StoryModal } from "../Story/StoryModal";
 
 interface PostCardProps {
   post: Post;
@@ -37,10 +38,13 @@ export const PostCard: React.FC<PostCardProps> = ({
   const [numberOfLikes, setNumberOfLikes] = useState<number>(
     post.numberOfLikes
   );
+  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
+  const [isNew, setIsNew] = useState<boolean>(post.newStory);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const { user, token } = useSelector((state: RootState) => state.auth);
   // const user = localStorage.getItem("user");
   const totalImages = post?.postContentSet.length;
+
   const nextSlide = () => {
     if (totalImages)
       setCurrentIndex((prevIndex) =>
@@ -60,6 +64,7 @@ export const PostCard: React.FC<PostCardProps> = ({
       transform: `translateX(-${currentIndex * 100}%)`,
     };
   };
+
   const toggleCaption = () => {
     setIsExpanded(!isExpanded);
   };
@@ -67,6 +72,7 @@ export const PostCard: React.FC<PostCardProps> = ({
   const handleClick = () => {
     setShowDropdown(!showDropdown);
   };
+
   const handlePostLike = async () => {
     setIsPostLiked(!isPostLiked);
     post.numberOfLikes += 1;
@@ -77,6 +83,7 @@ export const PostCard: React.FC<PostCardProps> = ({
     });
     //console.log(likeResponse.data)
   };
+
   const handlePostDislike = async () => {
     setIsPostLiked(!isPostLiked);
     post.numberOfLikes -= 1;
@@ -87,21 +94,24 @@ export const PostCard: React.FC<PostCardProps> = ({
     });
     //console.log(likeResponse.data)
   };
+
   const handleSavePost = async () => {
     setIsSaved(!isSaved);
     const saveResponse = await savePost(token, {
       postId: post.id,
       userId: user?.id,
-      albumId: ""
+      albumId: "",
     });
     if (saveResponse.code === 1000) {
       showToastMessage(saveResponse.data, "info");
     }
   };
+
   const handleEmojiSelect = (emoji: any) => {
     setInputText(inputText + emoji.native);
     //setShowEmojiPicker(false);
   };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return formatDistanceToNow(date, { addSuffix: true });
@@ -126,10 +136,19 @@ export const PostCard: React.FC<PostCardProps> = ({
     addCommentHandler(); // Calls your handler function
   };
 
+  const openStoryModal = () => {
+    setIsStoryModalOpen(true);
+    setIsNew(false);
+  };
+
+  const closeStoryModal = () => {
+    setIsStoryModalOpen(false);
+  };
+
   useEffect(() => {
     const setInit = () => {
       setIsPostLiked(post.likeByUser);
-      setIsSaved(post.savedByUser)
+      setIsSaved(post.savedByUser);
     };
     setInit();
   }, [post]);
@@ -140,15 +159,36 @@ export const PostCard: React.FC<PostCardProps> = ({
         <div className="flex justify-between items-center w-full py-2">
           <div className="flex items-center">
             <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-full p-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500">
-                <div className="w-full h-full rounded-full bg-white p-0.5">
-                  <img
-                    className="w-full h-full rounded-full object-cover"
-                    src={post.authorProfileAvatar}
-                    alt="Story"
-                  />
+              {post.story ? (
+                <>
+                  <div
+                    className={`${
+                      isNew
+                        ? "bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500"
+                        : "bg-gray-500"
+                    } w-12 h-12 rounded-full p-0.5 cursor-pointer`}
+                    onClick={() => openStoryModal()}
+                  >
+                    <div className="w-full h-full rounded-full bg-white p-0.5">
+                      <img
+                        className="w-full h-full rounded-full object-cover"
+                        src={post.authorProfileAvatar}
+                        alt="Story"
+                      />
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <div className="w-12 h-12 rounded-full p-0.5">
+                  <div className="w-full h-full rounded-full bg-white p-0.5">
+                    <img
+                      className="w-full h-full rounded-full object-cover"
+                      src={post.authorProfileAvatar}
+                      alt="Story"
+                    />
+                  </div>
                 </div>
-              </div>
+              )}
             </div>
             <div className="pl-4">
               <div className="flex justify-between items-end">
@@ -332,6 +372,11 @@ export const PostCard: React.FC<PostCardProps> = ({
         </div>
         <hr />
       </div>
+      <StoryModal
+        isOpen={isStoryModalOpen}
+        onClose={closeStoryModal}
+        authorId={post.authorId}
+      />
 
       {/* <CommentModal false true isPostLiked isSaved handlePostLike handleSavePost /> */}
     </div>

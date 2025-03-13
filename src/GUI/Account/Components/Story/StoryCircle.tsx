@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { StoryModal } from "./StoryModal";
+import { FollowingNewStory } from "../../../../Model/Story";
 
 interface Props {
-  userId: string | undefined;
-  userAvatar: string | undefined;
-  userProfileName: string | undefined;
+  followingNewStory: FollowingNewStory;
 }
 
-export const StoryCircle = ({ userId, userProfileName, userAvatar }: Props) => {
+export const StoryCircle = ({ followingNewStory }: Props) => {
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
+  const [isNew, setIsNew] = useState<boolean>(followingNewStory.newStory);
   const openStoryModal = () => {
     setIsStoryModalOpen(true);
+    setIsNew(false);
   };
 
   const closeStoryModal = () => {
@@ -22,23 +23,29 @@ export const StoryCircle = ({ userId, userProfileName, userAvatar }: Props) => {
         onClick={() => openStoryModal()}
         className="flex flex-col items-center cursor-pointer"
       >
-        <div className="w-16 h-16 rounded-full p-0.5 bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500 ">
+        <div
+          className={`${
+            isNew
+              ? "bg-gradient-to-r from-purple-500 via-pink-500 to-yellow-500"
+              : "bg-gray-500"
+          } w-16 h-16 rounded-full p-0.5 `}
+        >
           <div className="w-full h-full rounded-full bg-white p-0.5 hover:p-0 hover:scale-90">
             <img
               className="w-full h-full rounded-full object-cover"
-              src={userAvatar}
+              src={followingNewStory.authorAvatar}
               alt="Story"
             />
           </div>
         </div>
         <span className="text-xs mt-1 max-w-[60px] truncate">
-          {userProfileName}
+          {followingNewStory.authorName}
         </span>
       </div>
       <StoryModal
         isOpen={isStoryModalOpen}
         onClose={closeStoryModal}
-        authorId={userId}
+        authorId={followingNewStory.authorId}
       />
     </div>
   );

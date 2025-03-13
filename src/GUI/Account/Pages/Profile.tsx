@@ -1,4 +1,9 @@
-import { Loading, ProfileUserDetails, SavePostPart, UserPostPart } from "../Components";
+import {
+  Loading,
+  ProfileUserDetails,
+  SavePostPart,
+  UserPostPart,
+} from "../Components";
 import { useEffect, useState } from "react";
 import { User } from "../../../Model/User";
 import { getUserInfo } from "../../../API/UserApi";
@@ -24,23 +29,23 @@ export const Profile = () => {
     {
       tab: "post",
       icon: <AiOutlineTable />,
-      activeTab: <UserPostPart postList={postList}/>,
+      activeTab: <UserPostPart postList={postList} />,
     },
-    {
-      tab: "Reels",
-      icon: <RiVideoAddLine />,
-      activeTab: "",
-    },
+    // {
+    //   tab: "Reels",
+    //   icon: <RiVideoAddLine />,
+    //   activeTab: "",
+    // },
     {
       tab: "Saved",
       icon: <BiBookmark />,
-      activeTab: <SavePostPart/>,
+      activeTab: <SavePostPart />,
     },
-    {
-      tab: "Tagged",
-      icon: <AiOutlineUser />,
-      activeTab: "",
-    },
+    // {
+    //   tab: "Tagged",
+    //   icon: <AiOutlineUser />,
+    //   activeTab: "",
+    // },
   ];
 
   const getUser = async () => {
@@ -81,24 +86,33 @@ export const Profile = () => {
       </div>
       <div className="relative flex items-center justify-center">
         <div className="w-[80%]">
-          <div className="flex border-t relative items-center justify-between pr-32 pl-32">
-            {tabs.map((item) => (
-              <div
-                onClick={() => setActiveTab(item.tab)}
-                className={`${
-                  activeTab === item.tab
-                    ? "border-t border-black"
-                    : "opacity-60"
-                } flex items-center cursor-pointer py-2`}
-              >
-                <p>{item.icon}</p>
-                <p className="ml-1">{item.tab}</p>
+          <div className="flex border-t relative items-center justify-center space-x-8">
+            {user?.profileName !== username ? (
+              <div className="border-t border-black flex items-center cursor-pointer py-2">
+                <p>
+                  <AiOutlineTable />
+                </p>
+                <p className="ml-1">Post</p>
               </div>
-            ))}
+            ) : (
+              <>
+                {tabs.map((item) => (
+                  <div
+                    onClick={() => setActiveTab(item.tab)}
+                    className={`${
+                      activeTab === item.tab
+                        ? "border-t border-black"
+                        : "opacity-60"
+                    } flex items-center cursor-pointer py-2`}
+                  >
+                    <p>{item.icon}</p>
+                    <p className="ml-1">{item.tab}</p>
+                  </div>
+                ))}
+              </>
+            )}
           </div>
-          {tabs.map((item) => (
-              activeTab === item.tab && item.activeTab
-            ))}
+          {tabs.map((item) => activeTab === item.tab && item.activeTab)}
           {isLoading && <Loading />}
         </div>
       </div>
