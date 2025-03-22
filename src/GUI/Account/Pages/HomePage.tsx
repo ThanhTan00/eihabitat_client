@@ -72,7 +72,7 @@ export const HomePage = () => {
   return (
     <div className="relative ml-96">
       <div className="mt-5 flex w-[70%]">
-        <div className="flex justify-center ">
+        <div className="flex justify-center min-w-[80%]">
           <div className="container mx-auto">
             <div className="flex justify-center items-center w-full">
               <div className="relative w-[80%] flex items-center">

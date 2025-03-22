@@ -154,8 +154,8 @@ export const PostCard: React.FC<PostCardProps> = ({
   }, [post]);
 
   return (
-    <div>
-      <div className="w-full">
+    <div className="flex justify-center">
+      <div className="w-[60%]">
         <div className="flex justify-between items-center w-full py-2">
           <div className="flex items-center">
             <div className="flex flex-col items-center">

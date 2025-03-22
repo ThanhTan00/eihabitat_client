@@ -1,14 +1,19 @@
 import { useState } from "react";
 import { StoryModal } from "./StoryModal";
 import { FollowingNewStory } from "../../../../Model/Story";
+import { seenStory } from "../../../../API/StoryAPI";
+import { RootState } from "../../../../Store/store";
+import { useSelector } from "react-redux";
 
 interface Props {
   followingNewStory: FollowingNewStory;
 }
 
 export const StoryCircle = ({ followingNewStory }: Props) => {
+  const { token, user } = useSelector((state: RootState) => state.auth);
   const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const [isNew, setIsNew] = useState<boolean>(followingNewStory.newStory);
+
   const openStoryModal = () => {
     setIsStoryModalOpen(true);
     setIsNew(false);

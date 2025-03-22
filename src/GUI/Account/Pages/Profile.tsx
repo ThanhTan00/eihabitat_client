@@ -15,6 +15,7 @@ import { RootState } from "../../../Store/store";
 import { AiOutlineTable, AiOutlineUser } from "react-icons/ai";
 import { RiVideoAddLine } from "react-icons/ri";
 import { BiBookmark } from "react-icons/bi";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 export const Profile = () => {
   const { user, token } = useSelector((state: RootState) => state.auth);
@@ -63,11 +64,10 @@ export const Profile = () => {
           setPostList(userPostList.data);
         }
       }
-      setTimeout(() => {
-        setIsLoading(false);
-      }, 2000);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -78,7 +78,11 @@ export const Profile = () => {
   return (
     <div className="ml-96 w-[1000px]">
       <div className="relative flex items-center justify-center">
-        {isLoading && <Loading />}
+        {isLoading && (
+          <div className="absolute top-0 w-full h-60">
+            <Loading />
+          </div>
+        )}
         <ProfileUserDetails
           hostUser={hostUser}
           numberOfPosts={postList?.length}
@@ -113,7 +117,6 @@ export const Profile = () => {
             )}
           </div>
           {tabs.map((item) => activeTab === item.tab && item.activeTab)}
-          {isLoading && <Loading />}
         </div>
       </div>
     </div>
