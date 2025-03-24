@@ -1,7 +1,7 @@
 import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 
-const URL = "http://14.225.253.213/api/ws";
+const URL = "https://eihabitat.site/api/ws";
 //const URL = "http://localhost:8080/ws";
 
 const connectWebSocket = (
