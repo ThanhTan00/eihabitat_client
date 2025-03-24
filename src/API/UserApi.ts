@@ -62,8 +62,8 @@ export const authenticateWithGG = async (email: string | null, token: string | n
 
 export const loginWithGG = async () => {
     try {
-        // const response = await axios.get(window.location.href = "http://14.225.253.213:8080/oauth2/authorization/google");
-        const response = await axios.get(window.location.href = "http://localhost:8080/oauth2/authorization/google");
+        const response = await axios.get(window.location.href = "http://14.225.253.213:8080/oauth2/authorization/google");
+        //const response = await axios.get(window.location.href = "http://localhost:8080/oauth2/authorization/google");
         return response.data
     } catch (error) {
         const axiosError = error as AxiosError<BackendError>
@@ -202,7 +202,7 @@ export const logout = async ({token} : {token : string | null}) => {
 
 export const getAllFollowers = async (accessToken: string, userProfileName: string | null, rootUserId: string | undefined) => {
     try {
-        const response = await api.get('api/follow/'+userProfileName+'/followers/'+rootUserId, {
+        const response = await api.get('follow/'+userProfileName+'/followers/'+rootUserId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
@@ -223,7 +223,7 @@ export const getAllFollowers = async (accessToken: string, userProfileName: stri
 
 export const getAllFollowings = async (accessToken: string, userProfileName: string | null, rootUserId: string | undefined) => {
     try {
-        const response = await api.get('api/follow/'+userProfileName+'/following/' + rootUserId, {
+        const response = await api.get('follow/'+userProfileName+'/following/' + rootUserId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
@@ -244,7 +244,7 @@ export const getAllFollowings = async (accessToken: string, userProfileName: str
 
 export const followUser = async (accessToken: string | null, followRequest : followRequest) => {
     try {
-        const response = await api.post('api/follow',followRequest,{
+        const response = await api.post('follow',followRequest,{
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -267,7 +267,7 @@ export const followUser = async (accessToken: string | null, followRequest : fol
 
 export const unFollowUser = async (accessToken: string | null, followRequest : followRequest) => {
     try {
-        const response = await api.post('api/follow/unfollow',followRequest,{
+        const response = await api.post('follow/unfollow',followRequest,{
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -333,7 +333,7 @@ export const searchUser = async (accessToken: string | null, profileName: string
 
 export const suggestFollow = async (accessToken: string | null, userId: string) => {
     try {
-        const response = await api.get('api/follow/suggestions/' + userId, {
+        const response = await api.get('follow/suggestions/' + userId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
@@ -354,7 +354,7 @@ export const suggestFollow = async (accessToken: string | null, userId: string) 
 
 export const suggestFollowByFollowedMe = async (accessToken: string | null, userId: string) => {
     try {
-        const response = await api.get('api/follow/followedMeSuggestions/' + userId, {
+        const response = await api.get('follow/followedMeSuggestions/' + userId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
@@ -375,7 +375,7 @@ export const suggestFollowByFollowedMe = async (accessToken: string | null, user
 
 export const getAllChatRoom = async (accessToken: string | null, userId: string) => {
     try {
-        const response = await api.get('api/chat/conversations/' + userId, {
+        const response = await api.get('chat/conversations/' + userId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
@@ -396,7 +396,7 @@ export const getAllChatRoom = async (accessToken: string | null, userId: string)
 
 export const getChatHistory = async (accessToken: string | null, senderId: string, recipientId: string) => {
     try {
-        const response = await api.get('api/chat/history/' + senderId +"/"+recipientId, {
+        const response = await api.get('chat/history/' + senderId +"/"+recipientId, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             },
