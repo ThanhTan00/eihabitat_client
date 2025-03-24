@@ -62,7 +62,7 @@ export const authenticateWithGG = async (email: string | null, token: string | n
 
 export const loginWithGG = async () => {
     try {
-        const response = await axios.get(window.location.href = "http://14.225.253.213:8080/oauth2/authorization/google");
+        const response = await axios.get(window.location.href = "http://14.225.253.213/oauth2/authorization/google");
         //const response = await axios.get(window.location.href = "http://localhost:8080/oauth2/authorization/google");
         return response.data
     } catch (error) {

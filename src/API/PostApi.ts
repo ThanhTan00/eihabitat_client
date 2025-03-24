@@ -96,7 +96,7 @@ export const getNewsFeedPosts = async (accessToken: string, id: string | undefin
 
 export const likePost = async (accessToken: string | null, likePostRequest : LikePostRequest) => {
     try {
-        const response = await api.post(`api/likes`, likePostRequest,{
+        const response = await api.post(`likes`, likePostRequest,{
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
@@ -140,7 +140,7 @@ export const createPost = async (accessToken: string | null, userId: string | un
 
 export const addMessage =  async (accessToken: string, message: MessageRequest) => {
     try {
-        const response = await api.post(`api/chat/send` , message, {
+        const response = await api.post(`chat/send` , message, {
             headers: {
                "Content-Type": "application/json" 
             }
