@@ -7,11 +7,24 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import { getAllChatRoom } from "../../../API/UserApi";
 import { ChatUser } from "../../../Model/User";
-import { ChatBot, ChatBox, ChatRoom } from "../Components";
+import {
+  ChatBot,
+  ChatBox,
+  ChatRoom,
+  StoryCircle,
+  StoryModal,
+} from "../Components";
+import { getFollowingNewStory } from "../../../API/StoryAPI";
+import { FollowingNewStory } from "../../../Model/Story";
 
 export const ChatPage = () => {
   const { user, token } = useSelector((state: RootState) => state.auth);
   const [chatRooms, setChatRooms] = useState<ChatUser[]>([]);
+  const [followingNewStory, setFollowingNewStory] = useState<
+    FollowingNewStory[] | null
+  >(null);
+  const [isStoryModelOpen, setIsStoryModelOpen] = useState<boolean>(false);
+  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -48,6 +61,18 @@ export const ChatPage = () => {
     }
   };
 
+  const fetchFollowingNewStory = async () => {
+    try {
+      if (token && user) {
+        const result = await getFollowingNewStory(token, user?.id);
+        console.log(result.data);
+        setFollowingNewStory(result.data);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleChatBotClick = () => {
     navigate("/chat/0");
   };
@@ -58,6 +83,7 @@ export const ChatPage = () => {
 
   useEffect(() => {
     getChatRoms();
+    fetchFollowingNewStory();
   }, []);
 
   return (
@@ -82,78 +108,21 @@ export const ChatPage = () => {
                   className="w-full overflow-x-auto whitespace-nowrap story-part"
                 >
                   <div className="flex space-x-4">
-                    <div className="flex flex-col items-center cursor-pointer">
-                      <div className="w-20 h-20 rounded-full">
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src="https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg"
-                          alt="Story"
-                        />
-                      </div>
-                      <span className="text-xs mt-1 max-w-[60px] truncate">
-                        eheheheheheheehe
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center cursor-pointer">
-                      <div className="w-20 h-20 rounded-full">
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src="https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg"
-                          alt="Story"
-                        />
-                      </div>
-                      <span className="text-xs mt-1 max-w-[60px] truncate">
-                        eheheheheheheehe
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center cursor-pointer">
-                      <div className="w-20 h-20 rounded-full">
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src="https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg"
-                          alt="Story"
-                        />
-                      </div>
-                      <span className="text-xs mt-1 max-w-[60px] truncate">
-                        eheheheheheheehe
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center cursor-pointer">
-                      <div className="w-20 h-20 rounded-full">
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src="https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg"
-                          alt="Story"
-                        />
-                      </div>
-                      <span className="text-xs mt-1 max-w-[60px] truncate">
-                        eheheheheheheehe
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center cursor-pointer">
-                      <div className="w-20 h-20 rounded-full">
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src="https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg"
-                          alt="Story"
-                        />
-                      </div>
-                      <span className="text-xs mt-1 max-w-[60px] truncate">
-                        eheheheheheheehe
-                      </span>
-                    </div>
-                    <div className="flex flex-col items-center cursor-pointer">
-                      <div className="w-20 h-20 rounded-full">
-                        <img
-                          className="w-full h-full rounded-full object-cover"
-                          src="https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg"
-                          alt="Story"
-                        />
-                      </div>
-                      <span className="text-xs mt-1 max-w-[60px] truncate">
-                        eheheheheheheehe
-                      </span>
-                    </div>
+                    {followingNewStory?.map((following) => (
+                      <StoryCircle followingNewStory={following} />
+                      //   <div className="flex flex-col items-center cursor-pointer">
+                      //   <div className="w-20 h-20 rounded-full">
+                      //     <img
+                      //       className="w-full h-full rounded-full object-cover"
+                      //       src="https://cdn.pixabay.com/photo/2022/01/20/15/34/monkey-6952630_640.jpg"
+                      //       alt="Story"
+                      //     />
+                      //   </div>
+                      //   <span className="text-xs mt-1 max-w-[60px] truncate">
+                      //     eheheheheheheehe
+                      //   </span>
+                      // </div>
+                    ))}
                   </div>
                 </div>
 
