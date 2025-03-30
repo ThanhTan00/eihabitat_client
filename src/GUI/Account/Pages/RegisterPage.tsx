@@ -81,9 +81,13 @@ export const RegisterPage: React.FC = () => {
               <h1 className="text-white text-3xl mb-3">Welcome</h1>
               <div>
                 <p className="text-white">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                  Aenean suspendisse aliquam varius rutrum purus maecenas ac{" "}
+                  EIHabitat is a dynamic online community where students,
+                  alumni, and friends of EIU can connect, collaborate, and stay
+                  informed. Whether you're looking to network, share ideas, or
+                  keep up with campus and beyond, this is the place for you.
+                  Join now and be part of the conversation!
                   <a href="#" className="text-purple-500 font-semibold">
+                    {" "}
                     Learn more
                   </a>
                 </p>
