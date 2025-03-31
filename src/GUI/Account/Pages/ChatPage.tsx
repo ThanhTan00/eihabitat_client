@@ -23,8 +23,6 @@ export const ChatPage = () => {
   const [followingNewStory, setFollowingNewStory] = useState<
     FollowingNewStory[] | null
   >(null);
-  const [isStoryModelOpen, setIsStoryModelOpen] = useState<boolean>(false);
-  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
   const { userId } = useParams<{ userId: string }>();
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -89,7 +87,7 @@ export const ChatPage = () => {
   return (
     <div className="ml-20 ">
       <div className="flex ">
-        <div className="max-w-[500px] relative z-0 border-r border-gray-200 ">
+        <div className="w-[30%] relative z-0 border-r border-gray-200 ">
           <div className="absolute z-10 w-full bg-white top-0 flex justify-between items-center px-10 pt-10 pb-10">
             <p className="text-xl font-bold">{user?.profileName}</p>
             <FontAwesomeIcon icon={faPenToSquare} size="xl" />

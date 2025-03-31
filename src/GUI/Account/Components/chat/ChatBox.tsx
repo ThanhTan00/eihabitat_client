@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import connectWebSocket from "../../../../API/connectWebsocket";
+import connectWebSocket from "../../../../API/connectNotificationSocket";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { useParams } from "react-router-dom";
@@ -18,9 +18,18 @@ import {
 } from "../../../../API/UserApi";
 import { Message, MessageCustom } from "../../../../Model/Message";
 import { UserDemoInfo } from "../../../../Model/User";
+import { useForm } from "react-hook-form";
+import { showToastMessage } from "../../../../Toast/CustomToast";
+import { BsEmojiSmile } from "react-icons/bs";
+import Picker from "@emoji-mart/react";
 
 interface Props {
   selectedId: string;
+}
+interface formFields {
+  content: string;
+  recipientId: string;
+  senderId: string;
 }
 
 export const ChatBox = ({ selectedId }: Props) => {
@@ -28,6 +37,7 @@ export const ChatBox = ({ selectedId }: Props) => {
   const [chatUser, setChatUser] = useState<UserDemoInfo>();
   const [messages, setMessages] = useState<MessageCustom[]>([]);
   const [input, setInput] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
 
   const getChatHis = async () => {
     try {
@@ -55,31 +65,47 @@ export const ChatBox = ({ selectedId }: Props) => {
     }
   };
 
+  const handleEmojiSelect = (emoji: any) => {
+    setInput(input + emoji.native);
+    setShowEmojiPicker(false);
+  };
+
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = useForm<formFields>({
+    mode: "all",
+  });
+
+  const onSubmit = async () => {
+    try {
+      if (token && user && selectedId) {
+        const addNewMessage = await addMessage(token, {
+          content: input,
+          recipientId: selectedId,
+          senderId: user?.id,
+        });
+      }
+    } catch (error) {
+      showToastMessage("Something went wrong, try again later", "error");
+    } finally {
+      setInput("");
+    }
+  };
+
   useEffect(() => {
     getChatHis();
     getUser();
   }, [selectedId]);
 
-  useEffect(() => {
-    if (user) {
-      const client = connectWebSocket(user?.id, (message: MessageCustom) => {
-        setMessages((prev) => [...prev, message]);
-        return () => client.deactivate();
-      });
-    }
-  }, [user]);
-
-  const sendMessage = async () => {
-    if (token && user && selectedId) {
-      const addNewMessage = await addMessage(token, {
-        content: input,
-        recipientId: selectedId,
-        senderId: user?.id,
-      });
-    }
-    console.log(messages);
-    setInput("");
-  };
+  // useEffect(() => {
+  //   if (user) {
+  //     const client = connectWebSocket(user?.id, (message: MessageCustom) => {
+  //       setMessages((prev) => [...prev, message]);
+  //       return () => client.deactivate();
+  //     });
+  //   }
+  // }, [user]);
 
   return (
     <div className="w-full h-full relative z-0">
@@ -168,34 +194,36 @@ export const ChatBox = ({ selectedId }: Props) => {
           )}
         </div>
       </div>
-      <div className="absolute bottom-0 left-0 z-10 bg-white w-full flex items-center w-full px-6 py-6">
+      <div className="absolute bottom-0 left-0 z-10 bg-white w-full flex items-center w-full px-6 py-6 border-t border-gray-200">
         {/* Smile icon */}
         <span className="absolute left-8 text-gray-500">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            strokeWidth="2"
-            stroke="currentColor"
-            className="w-5 h-5"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M14.75 9.75l-.004.001m-5.496 0L9.25 9.75m2.5 5.25a3.75 3.75 0 003.75-3.75m-7.5 0a3.75 3.75 0 017.5 0m-7.5 0A3.75 3.75 0 0112 15a3.75 3.75 0 01-7.5 0z"
-            />
-          </svg>
+          <BsEmojiSmile
+            onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+            className="mr-3 text-2xl cursor-pointer"
+          />
+          {showEmojiPicker && (
+            <div className=" absolute bottom-[100%] left-[100%]">
+              <Picker onEmojiSelect={handleEmojiSelect} />
+            </div>
+          )}
         </span>
 
         {/* Input field */}
-        <input
-          type="text"
-          placeholder="Message..."
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className="w-full py-2 pl-8 pr-20 text-gray-700 bg-white border rounded-full shadow-sm focus:outline-none focus:ring focus:ring-blue-200 border-gray-300"
-        />
-        <button className="ml-3 min-w-28 bg-[#0C5083] hover:bg-[#143D5C] px-3 py-1 text-white p-2 duration-300 rounded-full" onClick={sendMessage}>Send</button>
+        <form className="flex w-full" onSubmit={handleSubmit(onSubmit)}>
+          <input
+            type="text"
+            placeholder="Message..."
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            className="w-[90%] py-2  pl-10 pr-20 text-gray-700 bg-white border rounded-full shadow-sm focus:outline-none focus:ring focus:ring-blue-200 border-gray-300"
+          />
+          <button
+            type="submit"
+            className="ml-3 min-w-28 bg-[#0C5083] hover:bg-[#143D5C] px-3 py-1 text-white p-2 duration-300 rounded-full"
+          >
+            Send
+          </button>
+        </form>
       </div>
     </div>
     // <div>

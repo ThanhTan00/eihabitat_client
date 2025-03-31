@@ -5,6 +5,11 @@ import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
 import { useNavigate } from "react-router-dom";
 import { SideBarMenuIcon } from "./SideBarMenuIcon";
+import { NotificationType } from "../../../../Model/WebSocket";
+import connectNotificationSocket from "../../../../API/connectNotificationSocket";
+import { toast } from "react-toastify";
+import { ToastNotification } from "../../../../Toast/CustomToast";
+import { getNotifications } from "../../../../API/Notification";
 
 export const Sidebar = () => {
   const [activeTab, setActiveTab] = useState<string>();
@@ -12,7 +17,8 @@ export const Sidebar = () => {
   const [isSearchBarOPen, setIsSearchBarOpen] = useState<boolean>(false);
   const [isNotiBarOpen, setIsNotiBarOpen] = useState<boolean>(false);
   const [isMenuSpan, setIsMenuSpan] = useState<boolean>(true);
-  const { user } = useSelector((state: RootState) => state.auth);
+  const [notifications, setNotifications] = useState<NotificationType[]>([]);
+  const { token, user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
   const handleTabClick = (title: string) => {
@@ -48,6 +54,37 @@ export const Sidebar = () => {
   const closePostModal = () => {
     setIsPostModalOpen(false);
   };
+  const getNotificationHis = async () => {
+    try {
+      if (token && user) {
+        const result = await getNotifications(token, user?.profileName);
+        console.log(result.data);
+        if (result.code === 1000) {
+          setNotifications(result.data);
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getNotificationHis();
+  }, [user]);
+
+  useEffect(() => {
+    const client = connectNotificationSocket(
+      user?.profileName,
+      (notification: NotificationType) => {
+        setNotifications((prev) => [notification, ...prev]);
+
+        toast(<ToastNotification notification={notification} />, {
+          autoClose: 5000,
+          position: "bottom-right",
+        });
+      }
+    );
+  }, [user]);
 
   return (
     <div className="sticky top-0 left-0 h-[100vh]">
@@ -56,6 +93,7 @@ export const Sidebar = () => {
           activeTab={activeTab}
           isSearchBarOpen={isSearchBarOPen}
           isNotiBarOpen={isNotiBarOpen}
+          notifications={notifications}
           handleTabClick={handleTabClick}
         />
       ) : (

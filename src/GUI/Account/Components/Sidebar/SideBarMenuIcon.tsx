@@ -20,15 +20,23 @@ import { Link } from "react-router-dom";
 import { SearchBar } from "./SearchBar";
 import { NotificationBar } from "./NotificationBar";
 import { useState } from "react";
+import { NotificationType } from "../../../../Model/WebSocket";
 
 interface MenuProps {
   activeTab: string | undefined;
   isSearchBarOpen: boolean | false;
   isNotiBarOpen: boolean | false;
+  notifications: NotificationType[];
   handleTabClick: (title: string) => void;
 }
 
-export const SideBarMenuIcon = ({ activeTab, isSearchBarOpen, isNotiBarOpen, handleTabClick }: MenuProps) => {
+export const SideBarMenuIcon = ({
+  activeTab,
+  isSearchBarOpen,
+  isNotiBarOpen,
+  notifications,
+  handleTabClick,
+}: MenuProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
 
   return (
@@ -65,9 +73,7 @@ export const SideBarMenuIcon = ({ activeTab, isSearchBarOpen, isNotiBarOpen, han
           <div
             onClick={() => handleTabClick("Notification")}
             className={` ${
-              isNotiBarOpen
-                ? "border-[1px] border-stone-400"
-                : ""
+              isNotiBarOpen ? "border-[1px] border-stone-400" : ""
             } flex justify-around h-10 px-2 py-4 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-xl`}
           >
             {activeTab === "Notification" ? (
@@ -102,20 +108,19 @@ export const SideBarMenuIcon = ({ activeTab, isSearchBarOpen, isNotiBarOpen, han
       {isSearchBarOpen && (
         <div
           style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
-          className=
-          "h-full absolute left-full top-0 bg-white w-[400px] rounded-r-2xl"
+          className="h-full absolute left-full top-0 bg-white w-[400px] rounded-r-2xl"
         >
           <SearchBar />
         </div>
-      )} 
+      )}
       {isNotiBarOpen && (
         <div
           style={{ boxShadow: "8px 0 15px rgba(0, 0, 0, 0.15)" }}
           className="h-full absolute left-full top-0 bg-white w-[400px] h-full rounded-r-2xl"
         >
-          <NotificationBar />
+          <NotificationBar notifications={notifications} />
         </div>
-      ) }
+      )}
     </div>
   );
 };
