@@ -8,10 +8,11 @@ export type Message = {
 export type MessageCustom = {
     id: string,
     senderId: string,
-    recipientId: string,
     content: string,
     timestamp: string,
-    read: boolean
+    seen: boolean,
+    senderAvatar: string,
+    senderUrl: string
 }
 
 export type BotMessagesResponse = {
@@ -29,7 +30,7 @@ export type BotMessageRequest = {
 
 export type MessageRequest= {
     content: string;
-    senderId: string;
     recipientId: string;
+    senderId: string;
 }
 

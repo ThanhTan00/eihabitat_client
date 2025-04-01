@@ -40,7 +40,7 @@ export const Sidebar = () => {
       setIsMenuSpan(false);
       setIsSearchBarOpen(false);
       setIsNotiBarOpen(false);
-      navigate("/chat/0");
+      navigate("/chat");
       setActiveTab(title);
     } else if (title === "Search") {
       setIsSearchBarOpen(!isSearchBarOPen);

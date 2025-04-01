@@ -1,30 +1,27 @@
-import React, { useEffect, useState } from "react";
-import connectWebSocket from "../../../../API/connectNotificationSocket";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
-import { useParams } from "react-router-dom";
-import { timeStamp } from "console";
 import { addMessage } from "../../../../API/PostApi";
 import {
   faInfoCircle,
-  faMessage,
   faPhoneFlip,
   faVideoCamera,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  getChatHistory,
-  getUserDemoForChatRoom,
-} from "../../../../API/UserApi";
 import { Message, MessageCustom } from "../../../../Model/Message";
-import { UserDemoInfo } from "../../../../Model/User";
+import { Room, UserDemoInfo } from "../../../../Model/User";
 import { useForm } from "react-hook-form";
 import { showToastMessage } from "../../../../Toast/CustomToast";
 import { BsEmojiSmile } from "react-icons/bs";
 import Picker from "@emoji-mart/react";
+import { getChatHistory } from "../../../../API/ChatApi";
+import { Link } from "react-router-dom";
+import { format } from "date-fns";
+import { ChatRoom } from "./ChatRoom";
+import connectChatSocket from "../../../../API/connectChatSocket";
 
 interface Props {
-  selectedId: string;
+  selectedRoom: Room;
 }
 interface formFields {
   content: string;
@@ -32,33 +29,23 @@ interface formFields {
   senderId: string;
 }
 
-export const ChatBox = ({ selectedId }: Props) => {
+export const ChatBox = ({ selectedRoom }: Props) => {
   const { token, user } = useSelector((state: RootState) => state.auth);
-  const [chatUser, setChatUser] = useState<UserDemoInfo>();
   const [messages, setMessages] = useState<MessageCustom[]>([]);
   const [input, setInput] = useState("");
+  const chatEndRef = useRef<HTMLDivElement | null>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
+
+  const formatDateTime = (dateString: string) => {
+    const date = new Date(dateString);
+    return format(date, "dd/mm/yyyy HH:mm"); // "20th - Mar - 2025 14:30"
+  };
 
   const getChatHis = async () => {
     try {
       if (token && user) {
-        const chats = await getChatHistory(token, user?.id, selectedId);
-        setMessages(chats);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getUser = async () => {
-    try {
-      if (selectedId && token) {
-        const userDemo = await getUserDemoForChatRoom(token, selectedId);
-        if (userDemo.code === 1000) {
-          setChatUser(userDemo.data);
-        } else {
-          console.log(userDemo);
-        }
+        const chats = await getChatHistory(token, selectedRoom.id);
+        if (chats.code === 1000) setMessages(chats.data);
       }
     } catch (error) {
       console.log(error);
@@ -79,10 +66,10 @@ export const ChatBox = ({ selectedId }: Props) => {
 
   const onSubmit = async () => {
     try {
-      if (token && user && selectedId) {
+      if (token && user) {
         const addNewMessage = await addMessage(token, {
           content: input,
-          recipientId: selectedId,
+          recipientId: selectedRoom.userId,
           senderId: user?.id,
         });
       }
@@ -95,17 +82,20 @@ export const ChatBox = ({ selectedId }: Props) => {
 
   useEffect(() => {
     getChatHis();
-    getUser();
-  }, [selectedId]);
+  }, [selectedRoom]);
 
-  // useEffect(() => {
-  //   if (user) {
-  //     const client = connectWebSocket(user?.id, (message: MessageCustom) => {
-  //       setMessages((prev) => [...prev, message]);
-  //       return () => client.deactivate();
-  //     });
-  //   }
-  // }, [user]);
+  useEffect(() => {
+    const client = connectChatSocket(
+      selectedRoom.id,
+      (message: MessageCustom) => {
+        setMessages((prev) => [message, ...prev]);
+      }
+    );
+  }, [selectedRoom]);
+
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   return (
     <div className="w-full h-full relative z-0">
@@ -114,13 +104,13 @@ export const ChatBox = ({ selectedId }: Props) => {
           <div className="w-14 h-14 rounded-full">
             <img
               className="w-full h-full rounded-full object-cover"
-              src={chatUser?.profileAvatar}
+              src={selectedRoom.userAvatar}
               alt="Story"
             />
           </div>
           <div className="flex justify-between items-end">
             <p className="text-md font-semibold max-w-[600px] duration-200 truncate">
-              {chatUser?.profileName}
+              {selectedRoom.userName}
             </p>
           </div>
         </div>
@@ -142,57 +132,45 @@ export const ChatBox = ({ selectedId }: Props) => {
           />
         </div>
       </div>
-      <div className="flex flex-col h-screen overflow-y-scroll px-5 py-28 space-y-4">
+      <div className="flex flex-col h-screen overflow-y-auto px-5 py-28 space-y-4">
         <div className="text-center font-semibold">3 Nov 2024, 17:23</div>
-        <div className="grid grid-cols-1 space-y-4">
-          {messages &&
-            messages.map((message) =>
-              message.senderId === user?.id ? (
-                <div className="justify-self-end space-y-1">
-                  <p className="text-md text-white max-w-96 duration-200 p-2 rounded-2xl bg-[#0C5083]">
+
+        <div className="flex flex-col-reverse">
+          {messages.map((message) => (
+            <div key={message.id}>
+              {message.senderId === user?.id ? (
+                <div className="justify-self-end mt-2">
+                  <p className="text-md text-white max-w-96 p-2 rounded-2xl bg-[#0C5083] group relative">
                     {message.content}
+                    <span className="absolute w-32 text-center px-4 text-xs text-gray-500 opacity-0 group-hover:opacity-100 right-[100%] top-[35%]">
+                      {formatDateTime(message.timestamp)}
+                    </span>
                   </p>
                 </div>
               ) : (
                 <div className="justify-self-start">
-                  <div className="grid grid-cols-6 max-w-96">
-                    <div className="w-8 h-8 col-span-1 place-self-end rounded-full mr-4">
+                  <div className="flex items-center max-w-96 space-x-4">
+                    <Link to={message.senderUrl}>
                       <img
-                        className="w-full h-full rounded-full object-cover"
-                        src={chatUser?.profileAvatar}
-                        alt="Story"
+                        className="w-8 h-8 rounded-full object-cover"
+                        src={message.senderAvatar}
+                        alt="Sender"
                       />
-                    </div>
-                    <div className="col-span-5 space-y-1">
-                      <p className="text-md max-w-96 duration-200 p-2 rounded-2xl bg-gray-100">
-                        {message.content}
-                      </p>
-                    </div>
+                    </Link>
+                    <p className="text-md max-w-96 p-2 rounded-2xl bg-gray-100 group relative">
+                      {message.content}
+                      <span className="absolute w-32 text-center px-4 text-xs text-gray-500 opacity-0 group-hover:opacity-100 left-[100%] top-[35%]">
+                        {formatDateTime(message.timestamp)}
+                      </span>
+                    </p>
                   </div>
                 </div>
-              )
-            )}
-          {messages.length === 0 && (
-            <div className="flex justify-around items-center">
-              <div className="max-w-sm w-full text-gray-600 space-y-8">
-                <div className="text-center">
-                  <img
-                    src={chatUser?.profileAvatar}
-                    width={150}
-                    className="mx-auto rounded-full"
-                    alt=""
-                  />
-                  <div className="mt-5 space-y-2">
-                    <p>{chatUser?.profileName}</p>
-                    <h3 className="text-gray-800 text-2xl font-bold sm:text-3xl">
-                      {chatUser?.firstName} {chatUser?.lastName}
-                    </h3>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
-          )}
+          ))}
         </div>
+
+        <div ref={chatEndRef} />
       </div>
       <div className="absolute bottom-0 left-0 z-10 bg-white w-full flex items-center w-full px-6 py-6 border-t border-gray-200">
         {/* Smile icon */}
