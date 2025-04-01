@@ -7,7 +7,7 @@ export const UserLayout = () => {
       <div className="fixed bg-white z-50 w-auto">
         <Sidebar />
       </div>
-      <div className="">
+      <div>
         <Outlet />
       </div>
     </div>

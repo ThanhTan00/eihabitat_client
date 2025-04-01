@@ -15,20 +15,32 @@ import { logoutUser } from "../../../../Store/Slices/AuthSlice";
 import { showToastMessage } from "../../../../Toast/CustomToast";
 import { SignoutConfirmModal } from "../ComfirmationModal/SignoutConfirmModal";
 import { followUser, unFollowUser } from "../../../../API/UserApi";
+import Picker from "@emoji-mart/react";
 import { FollowingModal } from "./FollowingModal";
+import { BsEmojiSmile } from "react-icons/bs";
+import { useForm } from "react-hook-form";
+import { addMessage } from "../../../../API/PostApi";
 
 type Props = {
   hostUser: User | null;
   numberOfPosts: number | undefined;
 };
+interface formFields {
+  content: string;
+  recipientId: string;
+  senderId: string;
+}
 
 export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
   const [isFollowerModalOpen, setIsFollowerModalOpen] = useState(false);
   const [isFollowingModalOpen, setIsFollowingModalOpen] = useState(false);
   const [isSignOutModalOpen, setIsSignOutModalOpen] = useState(false);
   const [isFollowDropdown, setIsFollowDropdown] = useState<boolean>(false);
+  const [isChatModelOpen, setIsChatModelOpen] = useState<boolean>(false);
   const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const [isFollowing, setIsFollowing] = useState<boolean | undefined>(false);
+  const [input, setInput] = useState("");
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
   const navigate = useNavigate();
   const dispatch = useDispatch<AppDispatch>();
   const { token, user } = useSelector((state: RootState) => state.auth);
@@ -69,6 +81,10 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
     setIsFollowDropdown((prev) => !prev);
   };
 
+  const toggleChatModel = () => {
+    setIsChatModelOpen((prev) => !prev);
+  };
+
   const handleLogout = async () => {
     try {
       const auth = await dispatch(logoutUser({ token: token }) as any);
@@ -107,8 +123,36 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
     }
   };
 
-  const handleMessage = () => {
-    navigate("/chat/" + hostUser?.id);
+  const {
+    handleSubmit,
+    formState: { errors },
+  } = useForm<formFields>({
+    mode: "all",
+  });
+
+  const onSubmit = async () => {
+    try {
+      if (token && user && hostUser) {
+        const addNewMessage = await addMessage(token, {
+          content: input,
+          recipientId: hostUser?.id,
+          senderId: user?.id,
+        });
+        if (addNewMessage.code === 1000) {
+          showToastMessage("message sent", "success");
+        }
+      }
+    } catch (error) {
+      showToastMessage("Something went wrong, try again later", "error");
+    } finally {
+      setInput("");
+      setIsChatModelOpen(false);
+      setShowEmojiPicker(false);
+    }
+  };
+  const handleEmojiSelect = (emoji: any) => {
+    setInput(input + emoji.native);
+    setShowEmojiPicker(false);
   };
 
   useEffect(() => {
@@ -163,9 +207,8 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
                     </button>
                     {isFollowDropdown && (
                       <div className="absolute right-0 top-[35px] w-48 bg-gray-100 rounded-md shadow-lg z-20">
-                        <a
+                        <div
                           onClick={handleUnFollowUser}
-                          href="#"
                           className="w-full block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
                         >
                           <FontAwesomeIcon
@@ -174,27 +217,69 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
                             size="xs"
                           />
                           Unfollow
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
-                        >
+                        </div>
+                        <div className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8] cursor-pointer">
                           Mute
-                        </a>
-                        <a
-                          href="#"
-                          className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8]"
-                        >
+                        </div>
+                        <div className="block px-4 py-2 text-gray-800 hover:bg-[#EBE4D8] cursor-pointer">
                           Block
-                        </a>
+                        </div>
                       </div>
                     )}
-                    <button
-                      onClick={handleMessage}
-                      className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md"
-                    >
-                      Message
-                    </button>
+                    <div className="relative">
+                      <button
+                        onClick={toggleChatModel}
+                        className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md"
+                      >
+                        Message
+                      </button>
+                      {isChatModelOpen && (
+                        <div className="absolute mt-2 p-3 top-[100%] z-10 w-72 h-56 bg-white rounded-xl shadow-[2px_2px_10px_5px_rgba(0,_0,_0,_0.1)]">
+                          <div className="flex justify-center w-full">
+                            <div className="text-center">
+                              <img
+                                src={hostUser?.profileAvatar}
+                                width={150}
+                                className="h-32 w-32 rounded-full"
+                                alt=""
+                              />
+                            </div>
+                          </div>
+                          <div className="w-full text-center text-md font-bold">
+                            {hostUser?.firstName + " " + hostUser?.lastName}
+                          </div>
+                          <div className="absolute bottom-0 left-0 z-10 bg-white w-full flex items-center w-full px-2 my-2 rounded-lg">
+                            {/* Smile icon */}
+                            <span className="absolute left-4 text-gray-500">
+                              <BsEmojiSmile
+                                onClick={() =>
+                                  setShowEmojiPicker(!showEmojiPicker)
+                                }
+                                className="mr-3 text-xl cursor-pointer"
+                              />
+                              {showEmojiPicker && (
+                                <div className="absolute top-[100%] mt-3">
+                                  <Picker onEmojiSelect={handleEmojiSelect} />
+                                </div>
+                              )}
+                            </span>
+
+                            <form
+                              className="flex w-full"
+                              onSubmit={handleSubmit(onSubmit)}
+                            >
+                              <input
+                                type="text"
+                                placeholder="Message..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                className="w-full py-1  pl-10 pr-4 text-gray-700 bg-white border rounded-full shadow-sm focus:outline-none focus:ring focus:ring-blue-200 border-gray-300"
+                              />
+                            </form>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="flex space-x-2">
@@ -204,12 +289,60 @@ export const ProfileUserDetails = ({ hostUser, numberOfPosts }: Props) => {
                     >
                       Follow {hostUser?.followMe ? "back" : ""}
                     </button>
-                    <button
-                      onClick={handleMessage}
-                      className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md"
-                    >
-                      Message
-                    </button>
+                    <div className="relative">
+                      <button
+                        onClick={toggleChatModel}
+                        className="bg-[#EBE4D8] hover:bg-[#D6C7AD] px-5 py-1 duration-300 rounded-md"
+                      >
+                        Message
+                      </button>
+                      {isChatModelOpen && (
+                        <div className="absolute mt-2 p-3 top-[100%] z-10 w-72 h-56 bg-white rounded-xl shadow-[2px_2px_10px_5px_rgba(0,_0,_0,_0.1)]">
+                          <div className="flex justify-center w-full">
+                            <div className="text-center">
+                              <img
+                                src={hostUser?.profileAvatar}
+                                width={150}
+                                className="h-32 w-32 rounded-full"
+                                alt=""
+                              />
+                            </div>
+                          </div>
+                          <div className="w-full text-center text-md font-bold">
+                            {hostUser?.firstName + " " + hostUser?.lastName}
+                          </div>
+                          <div className="absolute bottom-0 left-0 z-10 bg-white w-full flex items-center w-full px-2 my-2 rounded-lg">
+                            {/* Smile icon */}
+                            <span className="absolute left-4 text-gray-500">
+                              <BsEmojiSmile
+                                onClick={() =>
+                                  setShowEmojiPicker(!showEmojiPicker)
+                                }
+                                className="mr-3 text-xl cursor-pointer"
+                              />
+                              {showEmojiPicker && (
+                                <div className="absolute top-[100%] mt-3">
+                                  <Picker onEmojiSelect={handleEmojiSelect} />
+                                </div>
+                              )}
+                            </span>
+
+                            <form
+                              className="flex w-full"
+                              onSubmit={handleSubmit(onSubmit)}
+                            >
+                              <input
+                                type="text"
+                                placeholder="Message..."
+                                value={input}
+                                onChange={(e) => setInput(e.target.value)}
+                                className="w-full py-1  pl-10 pr-4 text-gray-700 bg-white border rounded-full shadow-sm focus:outline-none focus:ring focus:ring-blue-200 border-gray-300"
+                              />
+                            </form>
+                          </div>
+                        </div>
+                      )}
+                    </div>
                   </div>
                 )}
               </>

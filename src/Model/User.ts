@@ -141,10 +141,14 @@ export type SuggestFollow = {
     followedBy: string
 }
 
-export type ChatUser = {
+export type Room = {
     id: string,
-    userProfileName: string,
+    userId: string
+    userName: string,
     userAvatar: string,
     lastMessage: string,
+    lastSender: string,
+    seen: boolean,
+    timestamp: string
 }
 

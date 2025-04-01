@@ -5,27 +5,28 @@ import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { getAllChatRoom } from "../../../API/UserApi";
-import { ChatUser } from "../../../Model/User";
 import {
   ChatBot,
   ChatBox,
   ChatRoom,
+  Loading,
   StoryCircle,
   StoryModal,
 } from "../Components";
 import { getFollowingNewStory } from "../../../API/StoryAPI";
 import { FollowingNewStory } from "../../../Model/Story";
+import { getAllChatRoom } from "../../../API/ChatApi";
+import { Room } from "../../../Model/User";
 
 export const ChatPage = () => {
   const { user, token } = useSelector((state: RootState) => state.auth);
-  const [chatRooms, setChatRooms] = useState<ChatUser[]>([]);
+  const [chatRooms, setChatRooms] = useState<Room[]>([]);
+  const [isLoading, setIsloading] = useState<boolean>(true);
+
   const [followingNewStory, setFollowingNewStory] = useState<
     FollowingNewStory[] | null
   >(null);
-  const [isStoryModelOpen, setIsStoryModelOpen] = useState<boolean>(false);
-  const [isStoryModalOpen, setIsStoryModalOpen] = useState(false);
-  const { userId } = useParams<{ userId: string }>();
+  const [selectedRoom, setSelectedRoom] = useState<Room | null>(null);
   const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -53,11 +54,14 @@ export const ChatPage = () => {
     try {
       if (token && user) {
         const chats = await getAllChatRoom(token, user?.id);
-        console.log(chats);
-        setChatRooms(chats);
+        if (chats.code === 1000) {
+          setChatRooms(chats.data);
+        }
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsloading(false);
     }
   };
 
@@ -74,12 +78,12 @@ export const ChatPage = () => {
   };
 
   const handleChatBotClick = () => {
-    navigate("/chat/0");
+    setSelectedRoom(null);
   };
 
-  // const HandleChatSelected = (id: string) => {
-  //   setSelectedChat(id);
-  // };
+  const selectedRoomHandler = (room: Room) => {
+    setSelectedRoom(room);
+  };
 
   useEffect(() => {
     getChatRoms();
@@ -89,7 +93,7 @@ export const ChatPage = () => {
   return (
     <div className="ml-20 ">
       <div className="flex ">
-        <div className="max-w-[500px] relative z-0 border-r border-gray-200 ">
+        <div className="w-[30%] relative z-0 border-r border-gray-200 ">
           <div className="absolute z-10 w-full bg-white top-0 flex justify-between items-center px-10 pt-10 pb-10">
             <p className="text-xl font-bold">{user?.profileName}</p>
             <FontAwesomeIcon icon={faPenToSquare} size="xl" />
@@ -164,16 +168,24 @@ export const ChatPage = () => {
                   </div>
                 </div>
               </div>
-              {chatRooms.map((room) => (
-                <ChatRoom chatUser={room} />
-              ))}
+              {isLoading ? (
+                <div className="w-full h-[60vh]">
+                  <Loading />
+                </div>
+              ) : (
+                <>
+                  {chatRooms.map((room) => (
+                    <ChatRoom room={room} selectedRoom={selectedRoomHandler} />
+                  ))}
+                </>
+              )}
             </div>
           </div>
         </div>
-        {userId && userId !== "0" ? (
-          <ChatBox selectedId={userId} />
-        ) : (
+        {selectedRoom === null ? (
           <ChatBot />
+        ) : (
+          <ChatBox selectedRoom={selectedRoom} />
         )}
       </div>
       {/* <div className="w-full">

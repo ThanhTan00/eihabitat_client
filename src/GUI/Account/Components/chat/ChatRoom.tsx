@@ -1,21 +1,16 @@
 import { useNavigate } from "react-router-dom";
-import { getChatHistory } from "../../../../API/UserApi";
-import { ChatUser } from "../../../../Model/User";
+import { Room } from "../../../../Model/User";
 
 interface Props {
-  chatUser: ChatUser;
+  room: Room;
+  selectedRoom: (room: Room) => void;
 }
 
-export const ChatRoom = ({ chatUser }: Props) => {
-  const navigate = useNavigate();
-  const handleChatRoomClick = () => {
-    navigate("/chat/" + chatUser.id);
-  };
-
+export const ChatRoom = ({ room, selectedRoom }: Props) => {
   return (
     <div
-      onClick={handleChatRoomClick}
-      key={chatUser.id}
+      onClick={() => selectedRoom(room)}
+      key={room.id}
       className="flex justify-between items-center w-full py-2 cursor-pointer hover:bg-[#DED1BF] hover:bg-opacity-50 pl-4"
     >
       <div className="flex items-center">
@@ -23,7 +18,7 @@ export const ChatRoom = ({ chatUser }: Props) => {
           <div className="w-16 h-16 rounded-full">
             <img
               className="w-full h-full rounded-full object-cover"
-              src={chatUser.userAvatar}
+              src={room.userAvatar}
               alt="Story"
             />
           </div>
@@ -31,10 +26,10 @@ export const ChatRoom = ({ chatUser }: Props) => {
         <div className="pl-4 space-y-2">
           <div className="flex justify-between items-end">
             <p className="text-md  max-w-[200px] duration-200 truncate">
-              {chatUser.userProfileName}
+              {room.userName}
             </p>
           </div>
-          <p className="font-thin text-xs opacity-80">{chatUser.lastMessage}</p>
+          <p className="font-thin text-xs opacity-80">{room.lastMessage}</p>
         </div>
       </div>
     </div>

@@ -17,6 +17,7 @@ import {
 } from "react-icons/ai";
 import { RiVideoFill, RiVideoLine } from "react-icons/ri";
 import { IoReorderThreeOutline } from "react-icons/io5";
+import { Link } from "react-router-dom";
 
 interface MenuProps {
   activeTab: string | undefined;
@@ -30,7 +31,9 @@ export const SideBarMenu = ({ activeTab, handleTabClick }: MenuProps) => {
   return (
     <div className="flex flex-col justify-between h-full px-10 border-r border-gray-200">
       <div className="pt-8">
-        <img className="w-40 h-10" src="\eiuhabitat-logo.png" alt="" />
+        <Link to={"http://localhost:3000/"}>
+          <img className="w-40 h-10" src="\eiuhabitat-logo.png" alt="" />
+        </Link>
         <div className="mt-10 space-y-4">
           <div
             onClick={() => handleTabClick("Home")}
