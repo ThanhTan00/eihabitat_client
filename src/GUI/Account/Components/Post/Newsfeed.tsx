@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Post } from "../../../../Model/Post";
 import { useSelector } from "react-redux";
 import { RootState } from "../../../../Store/store";
@@ -16,13 +16,21 @@ export const NewsFeed = () => {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<string | null>(null);
   const [isCommentModalOpen, setIsCommentModalOpen] = useState(false);
+  const [page, setPage] = useState<number>(0);
+  const [hasMore, setHasMore] = useState<boolean>(true);
+  const observerRef = useRef<HTMLDivElement | null>(null);
 
-  const getNewsFeed = async () => {
+  const getNewsFeed = useCallback(async () => {
+    if (!token || !hasMore) return;
+    setIsLoading(true);
+
     try {
-      if (token) {
-        const result = await getNewsFeedPosts(token, user?.id);
-        if (result.code === 1000) {
-          setPosts(result.data);
+      const result = await getNewsFeedPosts(token, user?.id, page);
+      console.log(result);
+      if (result.code === 1000) {
+        setPosts((prevPosts) => [...prevPosts, ...result.data.content]);
+        if (result.data.last) {
+          setHasMore(false);
         }
       }
     } catch (error) {
@@ -30,7 +38,7 @@ export const NewsFeed = () => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [token, user?.id, page, hasMore]);
 
   const openCommentModal = (postId: string) => {
     setSelectedPost(postId);
@@ -44,20 +52,25 @@ export const NewsFeed = () => {
 
   useEffect(() => {
     getNewsFeed();
-  }, []);
+  }, [page]);
+
+  useEffect(() => {
+    if (!observerRef.current || !hasMore) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setPage((prevPage) => prevPage + 1);
+        }
+      },
+      { threshold: 1.0 }
+    );
+
+    observer.observe(observerRef.current);
+    return () => observer.disconnect();
+  }, [hasMore]);
   return (
     <div className="container space-y-4 mx-auto min-w-[65%] mt-5">
-      {isLoading && (
-        <div className="w-full h-72">
-          <Loading />
-        </div>
-      )}
-
-      {isLoading || posts[0] ? (
-        posts?.map((post) => (
-          <PostCard post={post} openCommentModal={openCommentModal} />
-        ))
-      ) : (
+      {posts.length === 0 && !isLoading && (
         <div className="w-full p-20">
           <div className="flex justify-center items-center w-full py-4">
             <p className="text-gray-500">
@@ -74,6 +87,23 @@ export const NewsFeed = () => {
           </div>
         </div>
       )}
+
+      {posts.map((post) => (
+        <PostCard
+          key={post.id}
+          post={post}
+          openCommentModal={openCommentModal}
+        />
+      ))}
+
+      {isLoading && (
+        <div className="w-full h-20 flex justify-center items-center">
+          <Loading />
+        </div>
+      )}
+
+      <div ref={observerRef} className="w-full h-10" />
+
       <CommentModal
         isOpen={isCommentModalOpen}
         onClose={closeCommentModal}

@@ -72,9 +72,9 @@ export const getSelectedPost = async (accessToken: string, id: string | undefine
 //     }
 // }
 
-export const getNewsFeedPosts = async (accessToken: string, id: string | undefined) => {
+export const getNewsFeedPosts = async (accessToken: string, id: string | undefined, page: number) => {
     try {
-        const response = await api.get(`post/newsFeedPosts/${id}`, {
+        const response = await api.get(`post/newsFeedPosts/${page}/2/${id}`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`
             }
