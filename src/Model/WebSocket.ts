@@ -3,6 +3,7 @@ export type NotificationType = {
     type : string
     recipient : string
     createdAt : string
+    seen: boolean
     userProfileName : string
     userProfileAvatar : string
     userUrl: string

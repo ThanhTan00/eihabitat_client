@@ -21,10 +21,15 @@ import { Link } from "react-router-dom";
 
 interface MenuProps {
   activeTab: string | undefined;
+  newNotification: number;
   handleTabClick: (title: string) => void;
 }
 
-export const SideBarMenu = ({ activeTab, handleTabClick }: MenuProps) => {
+export const SideBarMenu = ({
+  activeTab,
+  newNotification,
+  handleTabClick,
+}: MenuProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
 
@@ -88,7 +93,7 @@ export const SideBarMenu = ({ activeTab, handleTabClick }: MenuProps) => {
           </div>
           <div
             onClick={() => handleTabClick("Notification")}
-            className="flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-lg"
+            className="relative flex h-10 px-3 py-6 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-lg"
           >
             {activeTab === "Notification" ? (
               <AiFillHeart className="text-3xl mr-5" />
@@ -102,6 +107,13 @@ export const SideBarMenu = ({ activeTab, handleTabClick }: MenuProps) => {
             >
               Notification
             </p>
+            {newNotification !== 0 ? (
+              <div className="absolute left-[100%] flex justify-center items-center w-4 h-4 m-2 bg-red-500 rounded-full font-semibold text-xs text-white">
+                {newNotification}
+              </div>
+            ) : (
+              <></>
+            )}
           </div>
           <div
             onClick={() => handleTabClick("Create")}

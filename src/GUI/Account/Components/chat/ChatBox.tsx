@@ -91,7 +91,7 @@ export const ChatBox = ({ selectedRoom }: Props) => {
         setMessages((prev) => [message, ...prev]);
       }
     );
-  }, [selectedRoom]);
+  }, [selectedRoom.id]);
 
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
