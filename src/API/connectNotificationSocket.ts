@@ -2,8 +2,8 @@ import { Client } from "@stomp/stompjs";
 import SockJS from "sockjs-client";
 import { NotificationType } from "../Model/WebSocket";
 
-//const URL = "https://eihabitat.site/api/ws";
-const URL = "http://localhost:8080/ws";
+const URL = "https://eihabitat.site/api/ws";
+//const URL = "http://localhost:8080/ws";
 
 const connectNotificationSocket = (
     userName: string | undefined,

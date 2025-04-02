@@ -3,8 +3,8 @@ import SockJS from "sockjs-client";
 import { NotificationType } from "../Model/WebSocket";
 import { MessageCustom } from "../Model/Message";
 
-//const URL = "https://eihabitat.site/api/ws";
-const URL = "http://localhost:8080/ws";
+const URL = "https://eihabitat.site/api/ws";
+//const URL = "http://localhost:8080/ws";
 
 const connectChatSocket = (
     roomId: string | undefined,
