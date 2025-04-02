@@ -44,7 +44,7 @@ export const Sidebar = () => {
       setIsMenuSpan(false);
       setIsSearchBarOpen(false);
       setIsNotiBarOpen(false);
-      navigate("/chat");
+      navigate("https://eihabitat.site/chat");
       setActiveTab(title);
     } else if (title === "Search") {
       setIsSearchBarOpen(!isSearchBarOPen);

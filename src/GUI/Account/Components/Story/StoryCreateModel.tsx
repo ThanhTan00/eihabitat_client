@@ -168,7 +168,7 @@ export const StoryCreateModel: React.FC<ModalProps> = ({ isOpen, onClose }) => {
                 <img
                   src={image}
                   alt="efw"
-                  className="w-full max-h-[500px] object-cover transition-opacity duration-500"
+                  className="w-full max-h-[50%] object-cover transition-opacity duration-500"
                 />
                 <div
                   onClick={() => handleRemoveImage()}
