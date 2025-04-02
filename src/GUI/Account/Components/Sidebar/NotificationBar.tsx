@@ -3,6 +3,8 @@ import { NotificationType } from "../../../../Model/WebSocket";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { CommentModal } from "../Comment/CommentModal";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faImages } from "@fortawesome/free-solid-svg-icons";
 
 interface NofificationProps {
   notifications: NotificationType[];
@@ -114,175 +116,17 @@ export const NotificationBar = ({ notifications }: NofificationProps) => {
         </div>
       </div>
       <div className="py-5">
-        <p className="px-7 pb-5 font-semibold text-md">Earlier</p>
+        <p className="px-7 pb-5 font-semibold text-md">Last month</p>
         <div className="flex justify-between items-center w-full ">
-          <div className="flex items-center w-full hover:bg-[#DED1BF] hover:bg-opacity-50 px-7 py-2 cursor-pointer">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-full">
-                <img
-                  className="w-full h-full rounded-full object-cover"
-                  src="https://cdn.pixabay.com/photo/2022/04/12/19/35/dog-7128749_640.jpg"
-                  alt="Story"
-                />
-              </div>
-            </div>
-            <div className="pl-4 w-full">
-              <div className="flex justify-between items-end">
-                <p className="font-semibold text-base hover:opacity-70 duration-200">
-                  profilename
-                </p>
-              </div>
-              <p className="flex font-thin text-sm opacity-80 truncate">
-                muadongemve
-                <svg
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  stroke="#ece4e4"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {" "}
-                    <circle cx="12" cy="12" r="2" fill="#c7c2c2"></circle>{" "}
-                  </g>
-                </svg>
-                Followed by ins_khang
+          <div className="w-full p-10">
+            <div className="flex justify-center items-center w-full py-4">
+              <p className="text-gray-500">
+                <FontAwesomeIcon icon={faImages} className="mr-2 text-2xl" />
               </p>
             </div>
-          </div>
-        </div>
-        <div className="flex justify-between items-center w-full ">
-          <div className="flex items-center w-full hover:bg-[#DED1BF] hover:bg-opacity-50 px-7 py-2 cursor-pointer">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-full">
-                <img
-                  className="w-full h-full rounded-full object-cover"
-                  src="https://cdn.pixabay.com/photo/2023/11/05/15/25/winter-8367632_640.jpg"
-                  alt="Story"
-                />
-              </div>
-            </div>
-            <div className="pl-4 w-full">
-              <div className="flex justify-between items-end">
-                <p className="font-semibold text-base hover:opacity-70 duration-200">
-                  profilename
-                </p>
-              </div>
-              <p className="flex font-thin text-sm opacity-80 truncate">
-                muadongemve
-                <svg
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  stroke="#ece4e4"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {" "}
-                    <circle cx="12" cy="12" r="2" fill="#c7c2c2"></circle>{" "}
-                  </g>
-                </svg>
-                Followed by ins_khang
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between items-center w-full ">
-          <div className="flex items-center w-full hover:bg-[#DED1BF] hover:bg-opacity-50 px-7 py-2 cursor-pointer">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-full">
-                <img
-                  className="w-full h-full rounded-full object-cover"
-                  src="https://cdn.pixabay.com/photo/2022/04/12/19/35/dog-7128749_640.jpg"
-                  alt="Story"
-                />
-              </div>
-            </div>
-            <div className="pl-4 w-full">
-              <div className="flex justify-between items-end">
-                <p className="font-semibold text-base hover:opacity-70 duration-200">
-                  profilename
-                </p>
-              </div>
-              <p className="flex font-thin text-sm opacity-80 truncate">
-                muadongemve
-                <svg
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  stroke="#ece4e4"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {" "}
-                    <circle cx="12" cy="12" r="2" fill="#c7c2c2"></circle>{" "}
-                  </g>
-                </svg>
-                Followed by ins_khang
-              </p>
-            </div>
-          </div>
-        </div>
-        <div className="flex justify-between items-center w-full ">
-          <div className="flex items-center w-full hover:bg-[#DED1BF] hover:bg-opacity-50 px-7 py-2 cursor-pointer">
-            <div className="flex flex-col items-center">
-              <div className="w-12 h-12 rounded-full">
-                <img
-                  className="w-full h-full rounded-full object-cover"
-                  src="https://cdn.pixabay.com/photo/2022/04/12/19/35/dog-7128749_640.jpg"
-                  alt="Story"
-                />
-              </div>
-            </div>
-            <div className="pl-4 w-full">
-              <div className="flex justify-between items-end">
-                <p className="font-semibold text-base hover:opacity-70 duration-200">
-                  profilename
-                </p>
-              </div>
-              <p className="flex font-thin text-sm opacity-80 truncate">
-                muadongemve
-                <svg
-                  width="20px"
-                  height="20px"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                  stroke="#ece4e4"
-                >
-                  <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-                  <g
-                    id="SVGRepo_tracerCarrier"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  ></g>
-                  <g id="SVGRepo_iconCarrier">
-                    {" "}
-                    <circle cx="12" cy="12" r="2" fill="#c7c2c2"></circle>{" "}
-                  </g>
-                </svg>
-                Followed by ins_khang
+            <div className="flex justify-center items-center w-full">
+              <p className="text-gray-500 font-bold text-md">
+                NO NOTIFICATIONS FOUND
               </p>
             </div>
           </div>
