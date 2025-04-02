@@ -36,7 +36,7 @@ export const SideBarMenu = ({
   return (
     <div className="flex flex-col justify-between h-full px-10 border-r border-gray-200">
       <div className="pt-8">
-        <Link to={"http://localhost:3000/"}>
+        <Link to={"https://eihabitat.site/"}>
           <img className="w-40 h-10" src="\eiuhabitat-logo.png" alt="" />
         </Link>
         <div className="mt-10 space-y-4">

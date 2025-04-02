@@ -44,7 +44,7 @@ export const SideBarMenuIcon = ({
   return (
     <div className="relative w-20 flex flex-col justify-between h-full px-4 border-r border-gray-200">
       <div className="pt-8 flex flex-col justify-between">
-        <Link to={"http://localhost:3000/"}>
+        <Link to={"https://eihabitat.site"}>
           <img className="w-10 h-10" src="\eiuhabitat-icon.png" alt="" />
         </Link>
 
