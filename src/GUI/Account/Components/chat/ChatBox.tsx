@@ -133,10 +133,6 @@ export const ChatBox = ({ selectedRoom }: Props) => {
         </div>
       </div>
       <div className="flex flex-col h-screen overflow-y-auto px-5 py-28 space-y-4">
-        <div className="text-center font-semibold">
-          {formatDateTime(messages[messages.length - 1].timestamp)}
-        </div>
-
         <div className="flex flex-col-reverse">
           {messages.map((message) => (
             <div key={message.id}>

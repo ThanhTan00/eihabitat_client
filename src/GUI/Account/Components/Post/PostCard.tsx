@@ -221,7 +221,6 @@ export const PostCard: React.FC<PostCardProps> = ({
                   {formatDate(post.createdAt)}
                 </p>
               </div>
-              <p className="font-thin text-sm">location</p>
             </div>
           </div>
 
