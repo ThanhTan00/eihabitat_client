@@ -59,7 +59,11 @@ export const NotificationBar = ({ notifications }: NofificationProps) => {
         </div>
         <div className="h-[40vh] overflow-y-auto">
           {notifications.map((noti) => (
-            <div className="flex justify-between items-center w-full hover:bg-[#DED1BF] hover:bg-opacity-50 px-5 py-2 cursor-pointer">
+            <div
+              className={` ${
+                !noti.seen ? "bg-[#ECE5DB]" : "bg-white"
+              } flex justify-between items-center w-full hover:bg-[#DED1BF] px-5 py-2 cursor-pointer`}
+            >
               <div className="flex">
                 <div className="flex flex-col items-center">
                   <div className="w-12 h-12 rounded-full">

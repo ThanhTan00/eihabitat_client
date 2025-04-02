@@ -27,6 +27,7 @@ interface MenuProps {
   isSearchBarOpen: boolean | false;
   isNotiBarOpen: boolean | false;
   notifications: NotificationType[];
+  newNotification: number;
   handleTabClick: (title: string) => void;
 }
 
@@ -35,6 +36,7 @@ export const SideBarMenuIcon = ({
   isSearchBarOpen,
   isNotiBarOpen,
   notifications,
+  newNotification,
   handleTabClick,
 }: MenuProps) => {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -77,12 +79,19 @@ export const SideBarMenuIcon = ({
             onClick={() => handleTabClick("Notification")}
             className={` ${
               isNotiBarOpen ? "border-[1px] border-stone-400" : ""
-            } flex justify-around h-10 px-2 py-4 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-xl`}
+            } relative flex justify-around h-10 px-2 py-4 items-center mb-5 cursor-pointer text-lg hover:scale-105 duration-300 hover:bg-[#DED1BF] hover:bg-opacity-50 rounded-xl`}
           >
             {activeTab === "Notification" ? (
               <AiFillHeart className="text-3xl" />
             ) : (
               <AiOutlineHeart className="text-3xl" />
+            )}
+            {newNotification !== 0 ? (
+              <div className="absolute left-7 bottom-5 flex justify-center items-center w-4 h-4 m-2 bg-red-500 rounded-full font-semibold text-xs text-white">
+                {newNotification}
+              </div>
+            ) : (
+              <></>
             )}
           </div>
           <div
